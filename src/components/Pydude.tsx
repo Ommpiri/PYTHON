@@ -25,7 +25,7 @@ const PreBlock = ({ children, ...rest }: any) => {
       >
         {copied ? "Copied" : "Copy"}
       </button>
-      <pre ref={preRef} {...rest}>
+      <pre ref={preRef} className="bg-warm-black text-white p-4 rounded-lg overflow-x-auto text-sm font-mono shadow-inner" {...rest}>
         {children}
       </pre>
     </div>
@@ -149,8 +149,25 @@ export function Pydude() {
                     : "bg-[#F4F1EA] text-[#2C3E50] shadow-sm" // parchment style
                 }`}>
                   {m.role === "pydude" ? (
-                    <div className="prose prose-sm prose-pre:bg-warm-black prose-pre:text-white max-w-none">
-                      <ReactMarkdown components={{ pre: PreBlock }}>{m.text}</ReactMarkdown>
+                    <div className="max-w-none">
+                      <ReactMarkdown 
+                        components={{ 
+                          pre: PreBlock,
+                          p: ({ node, ...props }) => <p className="mb-3 last:mb-0 leading-relaxed" {...props} />,
+                          code: ({ node, inline, className, children, ...props }: any) => {
+                            const match = /language-(\w+)/.exec(className || '');
+                            return !inline && match ? (
+                              <code className={className} {...props}>{children}</code>
+                            ) : (
+                              <code className="bg-black/10 text-teal-800 px-1.5 py-0.5 rounded text-[0.85em] font-semibold" {...props}>
+                                {children}
+                              </code>
+                            )
+                          }
+                        }}
+                      >
+                        {m.text}
+                      </ReactMarkdown>
                     </div>
                   ) : (
                     <div className="whitespace-pre-wrap text-left">{m.text}</div>
