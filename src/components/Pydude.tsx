@@ -34,6 +34,7 @@ const PreBlock = ({ children, ...rest }: any) => {
 
 export function Pydude() {
   const [expanded, setExpanded] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -125,16 +126,21 @@ export function Pydude() {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {expanded && (
-        <div className="mb-4 w-[380px] h-[500px] max-h-[80vh] max-w-[calc(100vw-3rem)] bg-warm-black border border-border shadow-2xl rounded-lg flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
+        <div className={`mb-4 bg-warm-black border border-border shadow-2xl rounded-lg flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 transition-all duration-300 ${
+          isMaximized ? "w-[800px] h-[80vh] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)]" : "w-[380px] h-[500px] max-h-[80vh] max-w-[calc(100vw-3rem)]"
+        }`}>
           <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background">
             <h3 className="font-display font-semibold flex items-center gap-2">
               <span className="text-amber">{">>>"}</span> pydude
             </h3>
-            <div className="flex gap-2">
+            <div className="flex gap-3 items-center">
               <button onClick={() => setMessages([{ role: "pydude", text: "History cleared. How can I help?" }])} className="text-xs text-muted-foreground hover:text-coral transition-colors" title="Clear Chat">
                 clear
               </button>
-              <button onClick={() => setExpanded(false)} className="text-muted-foreground hover:text-white transition-colors">
+              <button onClick={() => setIsMaximized(!isMaximized)} className="text-xs text-muted-foreground hover:text-amber transition-colors" title={isMaximized ? "Shrink Chat" : "Expand Chat"}>
+                {isMaximized ? "shrink" : "expand"}
+              </button>
+              <button onClick={() => setExpanded(false)} className="text-muted-foreground hover:text-white transition-colors" title="Close">
                 ✕
               </button>
             </div>
