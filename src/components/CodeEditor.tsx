@@ -119,6 +119,8 @@ export function CodeEditor({
   slug,
   cellKey = "live",
   onPass,
+  trace,
+  onTrace,
 }: {
   starter: string;
   expectedIncludes?: string[];
@@ -126,6 +128,8 @@ export function CodeEditor({
   /** Unique key per cell within a module (e.g. "live", "challenge_1") */
   cellKey?: string;
   onPass?: () => void;
+  trace?: boolean;
+  onTrace?: (lines: number[]) => void;
 }) {
   // Load saved code from localStorage (or fall back to starter)
   const initialCode = useMemo(
@@ -195,15 +199,18 @@ export function CodeEditor({
     setPass(null);
     setTimedOut(false);
 
-    const result = await runPython(code);
+    const res = await runPython(code, { trace });
+    setStatus(res.ok ? "done" : "error");
+    setStdout(res.stdout);
+    setStderr(res.stderr);
+    setTimedOut(res.timedOut ?? false);
+    
+    if (trace && res.traceLines && onTrace) {
+      onTrace(res.traceLines);
+    }
 
-    setStdout(result.stdout.trimEnd());
-    setStderr(result.stderr.trimEnd());
-    setTimedOut(!!result.timedOut);
-    setStatus(result.ok ? "done" : "error");
-
-    if (expectedIncludes && result.ok) {
-      const passed = expectedIncludes.every(s => result.stdout.includes(s));
+    if (expectedIncludes && res.ok) {
+      const passed = expectedIncludes.every(s => res.stdout.includes(s));
       setPass(passed);
       if (passed && slug) {
         recordChallenge(slug);
@@ -333,7 +340,7 @@ export function CodeEditor({
             {isRunning && <span className="text-amber animate-pulse">executing…</span>}
             {timedOut && <span className="text-coral">timed out after 10 s</span>}
             {!isRunning && !timedOut && stdout && <span className="text-teal/60">stdout</span>}
-            {!isRunning && stderr && <span className="text-coral/60 ml-1">stderr</span>}
+            {!isRunning && stderr && <span className="text-coral/80 ml-1">stderr</span>}
           </div>
 
           <div className="p-4 font-mono text-xs leading-6 bg-[oklch(0.15_0.02_240)] min-h-[3rem] max-h-72 overflow-y-auto">
@@ -344,9 +351,24 @@ export function CodeEditor({
               <pre className="text-teal whitespace-pre-wrap break-words">{stdout}</pre>
             )}
             {stderr && (
-              <pre className={`whitespace-pre-wrap break-words mt-1 ${timedOut ? "text-coral" : "text-coral"}`}>
-                {stderr}
-              </pre>
+              <div className="mt-2 flex flex-col items-start gap-2">
+                <pre className={`whitespace-pre-wrap break-words ${timedOut ? "text-coral" : "text-coral"}`}>
+                  {stderr}
+                </pre>
+                {!isRunning && (
+                  <button
+                    onClick={() => {
+                      const event = new CustomEvent("pydude-explain", {
+                        detail: { code, error: stderr, slug }
+                      });
+                      window.dispatchEvent(event);
+                    }}
+                    className="mt-1 font-mono text-[10px] uppercase tracking-wider px-2 py-1 bg-coral/10 text-coral border border-coral/30 rounded hover:bg-coral hover:text-white transition-colors"
+                  >
+                    💡 Explain this error
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>

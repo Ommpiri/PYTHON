@@ -57,7 +57,7 @@
   --parchment: oklch(0.955 0.02 85);
   --amber: oklch(0.76 0.14 75);
   --teal: oklch(0.66 0.08 175);
-  --coral: oklch(0.66 0.15 30);
+  --coral: oklch(0.72 0.17 25);
   --warm-off: oklch(0.93 0.015 85);
   --warm-black: oklch(0.22 0.01 120);
   --gutter: oklch(0.14 0.02 240);
@@ -97,6 +97,7 @@
   --muted-foreground: oklch(0.4 0.02 120);
   --border: oklch(0.85 0.02 85);
   --input: oklch(0.9 0.02 85);
+  --coral: oklch(0.55 0.15 25);
 }
 
 @layer base {
@@ -184,3 +185,35 @@
   animation: fade-in 0.4s ease-out forwards;
 }
 
+@utility animate-hi {
+  animation: hi-3d 2s ease-in-out;
+  transform-origin: bottom center;
+}
+
+@utility animate-welcome {
+  animation: welcome-3d 2s ease-in-out;
+  transform-origin: center center;
+}
+
+@utility animate-bye {
+  animation: bye-3d 2s ease-in-out;
+  transform-origin: center center;
+}
+
+@keyframes hi-3d {
+  0%, 100% { transform: perspective(500px) rotate3d(0, 1, 0, 0deg) rotate(0deg); }
+  20% { transform: perspective(500px) rotate3d(0, 1, 0, 30deg) rotate(15deg); }
+  40% { transform: perspective(500px) rotate3d(0, 1, 0, -20deg) rotate(-10deg); }
+  60% { transform: perspective(500px) rotate3d(0, 1, 0, 30deg) rotate(15deg); }
+  80% { transform: perspective(500px) rotate3d(0, 1, 0, -10deg) rotate(-5deg); }
+}
+
+@keyframes welcome-3d {
+  0%, 100% { transform: perspective(500px) translate3d(0, 0, 0) rotateX(0deg); }
+  50% { transform: perspective(500px) translate3d(0, -10px, 60px) rotateX(-20deg) scale(1.15); }
+}
+
+@keyframes bye-3d {
+  0%, 100% { transform: perspective(500px) translate3d(0, 0, 0) rotateY(0deg); opacity: 1; }
+  50% { transform: perspective(500px) translate3d(0, -20px, -150px) rotateY(-50deg); opacity: 0.5; }
+}

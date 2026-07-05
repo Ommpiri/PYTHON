@@ -28,7 +28,7 @@ async function init() {
 const initPromise = init();
 
 self.onmessage = async (e: MessageEvent) => {
-  const { id, code } = e.data as { id: number; code: string };
+  const { id, code, trace } = e.data as { id: number; code: string; trace?: boolean };
 
   // Wait for pyodide to be ready
   await initPromise;
@@ -45,10 +45,35 @@ self.onmessage = async (e: MessageEvent) => {
   pyodide.setStderr({ batched: (s: string) => { stderr += s + "\n"; } });
 
   try {
-    await pyodide.runPythonAsync(code);
-    self.postMessage({ id, type: "result", ok: !stderr, stdout, stderr });
+    let traceLines: number[] = [];
+    if (trace) {
+      // Create a JS array to hold the trace
+      const traceArr: number[] = [];
+      (self as any).__traceArr = traceArr;
+      
+      const wrapped = `
+import sys
+from js import __traceArr
+
+def __tracer(frame, event, arg):
+    if event == 'line' and frame.f_code.co_filename == '<string>':
+        __traceArr.append(frame.f_lineno)
+    return __tracer
+
+sys.settrace(__tracer)
+try:
+    exec(compile(${JSON.stringify(code)}, '<string>', 'exec'), globals())
+finally:
+    sys.settrace(None)
+`;
+      await pyodide.runPythonAsync(wrapped);
+      traceLines = [...traceArr];
+    } else {
+      await pyodide.runPythonAsync(code);
+    }
+    self.postMessage({ id, type: "result", ok: !stderr, stdout, stderr, traceLines });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    self.postMessage({ id, type: "result", ok: false, stdout, stderr: stderr + msg });
+    self.postMessage({ id, type: "result", ok: false, stdout, stderr: stderr + msg, traceLines: [] });
   }
 };

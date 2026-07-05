@@ -11,7 +11,8 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "@/components/Navbar";
+import { Pydude } from "@/components/Pydude";
 
 function NotFoundComponent() {
   return (
@@ -126,6 +127,7 @@ function RootComponent() {
       <div className="min-h-screen flex flex-col">
         <Navbar theme={theme} onToggleTheme={() => setTheme(t => t === "ink" ? "parchment" : "ink")} />
         <main className="flex-1"><Outlet /></main>
+        <Pydude />
         <footer className="border-t border-border py-10 px-6 font-mono text-xs text-muted-foreground">
           <div className="max-w-6xl mx-auto grid sm:grid-cols-3 gap-8">
             {/* Brand */}

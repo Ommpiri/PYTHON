@@ -10,7 +10,8 @@ import { markComplete, unmarkComplete } from "@/lib/progress";
 import { useProgress } from "@/hooks/useProgress";
 import { MarkdownBlock } from "@/components/MarkdownBlock";
 import { preloadPyodide } from "@/lib/pyodide-runner";
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { Flowchart } from "@/components/Flowchart";
 
 export const Route = createFileRoute("/modules/$slug")({
   loader: ({ params }) => {
@@ -53,6 +54,36 @@ function ModulePage() {
   // Warm up Pyodide as soon as the module page mounts
   useEffect(() => { preloadPyodide(); }, []);
 
+  const [activeNode, setActiveNode] = useState<string | null>(null);
+  const [visitedNodes, setVisitedNodes] = useState<string[]>([]);
+
+  const handleTrace = useCallback((lines: number[]) => {
+    if (mod.id !== 3) return;
+    setVisitedNodes([]);
+    let i = 0;
+    
+    setActiveNode("start");
+    
+    setTimeout(() => {
+      const timer = setInterval(() => {
+        if (i >= lines.length) {
+          clearInterval(timer);
+          setActiveNode("end");
+          setTimeout(() => setActiveNode(null), 1000);
+          return;
+        }
+        
+        const line = lines[i];
+        let node = "body";
+        if (line === 1) node = "condition";
+        
+        setActiveNode(node);
+        setVisitedNodes(prev => [...new Set([...prev, node])]);
+        i++;
+      }, 150);
+    }, 300);
+  }, [mod.id]);
+
   const prev = modules.find(x => x.id === mod.id - 1);
   const next = modules.find(x => x.id === mod.id + 1);
 
@@ -88,13 +119,61 @@ function ModulePage() {
 
         <Cell kind="in" label="theory.md" collapsible>
           <MarkdownBlock>{mod.theory}</MarkdownBlock>
+          
+          {mod.commonMistake && (
+            <div className="mt-6 mb-2 border-l-4 border-coral bg-coral/10 p-4 rounded-r-md">
+              <h4 className="font-display font-semibold text-coral text-sm uppercase tracking-wider mb-1">Common Mistake</h4>
+              <p className="text-sm opacity-90 leading-relaxed text-warm-black">{mod.commonMistake}</p>
+            </div>
+          )}
+          
+          {mod.miniPrompt && (
+            <div className="mt-4 p-4 rounded-md bg-warm-black/5 border border-black/5">
+              <p className="text-sm italic opacity-90 text-warm-black">
+                <span className="font-semibold text-teal not-italic">💡 Try this yourself: </span>
+                {mod.miniPrompt}
+              </p>
+            </div>
+          )}
         </Cell>
 
         <Cell kind="in" label={`live_coding — ${mod.liveCoding.title}`}>
           {mod.liveCoding.note && (
             <p className="text-warm-black/70 mb-3 text-sm">{mod.liveCoding.note}</p>
           )}
-          <CodeEditor starter={mod.liveCoding.starter} slug={mod.slug} cellKey="live" />
+          
+          {mod.id === 3 && (
+            <div className="mb-6 bg-[oklch(0.12_0.02_240)] p-4 rounded-md border border-white/5">
+              <h4 className="font-mono text-amber text-xs mb-4 text-center">Interactive Control Flow Tracing</h4>
+              <Flowchart kind="module3" activeNodeId={activeNode} visitedNodeIds={visitedNodes} />
+            </div>
+          )}
+          {mod.id === 4 && (
+            <div className="mb-6 bg-[oklch(0.12_0.02_240)] p-4 rounded-md border border-white/5">
+              <h4 className="font-mono text-amber text-xs mb-4 text-center">Function Call Stack</h4>
+              <Flowchart kind="module4" />
+            </div>
+          )}
+          {mod.id === 6 && (
+            <div className="mb-6 bg-[oklch(0.12_0.02_240)] p-4 rounded-md border border-white/5">
+              <h4 className="font-mono text-amber text-xs mb-4 text-center">Exception Handling Paths</h4>
+              <Flowchart kind="module6" />
+            </div>
+          )}
+          {mod.id === 10 && (
+            <div className="mb-6 bg-[oklch(0.12_0.02_240)] p-4 rounded-md border border-white/5">
+              <h4 className="font-mono text-amber text-xs mb-4 text-center">Project Plan (Click nodes to edit)</h4>
+              <Flowchart kind="module10" />
+            </div>
+          )}
+
+          <CodeEditor 
+            starter={mod.liveCoding.starter} 
+            slug={mod.slug} 
+            cellKey="live" 
+            trace={mod.id === 3}
+            onTrace={handleTrace}
+          />
         </Cell>
 
         {mod.demo && (
@@ -144,6 +223,30 @@ function ModulePage() {
             {done ? "✓ module_complete — undo?" : "mark_module_complete()"}
           </button>
         </div>
+
+        {/* Further Reading Section */}
+        {mod.furtherReading && mod.furtherReading.length > 0 && (
+          <div className="mt-8 mb-6 p-6 rounded-md border border-border bg-background/50">
+            <h3 className="font-mono text-sm font-semibold mb-3 text-foreground/80 flex items-center gap-2">
+              <span className="text-teal">#</span> further_reading
+            </h3>
+            <ul className="flex flex-col gap-2">
+              {mod.furtherReading.map((link: { title: string; url: string }, i: number) => (
+                <li key={i}>
+                  <a 
+                    href={link.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-sm font-mono text-muted-foreground hover:text-teal transition-colors"
+                  >
+                    <span className="text-teal/50 mr-2">↗</span>
+                    {link.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <nav className="mt-10 pt-6 border-t border-border flex justify-between font-mono text-xs">
           {prev ? (

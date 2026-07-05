@@ -10,6 +10,7 @@ export type RunResult = {
   stderr: string;
   ok: boolean;
   timedOut?: boolean;
+  traceLines?: number[];
 };
 
 const TIMEOUT_MS = 10_000;
@@ -47,7 +48,7 @@ function createWorker(): Worker {
     const msg = e.data as
       | { type: "ready" }
       | { type: "error"; message: string }
-      | { type: "result"; id: number; ok: boolean; stdout: string; stderr: string };
+      | { type: "result"; id: number; ok: boolean; stdout: string; stderr: string; traceLines?: number[] };
 
     if (msg.type === "ready") {
       emitStatus("ready");
@@ -73,7 +74,7 @@ function createWorker(): Worker {
       clearTimeout(entry.timer);
       pending.delete(msg.id);
       emitStatus("ready");
-      entry.resolve({ ok: msg.ok, stdout: msg.stdout, stderr: msg.stderr });
+      entry.resolve({ ok: msg.ok, stdout: msg.stdout, stderr: msg.stderr, traceLines: msg.traceLines });
     }
   };
 
@@ -113,7 +114,7 @@ export function preloadPyodide() {
 
 /** Run Python code. Returns stdout, stderr, and a pass/fail flag.
  *  Kills the worker and returns a friendly message if it takes > TIMEOUT_MS. */
-export async function runPython(code: string): Promise<RunResult> {
+export async function runPython(code: string, opts?: { trace?: boolean }): Promise<RunResult> {
   if (typeof window === "undefined") {
     return { stdout: "", stderr: "Python is client-only.", ok: false };
   }
@@ -143,7 +144,7 @@ export async function runPython(code: string): Promise<RunResult> {
     }, TIMEOUT_MS);
 
     pending.set(id, { resolve, timer });
-    w.postMessage({ id, code });
+    w.postMessage({ id, code, trace: opts?.trace });
   });
 }
 
