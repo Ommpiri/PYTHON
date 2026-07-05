@@ -25,37 +25,52 @@ ${codeContext}
 Student Question:
 ${message}`;
 
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: pydudeSystemPrompt }]
-          },
-          contents: [{
-            parts: [{ text: prompt }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 500
-          }
-        }),
-      });
+    const payload = {
+      systemInstruction: {
+        parts: [{ text: pydudeSystemPrompt }]
+      },
+      contents: [{
+        parts: [{ text: prompt }]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 500
+      }
+    };
 
-      if (!response.ok) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const maxRetries = 2;
+
+    try {
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+          const json = await response.json();
+          if (!json.candidates || json.candidates.length === 0) {
+            return `Whoops! Gemini didn't return any candidates. Response: \n\`\`\`json\n${JSON.stringify(json, null, 2)}\n\`\`\``;
+          }
+          return json.candidates[0].content.parts[0].text as string;
+        }
+
+        if (response.status === 503 && attempt < maxRetries) {
+          // Wait longer on each retry (e.g., 1500ms, then 3000ms)
+          await new Promise(resolve => setTimeout(resolve, 1500 * (attempt + 1)));
+          continue;
+        }
+
+        // Exhausted retries or non-503 error
         const errText = await response.text();
-        console.error("Gemini API Error:", errText);
+        console.error(`Gemini API Error (Attempt ${attempt + 1}):`, errText);
         return `Whoops! The Gemini API returned an error: ${response.status}\n\n\`\`\`json\n${errText}\n\`\`\``;
       }
-
-      const json = await response.json();
-      if (!json.candidates || json.candidates.length === 0) {
-        return `Whoops! Gemini didn't return any candidates. Response: \n\`\`\`json\n${JSON.stringify(json, null, 2)}\n\`\`\``;
-      }
-      return json.candidates[0].content.parts[0].text as string;
+      return "Something went wrong during API retry logic.";
     } catch (error: any) {
       console.error("Pydude Error:", error);
       return `Whoops! I'm having trouble connecting to my brain right now. The server threw this error: \n\`\`\`\n${error.message || error}\n\`\`\``;
