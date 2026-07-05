@@ -5,6 +5,33 @@ import ReactMarkdown from "react-markdown";
 
 type Message = { role: "user" | "pydude"; text: string };
 
+const PreBlock = ({ children, ...rest }: any) => {
+  const [copied, setCopied] = useState(false);
+  const preRef = useRef<HTMLPreElement>(null);
+
+  const handleCopy = () => {
+    if (preRef.current) {
+      navigator.clipboard.writeText(preRef.current.innerText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <div className="relative group my-4">
+      <button
+        onClick={handleCopy}
+        className="absolute top-2 right-2 text-[10px] uppercase font-bold tracking-wider bg-black/40 hover:bg-amber hover:text-black text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-colors z-10"
+      >
+        {copied ? "Copied" : "Copy"}
+      </button>
+      <pre ref={preRef} {...rest}>
+        {children}
+      </pre>
+    </div>
+  );
+};
+
 export function Pydude() {
   const [expanded, setExpanded] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -123,10 +150,10 @@ export function Pydude() {
                 }`}>
                   {m.role === "pydude" ? (
                     <div className="prose prose-sm prose-pre:bg-warm-black prose-pre:text-white max-w-none">
-                      <ReactMarkdown>{m.text}</ReactMarkdown>
+                      <ReactMarkdown components={{ pre: PreBlock }}>{m.text}</ReactMarkdown>
                     </div>
                   ) : (
-                    <div className="whitespace-pre-wrap">{m.text}</div>
+                    <div className="whitespace-pre-wrap text-left">{m.text}</div>
                   )}
                 </div>
               </div>
