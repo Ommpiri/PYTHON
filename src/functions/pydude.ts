@@ -7,12 +7,11 @@ export const askPydude = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { message, moduleName, codeContext } = data;
     
-    // In TanStack Start (Vinxi/Nitro), process.env is usually available.
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.gemini_key;
 
     if (!apiKey) {
       // Mock mode for local testing without an API key
-      return `*(Mock Mode)* Hey there! My brain isn't hooked up to an OpenAI API key on this server right now. 
+      return `*(Mock Mode)* Hey there! My brain isn't hooked up to a Gemini API key on this server right now. 
 
 Normally, I'd read your code for Module "${moduleName}" and help you out. Since I'm running offline, I recommend double-checking your syntax or looking at the Common Mistake section above!`;
     }
@@ -27,28 +26,32 @@ Student Question:
 ${message}`;
 
     try {
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            { role: "system", content: pydudeSystemPrompt },
-            { role: "user", content: prompt },
-          ],
+          systemInstruction: {
+            parts: [{ text: pydudeSystemPrompt }]
+          },
+          contents: [{
+            parts: [{ text: prompt }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 500
+          }
         }),
       });
 
       if (!response.ok) {
-        console.error("OpenAI API Error:", await response.text());
+        console.error("Gemini API Error:", await response.text());
         throw new Error("API responded with " + response.status);
       }
 
       const json = await response.json();
-      return json.choices[0].message.content as string;
+      return json.candidates[0].content.parts[0].text as string;
     } catch (error) {
       console.error("Pydude Error:", error);
       return "Whoops! I'm having trouble connecting to my brain right now. Please try again in a moment.";
