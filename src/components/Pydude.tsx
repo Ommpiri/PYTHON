@@ -155,11 +155,10 @@ export function Pydude() {
                           pre: PreBlock,
                           p: ({ node, ...props }) => <p className="mb-3 last:mb-0 leading-relaxed" {...props} />,
                           code: ({ node, inline, className, children, ...props }: any) => {
-                            const match = /language-(\w+)/.exec(className || '');
-                            return !inline && match ? (
+                            return !inline ? (
                               <code className={className} {...props}>{children}</code>
                             ) : (
-                              <code className="bg-black/10 text-teal-800 px-1.5 py-0.5 rounded text-[0.85em] font-semibold" {...props}>
+                              <code className="bg-black/10 text-teal-900 px-1.5 py-0.5 rounded text-[0.85em] font-bold" {...props}>
                                 {children}
                               </code>
                             )
