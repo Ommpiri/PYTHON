@@ -46,14 +46,18 @@ ${message}`;
       });
 
       if (!response.ok) {
-        console.error("Gemini API Error:", await response.text());
-        throw new Error("API responded with " + response.status);
+        const errText = await response.text();
+        console.error("Gemini API Error:", errText);
+        return `Whoops! The Gemini API returned an error: ${response.status}\n\n\`\`\`json\n${errText}\n\`\`\``;
       }
 
       const json = await response.json();
+      if (!json.candidates || json.candidates.length === 0) {
+        return `Whoops! Gemini didn't return any candidates. Response: \n\`\`\`json\n${JSON.stringify(json, null, 2)}\n\`\`\``;
+      }
       return json.candidates[0].content.parts[0].text as string;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Pydude Error:", error);
-      return "Whoops! I'm having trouble connecting to my brain right now. Please try again in a moment.";
+      return `Whoops! I'm having trouble connecting to my brain right now. The server threw this error: \n\`\`\`\n${error.message || error}\n\`\`\``;
     }
   });
