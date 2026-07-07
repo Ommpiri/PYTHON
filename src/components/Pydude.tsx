@@ -128,139 +128,9 @@ export function Pydude() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-      {expanded && (
-        <div
-          className={`mb-4 bg-warm-black border border-border shadow-2xl rounded-lg flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 transition-all duration-300 ${
-            isMaximized
-              ? "w-[800px] h-[80vh] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)]"
-              : "w-[380px] h-[500px] max-h-[80vh] max-w-[calc(100vw-3rem)]"
-          }`}
-        >
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background">
-            <h3 className="font-display font-semibold flex items-center gap-2">
-              <span className="text-amber">{">>>"}</span> pydude
-            </h3>
-            <div className="flex gap-3 items-center font-mono">
-              <button
-                onClick={() =>
-                  setMessages([{ role: "pydude", text: "History cleared. How can I help?" }])
-                }
-                className="text-xs text-muted-foreground hover:text-coral transition-colors"
-                title="Clear Chat"
-              >
-                clear
-              </button>
-              <button
-                onClick={() => setIsMaximized(!isMaximized)}
-                className="text-xs text-muted-foreground hover:text-amber transition-colors"
-                title={isMaximized ? "Shrink Chat" : "Expand Chat"}
-              >
-                {isMaximized ? "shrink" : "expand"}
-              </button>
-              <button
-                onClick={() => setExpanded(false)}
-                className="text-muted-foreground hover:text-white transition-colors"
-                title="Close"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-
-          <div
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 font-mono text-sm"
-          >
-            {messages.map((m, i) => (
-              <div
-                key={i}
-                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-lg px-4 py-3 ${
-                    m.role === "user"
-                      ? "bg-teal/20 border border-teal/30 text-teal-50"
-                      : "bg-[#F4F1EA] text-[#2C3E50] shadow-sm" // parchment style
-                  }`}
-                >
-                  {m.role === "pydude" ? (
-                    <div className="max-w-none">
-                      <ReactMarkdown
-                        components={{
-                          p: ({ children }) => (
-                            <p className="mb-2 last:mb-0 leading-relaxed font-sans">{children}</p>
-                          ),
-                          pre: ({ children }) => (
-                            <pre className="my-2 bg-[#1E1E24] text-[#E5E9F0] p-3 rounded font-mono text-xs overflow-x-auto">
-                              {children}
-                            </pre>
-                          ),
-                          code: ({ children }) => (
-                            <code className="bg-black/10 px-1 rounded font-mono text-xs">
-                              {children}
-                            </code>
-                          ),
-                          h1: ({ children }) => (
-                            <h1 className="text-lg font-bold font-display my-2">{children}</h1>
-                          ),
-                          h2: ({ children }) => (
-                            <h2 className="text-base font-bold font-display my-2">{children}</h2>
-                          ),
-                          h3: ({ children }) => (
-                            <h3 className="text-sm font-bold font-display my-2">{children}</h3>
-                          ),
-                        }}
-                      >
-                        {m.text}
-                      </ReactMarkdown>
-                    </div>
-                  ) : (
-                    <p className="whitespace-pre-wrap leading-relaxed">{m.text}</p>
-                  )}
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex justify-start">
-                <div className="max-w-[85%] rounded-lg px-4 py-3 bg-[#F4F1EA] text-[#2C3E50] shadow-sm flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" />
-                  <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:0.2s]" />
-                  <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:0.4s]" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="p-3 border-t border-border bg-background">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSend();
-              }}
-              className="flex gap-2"
-            >
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask Pydude..."
-                className="flex-1 bg-warm-black border border-border rounded px-3 py-2 text-sm font-mono focus:outline-none focus:border-amber transition-colors"
-                disabled={loading}
-              />
-              <button
-                type="submit"
-                disabled={!input.trim() || loading}
-                className="px-3 py-2 bg-amber text-warm-black font-semibold font-mono rounded hover:bg-amber/90 disabled:opacity-50 transition-colors"
-              >
-                Send
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {!expanded && (
+    <>
+      {/* Floating avatar button — always visible in bottom-right */}
+      <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setExpanded(true)}
           className={`relative flex items-center justify-center hover:scale-110 transition-transform focus:outline-none ${
@@ -283,8 +153,164 @@ export function Pydude() {
             {/* Inner shadow to make the avatar pop */}
             <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] pointer-events-none" />
           </div>
+          {/* Pulse ring */}
+          <span className="absolute inset-0 rounded-full border-2 border-amber/50 animate-ping" />
         </button>
+      </div>
+
+      {/* Modal popup */}
+      {expanded && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Pydude chat"
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setExpanded(false)}
+          />
+
+          {/* Modal panel */}
+          <div
+            className={`relative bg-warm-black border border-border shadow-2xl rounded-xl flex flex-col overflow-hidden
+              animate-in fade-in zoom-in-95 duration-200
+              ${
+                isMaximized
+                  ? "w-[min(860px,calc(100vw-2rem))] h-[min(85vh,800px)]"
+                  : "w-[min(440px,calc(100vw-2rem))] h-[min(560px,85vh)]"
+              }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background shrink-0">
+              <h3 className="font-display font-semibold flex items-center gap-2">
+                <img src="/pydude.png" alt="" className="w-6 h-6 rounded-full object-cover" />
+                <span className="text-amber">{">>>"}</span> pydude
+              </h3>
+              <div className="flex gap-3 items-center font-mono">
+                <button
+                  onClick={() =>
+                    setMessages([{ role: "pydude", text: "History cleared. How can I help?" }])
+                  }
+                  className="text-xs text-muted-foreground hover:text-coral transition-colors"
+                  title="Clear Chat"
+                >
+                  clear
+                </button>
+                <button
+                  onClick={() => setIsMaximized(!isMaximized)}
+                  className="text-xs text-muted-foreground hover:text-amber transition-colors"
+                  title={isMaximized ? "Shrink" : "Expand"}
+                >
+                  {isMaximized ? "shrink" : "expand"}
+                </button>
+                <button
+                  onClick={() => setExpanded(false)}
+                  className="text-muted-foreground hover:text-white transition-colors text-lg leading-none"
+                  title="Close"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 font-mono text-sm"
+            >
+              {messages.map((m, i) => (
+                <div
+                  key={i}
+                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[85%] rounded-lg px-4 py-3 ${
+                      m.role === "user"
+                        ? "bg-teal/20 border border-teal/30 text-teal-50"
+                        : "bg-[#F4F1EA] text-[#2C3E50] shadow-sm"
+                    }`}
+                  >
+                    {m.role === "pydude" ? (
+                      <div className="max-w-none">
+                        <ReactMarkdown
+                          components={{
+                            p: ({ children }) => (
+                              <p className="mb-2 last:mb-0 leading-relaxed font-sans">{children}</p>
+                            ),
+                            pre: ({ children }) => (
+                              <pre className="my-2 bg-[#1E1E24] text-[#E5E9F0] p-3 rounded font-mono text-xs overflow-x-auto">
+                                {children}
+                              </pre>
+                            ),
+                            code: ({ children }) => (
+                              <code className="bg-black/10 px-1 rounded font-mono text-xs">
+                                {children}
+                              </code>
+                            ),
+                            h1: ({ children }) => (
+                              <h1 className="text-lg font-bold font-display my-2">{children}</h1>
+                            ),
+                            h2: ({ children }) => (
+                              <h2 className="text-base font-bold font-display my-2">{children}</h2>
+                            ),
+                            h3: ({ children }) => (
+                              <h3 className="text-sm font-bold font-display my-2">{children}</h3>
+                            ),
+                          }}
+                        >
+                          {m.text}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="whitespace-pre-wrap leading-relaxed">{m.text}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="max-w-[85%] rounded-lg px-4 py-3 bg-[#F4F1EA] text-[#2C3E50] shadow-sm flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" />
+                    <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:0.4s]" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input */}
+            <div className="p-3 border-t border-border bg-background shrink-0">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSend();
+                }}
+                className="flex gap-2"
+              >
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask Pydude..."
+                  autoFocus
+                  className="flex-1 bg-warm-black border border-border rounded px-3 py-2 text-sm font-mono focus:outline-none focus:border-amber transition-colors"
+                  disabled={loading}
+                />
+                <button
+                  type="submit"
+                  disabled={!input.trim() || loading}
+                  className="px-3 py-2 bg-amber text-warm-black font-semibold font-mono rounded hover:bg-amber/90 disabled:opacity-50 transition-colors"
+                >
+                  Send
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 }
