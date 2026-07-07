@@ -129,34 +129,36 @@ export function Pydude() {
 
   return (
     <>
-      {/* Floating avatar button — always visible in bottom-right */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button
-          onClick={() => setExpanded(true)}
-          className={`relative flex items-center justify-center hover:scale-110 transition-transform focus:outline-none ${
-            gesture === "hi"
-              ? "animate-hi"
-              : gesture === "welcome"
-                ? "animate-welcome"
-                : gesture === "bye"
-                  ? "animate-bye"
-                  : ""
-          }`}
-          title="Ask Pydude"
-        >
-          <div className="w-16 h-16 rounded-full overflow-hidden border-[3px] border-amber shadow-[0_8px_30px_rgb(0,0,0,0.4)] bg-white flex items-center justify-center relative">
-            <img
-              src="/pydude.png"
-              alt="Pydude AI"
-              className="w-full h-full object-cover scale-[1.2] translate-y-[5%]"
-            />
-            {/* Inner shadow to make the avatar pop */}
-            <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] pointer-events-none" />
-          </div>
-          {/* Pulse ring */}
-          <span className="absolute inset-0 rounded-full border-2 border-amber/50 animate-ping" />
-        </button>
-      </div>
+      {/* Floating avatar button */}
+      {!expanded && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <button
+            onClick={() => setExpanded(true)}
+            className={`relative flex items-center justify-center hover:scale-110 transition-transform focus:outline-none ${
+              gesture === "hi"
+                ? "animate-hi"
+                : gesture === "welcome"
+                  ? "animate-welcome"
+                  : gesture === "bye"
+                    ? "animate-bye"
+                    : ""
+            }`}
+            title="Ask Pydude"
+          >
+            <div className="w-16 h-16 rounded-full overflow-hidden border-[3px] border-amber shadow-[0_8px_30px_rgb(0,0,0,0.4)] bg-white flex items-center justify-center relative">
+              <img
+                src="/pydude.png"
+                alt="Pydude AI"
+                className="w-full h-full object-cover scale-[1.2] translate-y-[5%]"
+              />
+              {/* Inner shadow to make the avatar pop */}
+              <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] pointer-events-none" />
+            </div>
+            {/* Pulse ring */}
+            <span className="absolute inset-0 rounded-full border-2 border-amber/50 animate-ping" />
+          </button>
+        </div>
+      )}
 
       {/* Modal popup */}
       {expanded && (
