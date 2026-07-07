@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { modules } from "@/lib/modules";
 import { useProgress } from "@/hooks/useProgress";
-import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
@@ -13,34 +12,45 @@ export const Route = createFileRoute("/progress")({
   component: ProgressPage,
 });
 
-function AnimatedBar({ pct }: { pct: number }) {
-  const [width, setWidth] = useState(0);
-  const mounted = useRef(false);
-
-  useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-      // Delay so transition plays on first render
-      const id = setTimeout(() => setWidth(pct), 100);
-      return () => clearTimeout(id);
-    } else {
-      setWidth(pct);
-    }
-  }, [pct]);
+/** 12 terminal-block segments that stagger-animate in and show a blinking
+ *  cursor at the first pending position. */
+function TerminalProgress({ completedSlugs }: { completedSlugs: string[] }) {
+  const firstPendingIdx = modules.findIndex((m) => !completedSlugs.includes(m.slug));
 
   return (
-    <div className="h-3 rounded-full bg-background overflow-hidden">
-      <div
-        className="h-full bg-amber rounded-full transition-all duration-700 ease-out"
-        style={{ width: `${width}%` }}
-      />
+    <div>
+      <div className="flex flex-wrap items-center gap-0.5 font-mono text-base leading-none select-none">
+        {modules.map((m, i) => {
+          const isDone = completedSlugs.includes(m.slug);
+          const isCursor = i === firstPendingIdx;
+          return (
+            <span
+              key={m.id}
+              title={`${m.id.toString().padStart(2, "0")} — ${m.title}`}
+              style={{ animationDelay: `${i * 45}ms` }}
+              className={`inline-block animate-block-appear ${
+                isDone
+                  ? "text-amber"
+                  : isCursor
+                    ? "text-amber animate-char-blink"
+                    : "text-muted-foreground/25"
+              }`}
+            >
+              {isDone ? "█" : isCursor ? "▊" : "░"}
+            </span>
+          );
+        })}
+      </div>
+      <p className="mt-3 font-mono text-xs text-muted-foreground">
+        {completedSlugs.length} / {modules.length} modules —{" "}
+        {Math.round((completedSlugs.length / modules.length) * 100)}% complete
+      </p>
     </div>
   );
 }
 
 function ProgressPage() {
   const p = useProgress();
-  const pct = Math.round((p.completed.length / modules.length) * 100);
 
   const done = modules.filter((m) => p.completed.includes(m.slug));
   const pending = modules.filter((m) => !p.completed.includes(m.slug));
@@ -51,14 +61,13 @@ function ProgressPage() {
       <h1 className="mt-2 text-4xl font-display">My progress</h1>
 
       <div className="mt-6 rounded-lg border border-border p-6 bg-secondary">
-        <div className="flex items-baseline justify-between font-mono text-sm mb-3">
+        <div className="flex items-baseline justify-between font-mono text-sm mb-4">
           <span>completed</span>
           <span className="text-amber">
             {p.completed.length} / {modules.length}
           </span>
         </div>
-        <AnimatedBar pct={pct} />
-        <p className="mt-2 font-mono text-xs text-muted-foreground">{pct}% complete</p>
+        <TerminalProgress completedSlugs={p.completed} />
       </div>
 
       {/* Completed modules */}

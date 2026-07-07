@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { badgeDefs } from "@/lib/progress";
 import { useProgress } from "@/hooks/useProgress";
 import { modules } from "@/lib/modules";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/badges")({
   head: () => ({
@@ -59,6 +60,28 @@ function BadgesPage() {
   const p = useProgress();
   const unlockedCount = badgeDefs.filter((b) => p.badges.includes(b.id)).length;
 
+  // Track newly-unlocked badges for the flip animation.
+  // Initialised to the current badge list so page-load doesn't animate everything.
+  const prevBadgesRef = useRef<string[]>(p.badges);
+  const [justUnlocked, setJustUnlocked] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const prev = prevBadgesRef.current;
+    const newBadges = p.badges.filter((b) => !prev.includes(b));
+    prevBadgesRef.current = p.badges;
+    if (newBadges.length === 0) return;
+
+    setJustUnlocked((s) => new Set([...s, ...newBadges]));
+    const timer = setTimeout(() => {
+      setJustUnlocked((s) => {
+        const next = new Set(s);
+        newBadges.forEach((b) => next.delete(b));
+        return next;
+      });
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [p.badges]);
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
       <p className="font-mono text-xs text-amber"># achievements.list()</p>
@@ -79,8 +102,12 @@ function BadgesPage() {
           return (
             <div
               key={b.id}
-              className={`p-4 rounded-lg border font-mono text-sm transition-colors ${
-                unlocked ? "border-teal bg-teal/5" : "border-border hover:border-border/80"
+              className={`p-4 rounded-lg border font-mono text-sm transition-all duration-300 ${
+                unlocked
+                  ? `border-teal bg-teal/5 shadow-[0_0_14px_oklch(0.66_0.08_175_/_0.25)] ${
+                      justUnlocked.has(b.id) ? "animate-badge-unlock" : ""
+                    }`
+                  : "border-border hover:border-border/80"
               }`}
             >
               <div className="flex items-baseline justify-between gap-2">

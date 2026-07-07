@@ -153,6 +153,9 @@ export function CodeEditor({
   const [stdout, setStdout] = useState("");
   const [stderr, setStderr] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "done" | "error">("idle");
+  // Typewriter display state — drips stdout lines in one-by-one
+  const [typedLines, setTypedLines] = useState<string[]>([]);
+  const typewriterRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [pass, setPass] = useState<null | boolean>(null);
   const [timedOut, setTimedOut] = useState(false);
   const pyStatus = usePyodideStatus();
@@ -181,6 +184,8 @@ export function CodeEditor({
     saveCode(slug, cellKey, starter);
     setStdout("");
     setStderr("");
+    setTypedLines([]);
+    if (typewriterRef.current) { clearInterval(typewriterRef.current); typewriterRef.current = null; }
     setPass(null);
     setTimedOut(false);
     setStatus("idle");
@@ -209,15 +214,18 @@ export function CodeEditor({
   // Run code
   const run = useCallback(async () => {
     if (status === "running") return;
+    // Cancel any ongoing typewriter before starting a new run
+    if (typewriterRef.current) { clearInterval(typewriterRef.current); typewriterRef.current = null; }
     setStatus("running");
     setStdout("");
     setStderr("");
+    setTypedLines([]);
     setPass(null);
     setTimedOut(false);
 
     const res = await runPython(code, { trace });
     setStatus(res.ok ? "done" : "error");
-    setStdout(res.stdout);
+    setStdout(res.stdout); // keep for header label logic
     setStderr(res.stderr);
     setTimedOut(res.timedOut ?? false);
 
@@ -233,7 +241,26 @@ export function CodeEditor({
         onPass?.();
       }
     }
-  }, [code, expectedIncludes, slug, onPass, status]);
+
+    // Typewriter effect: drip stdout lines in at 60ms/line (max 30 lines typed)
+    if (res.stdout.trim()) {
+      const lines = res.stdout.trimEnd().split("\n");
+      const MAX_TYPEWRITER = 30;
+      if (lines.length > MAX_TYPEWRITER) {
+        setTypedLines(lines);
+      } else {
+        let i = 0;
+        typewriterRef.current = setInterval(() => {
+          i++;
+          setTypedLines(lines.slice(0, i));
+          if (i >= lines.length) {
+            if (typewriterRef.current) clearInterval(typewriterRef.current);
+            typewriterRef.current = null;
+          }
+        }, 60);
+      }
+    }
+  }, [code, expectedIncludes, slug, onPass, status, trace, onTrace]);
 
   // Ctrl+Enter keybinding extension (re-created when run ref changes)
   const runRef = useRef(run);
@@ -243,7 +270,7 @@ export function CodeEditor({
 
   const isRunning = status === "running";
   const pyLoading = pyStatus === "starting";
-  const hasOutput = stdout || stderr || isRunning;
+  const hasOutput = typedLines.length > 0 || isRunning || !!stderr;
 
   return (
     <div className="rounded-md overflow-hidden border border-white/10 bg-[oklch(0.16_0.02_240)] shadow-xl">
@@ -359,10 +386,12 @@ export function CodeEditor({
           </div>
 
           <div className="p-4 font-mono text-xs leading-6 bg-[oklch(0.15_0.02_240)] min-h-[3rem] max-h-72 overflow-y-auto">
-            {isRunning && !stdout && !stderr && (
+            {isRunning && !typedLines.length && !stderr && (
               <div className="text-muted-foreground">[ running… ]</div>
             )}
-            {stdout && <pre className="text-teal whitespace-pre-wrap break-words">{stdout}</pre>}
+            {typedLines.length > 0 && (
+              <pre className="text-teal whitespace-pre-wrap break-words">{typedLines.join("\n")}</pre>
+            )}
             {stderr && (
               <div className="mt-2 flex flex-col items-start gap-2">
                 <pre

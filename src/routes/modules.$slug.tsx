@@ -12,6 +12,7 @@ import { MarkdownBlock } from "@/components/MarkdownBlock";
 import { preloadPyodide } from "@/lib/pyodide-runner";
 import { useEffect, useState, useCallback } from "react";
 import { Flowchart } from "@/components/Flowchart";
+import { IconBook, IconPlay, IconTerminal, IconGear, IconQuiz, IconDiscussion } from "@/components/CellIcons";
 
 export const Route = createFileRoute("/modules/$slug")({
   loader: ({ params }) => {
@@ -133,7 +134,7 @@ function ModulePage() {
           </div>
         </header>
 
-        <Cell kind="in" label="theory.md" collapsible>
+        <Cell kind="in" label="theory.md" collapsible icon={<IconBook />}>
           <MarkdownBlock>{mod.theory}</MarkdownBlock>
 
           {mod.commonMistake && (
@@ -157,7 +158,7 @@ function ModulePage() {
           )}
         </Cell>
 
-        <Cell kind="in" label={`live_coding — ${mod.liveCoding.title}`}>
+        <Cell kind="in" label={`live_coding — ${mod.liveCoding.title}`} icon={<IconPlay />}>
           {mod.liveCoding.note && (
             <p className="text-warm-black/70 mb-3 text-sm">{mod.liveCoding.note}</p>
           )}
@@ -205,7 +206,7 @@ function ModulePage() {
         </Cell>
 
         {mod.demo && (
-          <Cell kind="out" label={`demo — ${mod.demo.description}`}>
+          <Cell kind="out" label={`demo — ${mod.demo.description}`} icon={<IconTerminal />}>
             {mod.demo.kind === "install-check" && <InstallCheck />}
             {mod.demo.kind === "loop-visualizer" && <LoopVisualizer />}
             {mod.demo.kind === "ds-visualizer" && <DsVisualizer />}
@@ -216,7 +217,7 @@ function ModulePage() {
         )}
 
         {mod.challenges.map((c: (typeof mod.challenges)[number], i: number) => (
-          <Cell key={i} kind="in" label={`challenge_${i + 1}`}>
+          <Cell key={i} kind="in" label={`challenge_${i + 1}`} icon={<IconGear />}>
             <p className="text-warm-black mb-3">{c.prompt}</p>
             <CodeEditor
               starter={c.starter}
@@ -227,11 +228,11 @@ function ModulePage() {
           </Cell>
         ))}
 
-        <Cell kind="in" label={`quiz — ${mod.quiz.length} questions`}>
+        <Cell kind="in" label={`quiz — ${mod.quiz.length} questions`} icon={<IconQuiz />}>
           <QuizBlock slug={mod.slug} questions={mod.quiz} />
         </Cell>
 
-        <Cell kind="in" label="discussion">
+        <Cell kind="in" label="discussion" icon={<IconDiscussion />}>
           <CommentThread slug={mod.slug} />
         </Cell>
 

@@ -5,11 +5,13 @@ export function Cell({
   label,
   children,
   collapsible = false,
+  icon,
 }: {
   kind: "in" | "out";
   label?: string;
   children: ReactNode;
   collapsible?: boolean;
+  icon?: ReactNode;
 }) {
   const [open, setOpen] = useState(true);
   const isIn = kind === "in";
@@ -19,9 +21,14 @@ export function Cell({
         <span className={isIn ? "text-amber" : "text-teal"}>{isIn ? "In [ ]:" : "Out[ ]:"}</span>
       </div>
       <div className={`flex-1 min-w-0 rounded-lg ${isIn ? "cell-in" : "cell-out"} overflow-hidden`}>
-        {(label || collapsible) && (
+        {(label || collapsible || icon) && (
           <div className="flex items-center justify-between px-4 py-2 border-b border-black/10 font-mono text-xs">
-            <span className={isIn ? "text-warm-black/70" : "text-teal/80"}>{label}</span>
+            <span className={`flex items-center gap-1.5 ${isIn ? "text-warm-black/70" : "text-teal/80"}`}>
+              {icon && (
+                <span className={`opacity-60 ${isIn ? "text-amber" : "text-teal"}`}>{icon}</span>
+              )}
+              {label}
+            </span>
             {collapsible && (
               <button
                 onClick={() => setOpen((o) => !o)}

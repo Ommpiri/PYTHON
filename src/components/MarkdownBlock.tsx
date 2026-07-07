@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CopyButton } from "@/components/CopyButton";
 
 // Lightweight inline markdown parser — no external deps.
 // Handles: **bold**, *italic*, `code`, and plain text.
@@ -48,14 +49,17 @@ export function MarkdownBlock({ children }: { children: string }) {
         i++;
       }
       i++; // skip closing ```
+      const codeStr = codeLines.join("\n");
       out.push(
-        <pre
-          key={`code-${i}`}
-          className="my-3 rounded-md bg-[oklch(0.16_0.02_240)] p-4 text-teal font-mono text-xs leading-6 overflow-x-auto"
-          data-lang={lang || undefined}
-        >
-          <code>{codeLines.join("\n")}</code>
-        </pre>,
+        <div key={`code-${i}`} className="relative group/code my-3">
+          <pre
+            className="rounded-md bg-[oklch(0.16_0.02_240)] p-4 text-teal font-mono text-xs leading-6 overflow-x-auto"
+            data-lang={lang || undefined}
+          >
+            <code>{codeStr}</code>
+          </pre>
+          <CopyButton code={codeStr} />
+        </div>,
       );
       continue;
     }

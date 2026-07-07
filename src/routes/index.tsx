@@ -1,12 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { TerminalHero } from "@/components/TerminalHero";
 import { modules } from "@/lib/modules";
+import { ModuleIcon } from "@/components/ModuleIcon";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+
   return (
     <>
       <TerminalHero />
@@ -67,12 +71,24 @@ function Index() {
               key={m.id}
               to="/modules/$slug"
               params={{ slug: m.slug }}
-              className="block p-4 border border-border rounded hover:border-amber hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber/5 transition-all duration-200 group"
+              onMouseEnter={() => setHoveredId(m.id)}
+              onMouseLeave={() => setHoveredId(null)}
+              className="block p-4 border border-border rounded transition-all duration-200 group
+                hover:border-amber hover:shadow-[0_0_18px_oklch(0.76_0.14_75_/_0.22)]"
             >
-              <div className="font-mono text-xs text-amber">
-                module_{m.id.toString().padStart(2, "0")}
+              <div className="flex items-start justify-between gap-2">
+                <div className="font-mono text-xs text-amber">
+                  module_{m.id.toString().padStart(2, "0")}
+                </div>
+                <ModuleIcon
+                  moduleId={m.id}
+                  hovering={hoveredId === m.id}
+                  className="text-amber/50 group-hover:text-amber mt-0.5"
+                />
               </div>
-              <div className="mt-1 font-display text-lg group-hover:text-amber">{m.title}</div>
+              <div className="mt-1 font-display text-lg group-hover:text-amber transition-colors duration-150">
+                {m.title}
+              </div>
               <div className="mt-2 font-mono text-xs text-muted-foreground">
                 {m.tags.join(" · ")}
               </div>
