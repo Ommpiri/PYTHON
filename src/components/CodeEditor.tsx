@@ -9,39 +9,48 @@ import { recordChallenge } from "@/lib/progress";
 // ------------------------------------------------------------------
 // Custom pycourse editor theme (amber + teal + coral on dark ink bg)
 // ------------------------------------------------------------------
-export const pycourseTheme = EditorView.theme({
-  "&": {
-    backgroundColor: "oklch(0.16 0.02 240)",
-    color: "oklch(0.93 0.015 85)",
-    fontSize: "13px",
-    fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+export const pycourseTheme = EditorView.theme(
+  {
+    "&": {
+      backgroundColor: "oklch(0.16 0.02 240)",
+      color: "oklch(0.93 0.015 85)",
+      fontSize: "13px",
+      fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+    },
+    ".cm-content": { padding: "12px 0", caretColor: "oklch(0.76 0.14 75)" },
+    ".cm-line": { padding: "0 16px" },
+    ".cm-gutters": {
+      backgroundColor: "oklch(0.14 0.02 240)",
+      color: "oklch(0.52 0.02 240)",
+      border: "none",
+      paddingRight: "8px",
+    },
+    ".cm-activeLineGutter": { backgroundColor: "oklch(0.18 0.02 240)" },
+    ".cm-activeLine": { backgroundColor: "oklch(0.19 0.02 240)" },
+    ".cm-selectionBackground, ::selection": {
+      backgroundColor: "oklch(0.76 0.14 75 / 0.25) !important",
+    },
+    ".cm-cursor": { borderLeftColor: "oklch(0.76 0.14 75)" },
+    ".cm-matchingBracket": { outline: "1px solid oklch(0.76 0.14 75 / 0.5)", borderRadius: "2px" },
+    ".cm-foldPlaceholder": {
+      backgroundColor: "oklch(0.25 0.02 240)",
+      color: "oklch(0.76 0.14 75)",
+      border: "none",
+    },
+    // Syntax tokens
+    ".tok-keyword": { color: "oklch(0.76 0.14 75)" }, // amber  — def, for, if…
+    ".tok-string": { color: "oklch(0.66 0.08 175)" }, // teal   — "strings"
+    ".tok-comment": { color: "oklch(0.52 0.02 240)", fontStyle: "italic" },
+    ".tok-number": { color: "oklch(0.66 0.15 30)" }, // coral  — 42
+    ".tok-operator": { color: "oklch(0.85 0.06 75)" },
+    ".tok-variableName": { color: "oklch(0.88 0.02 85)" },
+    ".tok-function(Definition)": { color: "oklch(0.78 0.1 175)" },
+    ".tok-className": { color: "oklch(0.78 0.1 175)" },
+    ".tok-bool": { color: "oklch(0.76 0.14 75)", fontWeight: "600" },
+    ".tok-null": { color: "oklch(0.76 0.14 75)" },
   },
-  ".cm-content": { padding: "12px 0", caretColor: "oklch(0.76 0.14 75)" },
-  ".cm-line": { padding: "0 16px" },
-  ".cm-gutters": {
-    backgroundColor: "oklch(0.14 0.02 240)",
-    color: "oklch(0.52 0.02 240)",
-    border: "none",
-    paddingRight: "8px",
-  },
-  ".cm-activeLineGutter": { backgroundColor: "oklch(0.18 0.02 240)" },
-  ".cm-activeLine": { backgroundColor: "oklch(0.19 0.02 240)" },
-  ".cm-selectionBackground, ::selection": { backgroundColor: "oklch(0.76 0.14 75 / 0.25) !important" },
-  ".cm-cursor": { borderLeftColor: "oklch(0.76 0.14 75)" },
-  ".cm-matchingBracket": { outline: "1px solid oklch(0.76 0.14 75 / 0.5)", borderRadius: "2px" },
-  ".cm-foldPlaceholder": { backgroundColor: "oklch(0.25 0.02 240)", color: "oklch(0.76 0.14 75)", border: "none" },
-  // Syntax tokens
-  ".tok-keyword":  { color: "oklch(0.76 0.14 75)" },   // amber  — def, for, if…
-  ".tok-string":   { color: "oklch(0.66 0.08 175)" },   // teal   — "strings"
-  ".tok-comment":  { color: "oklch(0.52 0.02 240)", fontStyle: "italic" },
-  ".tok-number":   { color: "oklch(0.66 0.15 30)" },    // coral  — 42
-  ".tok-operator": { color: "oklch(0.85 0.06 75)" },
-  ".tok-variableName": { color: "oklch(0.88 0.02 85)" },
-  ".tok-function(Definition)": { color: "oklch(0.78 0.1 175)" },
-  ".tok-className": { color: "oklch(0.78 0.1 175)" },
-  ".tok-bool":     { color: "oklch(0.76 0.14 75)", fontWeight: "600" },
-  ".tok-null":     { color: "oklch(0.76 0.14 75)" },
-}, { dark: true });
+  { dark: true },
+);
 
 const extensions = [python(), pycourseTheme];
 
@@ -91,9 +100,9 @@ export function PyodideStatusBanner() {
   const status = usePyodideStatus();
   if (status === "ready" || status === "running") return null;
   const msgs: Record<string, string> = {
-    idle:     "Python not loaded yet.",
+    idle: "Python not loaded yet.",
     starting: "Starting Python runtime…  (downloading ~10 MB, first visit only)",
-    error:    "Python runtime failed to load. Try refreshing the page.",
+    error: "Python runtime failed to load. Try refreshing the page.",
   };
   const colors: Record<string, string> = {
     idle: "text-muted-foreground",
@@ -101,7 +110,9 @@ export function PyodideStatusBanner() {
     error: "text-coral",
   };
   return (
-    <div className={`flex items-center gap-2 px-4 py-2 font-mono text-xs border-b border-white/5 ${colors[status] ?? "text-muted-foreground"}`}>
+    <div
+      className={`flex items-center gap-2 px-4 py-2 font-mono text-xs border-b border-white/5 ${colors[status] ?? "text-muted-foreground"}`}
+    >
       {status === "starting" && (
         <span className="inline-block w-2 h-2 rounded-full bg-amber animate-pulse" />
       )}
@@ -135,7 +146,7 @@ export function CodeEditor({
   const initialCode = useMemo(
     () => loadSaved(slug, cellKey, starter),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [slug, cellKey]
+    [slug, cellKey],
   );
 
   const [code, setCode] = useState(initialCode);
@@ -149,15 +160,20 @@ export function CodeEditor({
   const cmRef = useRef<ReactCodeMirrorRef>(null);
 
   // Preload Pyodide when the editor mounts so it's warm by the time they click Run
-  useEffect(() => { preloadPyodide(); }, []);
+  useEffect(() => {
+    preloadPyodide();
+  }, []);
 
   // Persist code changes (debounced 600 ms)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleChange = useCallback((value: string) => {
-    setCode(value);
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => saveCode(slug, cellKey, value), 600);
-  }, [slug, cellKey]);
+  const handleChange = useCallback(
+    (value: string) => {
+      setCode(value);
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      saveTimer.current = setTimeout(() => saveCode(slug, cellKey, value), 600);
+    },
+    [slug, cellKey],
+  );
 
   // Reset code to starter
   const reset = useCallback(() => {
@@ -172,18 +188,18 @@ export function CodeEditor({
 
   // Download current code
   const download = useCallback(() => {
-    // Using application/octet-stream forces the browser to download it 
+    // Using application/octet-stream forces the browser to download it
     // exactly as a .py file and stops Windows from appending .txt
     const blob = new Blob([code], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    
+
     // Construct a friendly filename, e.g. "basics_challenge_1.py" or "script.py"
-    const prefix = slug ? slug.replace(/[^a-z0-9]/gi, '_') : 'script';
-    const suffix = cellKey ? cellKey.replace(/[^a-z0-9]/gi, '_') : 'code';
+    const prefix = slug ? slug.replace(/[^a-z0-9]/gi, "_") : "script";
+    const suffix = cellKey ? cellKey.replace(/[^a-z0-9]/gi, "_") : "code";
     link.download = `${prefix}_${suffix}.py`;
-    
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -204,13 +220,13 @@ export function CodeEditor({
     setStdout(res.stdout);
     setStderr(res.stderr);
     setTimedOut(res.timedOut ?? false);
-    
+
     if (trace && res.traceLines && onTrace) {
       onTrace(res.traceLines);
     }
 
     if (expectedIncludes && res.ok) {
-      const passed = expectedIncludes.every(s => res.stdout.includes(s));
+      const passed = expectedIncludes.every((s) => res.stdout.includes(s));
       setPass(passed);
       if (passed && slug) {
         recordChallenge(slug);
@@ -231,7 +247,6 @@ export function CodeEditor({
 
   return (
     <div className="rounded-md overflow-hidden border border-white/10 bg-[oklch(0.16_0.02_240)] shadow-xl">
-
       {/* Pyodide status banner (only shown while loading) */}
       <PyodideStatusBanner />
 
@@ -242,7 +257,7 @@ export function CodeEditor({
           value={code}
           onChange={handleChange}
           extensions={allExtensions}
-          theme={oneDark}        // base layer; pycourseTheme overrides on top
+          theme={oneDark} // base layer; pycourseTheme overrides on top
           basicSetup={{
             lineNumbers: true,
             foldGutter: false,
@@ -276,8 +291,8 @@ export function CodeEditor({
               isRunning
                 ? "bg-amber/60 text-primary-foreground cursor-wait"
                 : pyLoading
-                ? "bg-secondary text-muted-foreground cursor-wait"
-                : "bg-amber text-primary-foreground hover:opacity-90"
+                  ? "bg-secondary text-muted-foreground cursor-wait"
+                  : "bg-amber text-primary-foreground hover:opacity-90"
             }`}
           >
             {isRunning ? (
@@ -347,19 +362,19 @@ export function CodeEditor({
             {isRunning && !stdout && !stderr && (
               <div className="text-muted-foreground">[ running… ]</div>
             )}
-            {stdout && (
-              <pre className="text-teal whitespace-pre-wrap break-words">{stdout}</pre>
-            )}
+            {stdout && <pre className="text-teal whitespace-pre-wrap break-words">{stdout}</pre>}
             {stderr && (
               <div className="mt-2 flex flex-col items-start gap-2">
-                <pre className={`whitespace-pre-wrap break-words ${timedOut ? "text-coral" : "text-coral"}`}>
+                <pre
+                  className={`whitespace-pre-wrap break-words ${timedOut ? "text-coral" : "text-coral"}`}
+                >
                   {stderr}
                 </pre>
                 {!isRunning && (
                   <button
                     onClick={() => {
                       const event = new CustomEvent("pydude-explain", {
-                        detail: { code, error: stderr, slug }
+                        detail: { code, error: stderr, slug },
                       });
                       window.dispatchEvent(event);
                     }}

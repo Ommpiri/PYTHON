@@ -20,9 +20,7 @@ export function QuizBlock({ slug, questions }: { slug: string; questions: QuizQu
     <div className="space-y-5">
       {questions.map((q, i) => (
         <div key={i}>
-          <p className="font-mono text-xs text-warm-black/60 mb-1">
-            # question {i + 1}
-          </p>
+          <p className="font-mono text-xs text-warm-black/60 mb-1"># question {i + 1}</p>
           <p className="font-medium mb-2">{q.q}</p>
           <div className="grid gap-1.5">
             {q.choices.map((c, ci) => {
@@ -42,7 +40,7 @@ export function QuizBlock({ slug, questions }: { slug: string; questions: QuizQu
                 <button
                   key={ci}
                   disabled={submitted}
-                  onClick={() => setAnswers(a => ({ ...a, [i]: ci }))}
+                  onClick={() => setAnswers((a) => ({ ...a, [i]: ci }))}
                   className={`text-left px-3 py-2 rounded border font-mono text-sm ${cls}`}
                 >
                   <span className="text-warm-black/50 mr-2">{String.fromCharCode(97 + ci)})</span>
@@ -65,15 +63,24 @@ export function QuizBlock({ slug, questions }: { slug: string; questions: QuizQu
         ) : (
           <div className="font-mono text-sm">
             score:{" "}
-            <span className={percent === 100 ? "text-teal" : percent >= 60 ? "text-amber" : "text-coral"}>
+            <span
+              className={
+                percent === 100 ? "text-teal" : percent >= 60 ? "text-amber" : "text-coral"
+              }
+            >
               {percent}%
             </span>{" "}
-            <span className="text-warm-black/50">({correctCount}/{questions.length})</span>
+            <span className="text-warm-black/50">
+              ({correctCount}/{questions.length})
+            </span>
           </div>
         )}
         {submitted && (
           <button
-            onClick={() => { setAnswers({}); setSubmitted(false); }}
+            onClick={() => {
+              setAnswers({});
+              setSubmitted(false);
+            }}
             className="font-mono text-xs text-warm-black/60 hover:text-amber"
           >
             retry

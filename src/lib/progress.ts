@@ -41,7 +41,7 @@ export function markComplete(slug: string) {
 
 export function unmarkComplete(slug: string) {
   const p = readProgress();
-  p.completed = p.completed.filter(s => s !== slug);
+  p.completed = p.completed.filter((s) => s !== slug);
   recomputeBadges(p);
   writeProgress(p);
 }
@@ -70,7 +70,7 @@ export const badgeDefs = [
 
 export function recomputeBadges(p: Progress) {
   const b = new Set(p.badges);
-  const perfect = Object.values(p.quizScores).filter(v => v >= 100).length;
+  const perfect = Object.values(p.quizScores).filter((v) => v >= 100).length;
   if (perfect >= 3) b.add("quiz-master");
   if (p.completed.length >= 6) b.add("half-way");
   if (p.completed.length >= modules.length) b.add("capstone");

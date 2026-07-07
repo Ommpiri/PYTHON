@@ -40,24 +40,30 @@ function PlaygroundPage() {
   const [stderr, setStderr] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "done" | "error">("idle");
   const [timedOut, setTimedOut] = useState(false);
-  
+
   const pyStatus = usePyodideStatus();
   const cmRef = useRef<ReactCodeMirrorRef>(null);
 
-  useEffect(() => { preloadPyodide(); }, []);
+  useEffect(() => {
+    preloadPyodide();
+  }, []);
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleChange = useCallback((value: string) => {
     setCode(value);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
-      try { localStorage.setItem(STORAGE_KEY, value); } catch {}
+      try {
+        localStorage.setItem(STORAGE_KEY, value);
+      } catch {}
     }, 600);
   }, []);
 
   const reset = useCallback(() => {
     setCode(STARTER_CODE);
-    try { localStorage.setItem(STORAGE_KEY, STARTER_CODE); } catch {}
+    try {
+      localStorage.setItem(STORAGE_KEY, STARTER_CODE);
+    } catch {}
     setStdout("");
     setStderr("");
     setTimedOut(false);
@@ -72,7 +78,7 @@ function PlaygroundPage() {
   }, []);
 
   const downloadCode = useCallback(() => {
-    // Using application/octet-stream forces the browser to download it 
+    // Using application/octet-stream forces the browser to download it
     // exactly as a .py file and stops Windows from appending .txt
     const blob = new Blob([code], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
@@ -114,7 +120,9 @@ function PlaygroundPage() {
       <div className="flex-none px-4 py-3 border-b border-border bg-background flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-xl font-semibold">Python Playground</h1>
-          <p className="text-sm text-muted-foreground">Open scratchpad. Code is saved to your browser.</p>
+          <p className="text-sm text-muted-foreground">
+            Open scratchpad. Code is saved to your browser.
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -138,8 +146,8 @@ function PlaygroundPage() {
               isRunning
                 ? "bg-amber/60 text-primary-foreground cursor-wait"
                 : pyLoading
-                ? "bg-secondary text-muted-foreground cursor-wait"
-                : "bg-amber text-primary-foreground hover:opacity-90"
+                  ? "bg-secondary text-muted-foreground cursor-wait"
+                  : "bg-amber text-primary-foreground hover:opacity-90"
             }`}
           >
             {isRunning ? (
@@ -215,7 +223,7 @@ function PlaygroundPage() {
               clear
             </button>
           </div>
-          
+
           <div className="flex-1 overflow-y-auto p-4 font-mono text-[13px] leading-relaxed">
             {isRunning && !stdout && !stderr && (
               <div className="text-muted-foreground opacity-60">[ running… ]</div>
@@ -225,11 +233,11 @@ function PlaygroundPage() {
                 Output will appear here...
               </div>
             )}
-            {stdout && (
-              <pre className="text-teal whitespace-pre-wrap break-words">{stdout}</pre>
-            )}
+            {stdout && <pre className="text-teal whitespace-pre-wrap break-words">{stdout}</pre>}
             {stderr && (
-              <pre className={`whitespace-pre-wrap break-words mt-1 ${timedOut ? "text-coral" : "text-coral"}`}>
+              <pre
+                className={`whitespace-pre-wrap break-words mt-1 ${timedOut ? "text-coral" : "text-coral"}`}
+              >
                 {stderr}
               </pre>
             )}

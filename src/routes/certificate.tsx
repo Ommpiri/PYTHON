@@ -4,7 +4,15 @@ import { modules } from "@/lib/modules";
 import { useProgress } from "@/hooks/useProgress";
 
 export const Route = createFileRoute("/certificate")({
-  head: () => ({ meta: [{ title: "Certificate — pycourse" }, { name: "description", content: "Auto-generated certificate on completion of the 12-module course." }] }),
+  head: () => ({
+    meta: [
+      { title: "Certificate — pycourse" },
+      {
+        name: "description",
+        content: "Auto-generated certificate on completion of the 12-module course.",
+      },
+    ],
+  }),
   component: CertificatePage,
 });
 
@@ -43,7 +51,8 @@ function CertificatePage() {
           <div className="mt-6 rounded border border-coral/40 bg-coral/5 p-6 font-mono text-sm">
             <p className="text-coral">AssertionError: not all modules complete</p>
             <p className="mt-2 text-muted-foreground">
-              completed = {p.completed.length} / {modules.length}. Finish the remaining modules to unlock your certificate.
+              completed = {p.completed.length} / {modules.length}. Finish the remaining modules to
+              unlock your certificate.
             </p>
             <div className="mt-4 h-2 rounded-full bg-secondary overflow-hidden">
               <div
@@ -61,7 +70,7 @@ function CertificatePage() {
               <div className="flex-1 min-w-[220px] relative">
                 <input
                   value={name}
-                  onChange={e => setName(e.target.value.slice(0, MAX_NAME))}
+                  onChange={(e) => setName(e.target.value.slice(0, MAX_NAME))}
                   placeholder="your full name"
                   maxLength={MAX_NAME}
                   className="w-full px-3 py-2 rounded border border-border bg-background text-foreground font-mono outline-none focus:border-amber"
@@ -86,9 +95,11 @@ function CertificatePage() {
               ref={ref}
               className="mt-10 rounded-lg border border-amber/60 bg-[oklch(0.15_0.02_240)] p-8 sm:p-12 font-mono text-sm shadow-2xl"
             >
-              <p className="text-muted-foreground">$ ./certificate --for "{safeName || "___________"}"</p>
+              <p className="text-muted-foreground">
+                $ ./certificate --for "{safeName || "___________"}"
+              </p>
               <pre className="text-teal mt-4 whitespace-pre leading-6 text-[0.85rem] overflow-x-auto">
-{`+--------------------------------------------------+
+                {`+--------------------------------------------------+
 |                                                  |
 |         CERTIFICATE  OF  COMPLETION              |
 |                                                  |

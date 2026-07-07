@@ -33,7 +33,7 @@ const statusListeners = new Set<(s: PyodideStatus) => void>();
 
 function emitStatus(s: PyodideStatus) {
   workerStatus = s;
-  statusListeners.forEach(fn => fn(s));
+  statusListeners.forEach((fn) => fn(s));
 }
 
 function createWorker(): Worker {
@@ -41,18 +41,25 @@ function createWorker(): Worker {
 
   const w = new Worker(
     new URL("../workers/pyodide.worker.ts", import.meta.url),
-    { type: "classic" } // importScripts-based worker
+    { type: "classic" }, // importScripts-based worker
   );
 
   w.onmessage = (e: MessageEvent) => {
     const msg = e.data as
       | { type: "ready" }
       | { type: "error"; message: string }
-      | { type: "result"; id: number; ok: boolean; stdout: string; stderr: string; traceLines?: number[] };
+      | {
+          type: "result";
+          id: number;
+          ok: boolean;
+          stdout: string;
+          stderr: string;
+          traceLines?: number[];
+        };
 
     if (msg.type === "ready") {
       emitStatus("ready");
-      readyCallbacks.forEach(fn => fn());
+      readyCallbacks.forEach((fn) => fn());
       readyCallbacks = [];
       return;
     }
@@ -74,7 +81,12 @@ function createWorker(): Worker {
       clearTimeout(entry.timer);
       pending.delete(msg.id);
       emitStatus("ready");
-      entry.resolve({ ok: msg.ok, stdout: msg.stdout, stderr: msg.stderr, traceLines: msg.traceLines });
+      entry.resolve({
+        ok: msg.ok,
+        stdout: msg.stdout,
+        stderr: msg.stderr,
+        traceLines: msg.traceLines,
+      });
     }
   };
 
@@ -100,7 +112,7 @@ function getWorker(): Worker {
 /** Wait until Pyodide inside the worker is ready. */
 function waitForReady(): Promise<void> {
   if (workerStatus === "ready") return Promise.resolve();
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     readyCallbacks.push(resolve);
   });
 }
@@ -126,7 +138,7 @@ export async function runPython(code: string, opts?: { trace?: boolean }): Promi
 
   const id = nextId++;
 
-  return new Promise<RunResult>(resolve => {
+  return new Promise<RunResult>((resolve) => {
     const timer = setTimeout(() => {
       // Hard-kill the worker — terminates any hanging code
       w.terminate();
@@ -157,7 +169,9 @@ export function usePyodideStatus(): PyodideStatus {
   useEffect(() => {
     setStatus(workerStatus);
     statusListeners.add(setStatus);
-    return () => { statusListeners.delete(setStatus); };
+    return () => {
+      statusListeners.delete(setStatus);
+    };
   }, []);
   return status;
 }

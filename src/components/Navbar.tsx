@@ -25,9 +25,7 @@ export function Navbar({
 
   const linkCls = (to: string) =>
     `font-mono text-xs px-2 py-1 rounded transition-colors ${
-      isActive(to)
-        ? "text-amber"
-        : "text-muted-foreground hover:text-foreground"
+      isActive(to) ? "text-amber" : "text-muted-foreground hover:text-foreground"
     }`;
 
   return (
@@ -67,7 +65,7 @@ export function Navbar({
             {theme === "ink" ? "▊" : "◻"}
           </button>
           <button
-            onClick={() => setMobileOpen(o => !o)}
+            onClick={() => setMobileOpen((o) => !o)}
             aria-label="Open navigation menu"
             aria-expanded={mobileOpen}
             className="font-mono text-xs px-2 py-1 border border-border rounded hover:text-amber transition-colors"
@@ -93,7 +91,8 @@ export function Navbar({
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {isActive(to) ? "▸ " : "  "}{label}
+              {isActive(to) ? "▸ " : "  "}
+              {label}
             </Link>
           ))}
         </nav>

@@ -67,10 +67,18 @@ export function MarkdownBlock({ children }: { children: string }) {
       const text = parseInline(hm[2]);
       const cls = [
         "font-display font-semibold text-warm-black",
-        level === 1 ? "mt-6 mb-2 text-2xl" : level === 2 ? "mt-5 mb-2 text-xl" : "mt-4 mb-1 text-lg",
+        level === 1
+          ? "mt-6 mb-2 text-2xl"
+          : level === 2
+            ? "mt-5 mb-2 text-xl"
+            : "mt-4 mb-1 text-lg",
       ].join(" ");
-      const Tag = (`h${level}`) as "h1" | "h2" | "h3" | "h4";
-      out.push(<Tag key={`h-${i}`} className={cls}>{text}</Tag>);
+      const Tag = `h${level}` as "h1" | "h2" | "h3" | "h4";
+      out.push(
+        <Tag key={`h-${i}`} className={cls}>
+          {text}
+        </Tag>,
+      );
       i++;
       continue;
     }

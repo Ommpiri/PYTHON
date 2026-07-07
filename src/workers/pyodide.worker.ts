@@ -34,15 +34,29 @@ self.onmessage = async (e: MessageEvent) => {
   await initPromise;
 
   if (!pyodide) {
-    self.postMessage({ id, type: "result", ok: false, stdout: "", stderr: "Python runtime failed to load." });
+    self.postMessage({
+      id,
+      type: "result",
+      ok: false,
+      stdout: "",
+      stderr: "Python runtime failed to load.",
+    });
     return;
   }
 
   let stdout = "";
   let stderr = "";
 
-  pyodide.setStdout({ batched: (s: string) => { stdout += s + "\n"; } });
-  pyodide.setStderr({ batched: (s: string) => { stderr += s + "\n"; } });
+  pyodide.setStdout({
+    batched: (s: string) => {
+      stdout += s + "\n";
+    },
+  });
+  pyodide.setStderr({
+    batched: (s: string) => {
+      stderr += s + "\n";
+    },
+  });
 
   try {
     let traceLines: number[] = [];
@@ -50,7 +64,7 @@ self.onmessage = async (e: MessageEvent) => {
       // Create a JS array to hold the trace
       const traceArr: number[] = [];
       (self as any).__traceArr = traceArr;
-      
+
       const wrapped = `
 import sys
 from js import __traceArr
@@ -74,6 +88,13 @@ finally:
     self.postMessage({ id, type: "result", ok: !stderr, stdout, stderr, traceLines });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    self.postMessage({ id, type: "result", ok: false, stdout, stderr: stderr + msg, traceLines: [] });
+    self.postMessage({
+      id,
+      type: "result",
+      ok: false,
+      stdout,
+      stderr: stderr + msg,
+      traceLines: [],
+    });
   }
 };

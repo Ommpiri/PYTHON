@@ -6,7 +6,10 @@ export const Route = createFileRoute("/modules/")({
   head: () => ({
     meta: [
       { title: "All Modules — pycourse" },
-      { name: "description", content: "All 12 modules of the Python Community Development course." },
+      {
+        name: "description",
+        content: "All 12 modules of the Python Community Development course.",
+      },
     ],
   }),
   component: ModulesIndex,
@@ -19,7 +22,9 @@ function ModulesIndex() {
       <div className="mb-6">
         <p className="font-mono text-xs text-amber"># dir(course)</p>
         <h1 className="mt-2 text-4xl font-display font-semibold mb-2">All modules</h1>
-        <p className="text-muted-foreground font-mono text-sm">Select a module to begin or continue your progress.</p>
+        <p className="text-muted-foreground font-mono text-sm">
+          Select a module to begin or continue your progress.
+        </p>
       </div>
 
       <div className="rounded-lg border border-border bg-[oklch(0.15_0.02_240)] shadow-2xl overflow-hidden">

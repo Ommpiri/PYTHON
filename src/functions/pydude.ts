@@ -29,7 +29,7 @@ export const askPydude = createServerFn({ method: "POST" })
   .validator((d: { message: string; moduleName: string; codeContext: string }) => d)
   .handler(async ({ data }) => {
     const { message, moduleName, codeContext } = data;
-    
+
     // Retrieve client IP for basic rate limiting
     let clientIp = "127.0.0.1";
     try {
@@ -66,15 +66,17 @@ ${message}`;
 
     const payload = {
       systemInstruction: {
-        parts: [{ text: pydudeSystemPrompt }]
+        parts: [{ text: pydudeSystemPrompt }],
       },
-      contents: [{
-        parts: [{ text: prompt }]
-      }],
+      contents: [
+        {
+          parts: [{ text: prompt }],
+        },
+      ],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 500
-      }
+        maxOutputTokens: 500,
+      },
     };
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
@@ -100,7 +102,7 @@ ${message}`;
 
         if (response.status === 503 && attempt < maxRetries) {
           // Wait longer on each retry (e.g., 1500ms, then 3000ms)
-          await new Promise(resolve => setTimeout(resolve, 1500 * (attempt + 1)));
+          await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));
           continue;
         }
 

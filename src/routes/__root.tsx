@@ -43,13 +43,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-display text-foreground">
-          RuntimeError: this page crashed
-        </h1>
+        <h1 className="text-xl font-display text-foreground">RuntimeError: this page crashed</h1>
         <p className="mt-2 text-sm text-muted-foreground font-mono">{error.message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
           >
             Retry
@@ -90,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500;700&family=Public+Sans:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600&display=swap",
       },
     ],
   }),
@@ -103,8 +104,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
-      <body>{children}<Scripts /></body>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
     </html>
   );
 }
@@ -114,7 +120,7 @@ function RootComponent() {
   const [theme, setTheme] = useState<"ink" | "parchment">("ink");
   useEffect(() => {
     const saved = (typeof localStorage !== "undefined" && localStorage.getItem("pyc-theme")) as
-      | "ink" | "parchment" | null;
+      "ink" | "parchment" | null;
     if (saved) setTheme(saved);
   }, []);
   useEffect(() => {
@@ -125,8 +131,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen flex flex-col">
-        <Navbar theme={theme} onToggleTheme={() => setTheme(t => t === "ink" ? "parchment" : "ink")} />
-        <main className="flex-1"><Outlet /></main>
+        <Navbar
+          theme={theme}
+          onToggleTheme={() => setTheme((t) => (t === "ink" ? "parchment" : "ink"))}
+        />
+        <main className="flex-1">
+          <Outlet />
+        </main>
         <Pydude />
         <footer className="border-t border-border py-10 px-6 font-mono text-xs text-muted-foreground">
           <div className="max-w-6xl mx-auto grid sm:grid-cols-3 gap-8">
@@ -134,8 +145,8 @@ function RootComponent() {
             <div>
               <p className="text-amber font-bold mb-2">{">>>"} pycourse</p>
               <p className="leading-5 text-muted-foreground/80">
-                Companion site to the Python Community Development YouTube series.
-                Real Python, running in your browser.
+                Companion site to the Python Community Development YouTube series. Real Python,
+                running in your browser.
               </p>
             </div>
 
@@ -143,11 +154,21 @@ function RootComponent() {
             <div>
               <p className="text-foreground/60 mb-2"># quick_nav</p>
               <nav className="flex flex-col gap-1.5">
-                <a href="/modules" className="hover:text-amber transition-colors">modules</a>
-                <a href="/progress" className="hover:text-amber transition-colors">my_progress</a>
-                <a href="/badges" className="hover:text-amber transition-colors">badges</a>
-                <a href="/assignments" className="hover:text-amber transition-colors">assignments</a>
-                <a href="/certificate" className="hover:text-amber transition-colors">certificate</a>
+                <a href="/modules" className="hover:text-amber transition-colors">
+                  modules
+                </a>
+                <a href="/progress" className="hover:text-amber transition-colors">
+                  my_progress
+                </a>
+                <a href="/badges" className="hover:text-amber transition-colors">
+                  badges
+                </a>
+                <a href="/assignments" className="hover:text-amber transition-colors">
+                  assignments
+                </a>
+                <a href="/certificate" className="hover:text-amber transition-colors">
+                  certificate
+                </a>
               </nav>
             </div>
 

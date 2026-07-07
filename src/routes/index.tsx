@@ -18,10 +18,14 @@ function Index() {
         </h2>
         <div className="grid md:grid-cols-2 gap-8 text-warm-off/85">
           <p>
-            This is the companion site to the YouTube series. Every module contains a live editor that runs real Python in your browser via Pyodide — no installation, no configuration, no waiting on a remote server. Type, hit Run, read the output.
+            This is the companion site to the YouTube series. Every module contains a live editor
+            that runs real Python in your browser via Pyodide — no installation, no configuration,
+            no waiting on a remote server. Type, hit Run, read the output.
           </p>
           <p>
-            Twelve modules take you from installation to a working data-persisting mini-project. Each module has theory notes, a live-coding demo, a hands-on challenge with automatic pass/fail, a quiz, and a discussion thread. Progress lives in your browser.
+            Twelve modules take you from installation to a working data-persisting mini-project.
+            Each module has theory notes, a live-coding demo, a hands-on challenge with automatic
+            pass/fail, a quiz, and a discussion thread. Progress lives in your browser.
           </p>
         </div>
       </section>
@@ -34,7 +38,7 @@ function Index() {
         <div className="rounded-lg border border-border bg-[oklch(0.15_0.02_240)] p-6 sm:p-10 font-mono text-sm">
           <p className="text-muted-foreground">$ ./certificate --for "your name"</p>
           <pre className="text-teal mt-3 whitespace-pre-wrap leading-6">
-{`+-----------------------------------------------+
+            {`+-----------------------------------------------+
 |             CERTIFICATE OF COMPLETION         |
 |                                               |
 |   awarded to: <your name>                     |
@@ -58,7 +62,7 @@ function Index() {
       <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
         <p className="font-mono text-xs text-amber mb-4"># all_modules</p>
         <div className="grid sm:grid-cols-2 gap-3">
-          {modules.map(m => (
+          {modules.map((m) => (
             <Link
               key={m.id}
               to="/modules/$slug"
@@ -68,9 +72,7 @@ function Index() {
               <div className="font-mono text-xs text-amber">
                 module_{m.id.toString().padStart(2, "0")}
               </div>
-              <div className="mt-1 font-display text-lg group-hover:text-amber">
-                {m.title}
-              </div>
+              <div className="mt-1 font-display text-lg group-hover:text-amber">{m.title}</div>
               <div className="mt-2 font-mono text-xs text-muted-foreground">
                 {m.tags.join(" · ")}
               </div>

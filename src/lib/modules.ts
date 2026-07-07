@@ -22,7 +22,10 @@ export type Module = {
   furtherReading?: { title: string; url: string }[];
   liveCoding: { title: string; starter: string; note?: string };
   challenges: Challenge[];
-  demo?: { kind: "install-check" | "loop-visualizer" | "ds-visualizer" | "generic"; description: string };
+  demo?: {
+    kind: "install-check" | "loop-visualizer" | "ds-visualizer" | "generic";
+    description: string;
+  };
   quiz: QuizQuestion[];
   notes: string;
 };
@@ -58,11 +61,16 @@ When you "install Python," you are actually installing the Python Interpreter (s
 print(10 + 5)
 \`\`\`
 `,
-    commonMistake: "Confusing the text editor (where you type code) with the terminal/interpreter (where the code is executed). You must run the interpreter and point it at your file (e.g., `python my_script.py`) to actually see results.",
-    miniPrompt: "Change the math in Example 2 to multiply two numbers using the `*` symbol instead of `+`.",
+    commonMistake:
+      "Confusing the text editor (where you type code) with the terminal/interpreter (where the code is executed). You must run the interpreter and point it at your file (e.g., `python my_script.py`) to actually see results.",
+    miniPrompt:
+      "Change the math in Example 2 to multiply two numbers using the `*` symbol instead of `+`.",
     furtherReading: [
       { title: "Python Official Setup Guide", url: "https://docs.python.org/3/using/index.html" },
-      { title: "Python Tutorial: Invoking the Interpreter", url: "https://docs.python.org/3/tutorial/interpreter.html" }
+      {
+        title: "Python Tutorial: Invoking the Interpreter",
+        url: "https://docs.python.org/3/tutorial/interpreter.html",
+      },
     ],
     liveCoding: {
       title: "Hello, world — then greet a name",
@@ -75,7 +83,8 @@ print(f"Hello, {name}!")`,
     },
     challenges: [
       {
-        prompt: "Print three lines: your name, your favorite language, and why you're learning Python.",
+        prompt:
+          "Print three lines: your name, your favorite language, and why you're learning Python.",
         starter: `# Replace the values, then Run
 name = "your name"
 language = "your favorite language"
@@ -88,14 +97,28 @@ print(reason)`,
     ],
     demo: {
       kind: "install-check",
-      description: "Installation checker — verifies the sandboxed Python is available and prints its version.",
+      description:
+        "Installation checker — verifies the sandboxed Python is available and prints its version.",
     },
     quiz: [
-      { q: "Which of these is hardware?", choices: ["Operating System", "CPU", "Python", "Chrome"], answer: 1 },
-      { q: "Python is primarily…", choices: ["Compiled ahead of time", "Interpreted", "Assembled", "Transpiled to Java"], answer: 1 },
-      { q: "After installing Python, which command usually prints the version?", choices: ["python --version", "python show", "get python", "install python"], answer: 0 },
+      {
+        q: "Which of these is hardware?",
+        choices: ["Operating System", "CPU", "Python", "Chrome"],
+        answer: 1,
+      },
+      {
+        q: "Python is primarily…",
+        choices: ["Compiled ahead of time", "Interpreted", "Assembled", "Transpiled to Java"],
+        answer: 1,
+      },
+      {
+        q: "After installing Python, which command usually prints the version?",
+        choices: ["python --version", "python show", "get python", "install python"],
+        answer: 0,
+      },
     ],
-    notes: "Module 1 notes — installation checklist, first program, difference between compiler and interpreter.",
+    notes:
+      "Module 1 notes — installation checklist, first program, difference between compiler and interpreter.",
   }),
 
   m(2, "basics", "Python Basics", {
@@ -127,11 +150,16 @@ total = apples * price
 print(f"I bought {apples} apples for {total} dollars")
 \`\`\`
 `,
-    commonMistake: "Forgetting to put the `f` in front of the string when trying to use `{variables}`. If you omit it, Python will literally print out the text '{variables}' instead of the actual value.",
-    miniPrompt: "Try changing the `price` variable in Example 2 to 2.50 and watch how the f-string updates the total.",
+    commonMistake:
+      "Forgetting to put the `f` in front of the string when trying to use `{variables}`. If you omit it, Python will literally print out the text '{variables}' instead of the actual value.",
+    miniPrompt:
+      "Try changing the `price` variable in Example 2 to 2.50 and watch how the f-string updates the total.",
     furtherReading: [
       { title: "Python Built-in Types", url: "https://docs.python.org/3/library/stdtypes.html" },
-      { title: "f-strings (Formatted string literals)", url: "https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals" }
+      {
+        title: "f-strings (Formatted string literals)",
+        url: "https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals",
+      },
     ],
     liveCoding: {
       title: "Profile card generator",
@@ -147,7 +175,8 @@ print("=" * 30)`,
     },
     challenges: [
       {
-        prompt: "Extend the profile card to also print the birth year (assume current year is 2026).",
+        prompt:
+          "Extend the profile card to also print the birth year (assume current year is 2026).",
         starter: `name = "Ada Lovelace"
 age = 28
 city = "London"
@@ -162,7 +191,11 @@ print(f"{name} — born {birth_year}, lives in {city}")`,
     quiz: [
       { q: "Type of 3 / 2 in Python 3?", choices: ["int", "float", "str", "error"], answer: 1 },
       { q: "Value of 2 + 3 * 4?", choices: ["20", "14", "24", "9"], answer: 1 },
-      { q: "Which is a valid f-string?", choices: ['f"hi {name}"', 'f\'hi $name\'', '"hi {name}".f', 'format(hi, name)'], answer: 0 },
+      {
+        q: "Which is a valid f-string?",
+        choices: ['f"hi {name}"', "f'hi $name'", '"hi {name}".f', "format(hi, name)"],
+        answer: 0,
+      },
     ],
     notes: "Module 2 notes — variables, types, operators, f-strings.",
   }),
@@ -197,11 +230,19 @@ print("Liftoff!")
 
 Inside loops, you can use \`break\` to instantly shatter the loop and exit completely, or \`continue\` to abandon just the *current* iteration and jump immediately back to the top for the next one.
 `,
-    commonMistake: "Forgetting to update the variable inside a `while` loop (like omitting `count -= 1` in Example 2). This creates an infinite loop that runs forever until the program crashes.",
-    miniPrompt: "Add a new `elif` condition to the FizzBuzz live coding block below to print 'Seven' when the number is divisible by 7.",
+    commonMistake:
+      "Forgetting to update the variable inside a `while` loop (like omitting `count -= 1` in Example 2). This creates an infinite loop that runs forever until the program crashes.",
+    miniPrompt:
+      "Add a new `elif` condition to the FizzBuzz live coding block below to print 'Seven' when the number is divisible by 7.",
     furtherReading: [
-      { title: "Python Tutorial: Control Flow Tools", url: "https://docs.python.org/3/tutorial/controlflow.html" },
-      { title: "More on Conditions", url: "https://docs.python.org/3/tutorial/datastructures.html#more-on-conditions" }
+      {
+        title: "Python Tutorial: Control Flow Tools",
+        url: "https://docs.python.org/3/tutorial/controlflow.html",
+      },
+      {
+        title: "More on Conditions",
+        url: "https://docs.python.org/3/tutorial/datastructures.html#more-on-conditions",
+      },
     ],
     liveCoding: {
       title: "FizzBuzz",
@@ -217,7 +258,8 @@ Inside loops, you can use \`break\` to instantly shatter the loop and exit compl
     },
     challenges: [
       {
-        prompt: "Number-guessing game: use a fixed target of 42, guess list [10, 80, 42], print too high / too low / correct plus attempt count.",
+        prompt:
+          "Number-guessing game: use a fixed target of 42, guess list [10, 80, 42], print too high / too low / correct plus attempt count.",
         starter: `target = 42
 guesses = [10, 80, 42]
 attempts = 0
@@ -241,7 +283,8 @@ print(f"{year} leap? {is_leap}")`,
         expectedOutputIncludes: ["True"],
       },
       {
-        prompt: "FizzBuzz Variant: Print numbers 1 through 15. If divisible by 2 print 'Ping', if divisible by 4 print 'Pong' (PingPong if both).",
+        prompt:
+          "FizzBuzz Variant: Print numbers 1 through 15. If divisible by 2 print 'Ping', if divisible by 4 print 'Pong' (PingPong if both).",
         starter: `# Write a loop from 1 to 15
 # Use if/elif/else and the modulo operator (%)
 `,
@@ -250,12 +293,30 @@ print(f"{year} leap? {is_leap}")`,
     ],
     demo: {
       kind: "loop-visualizer",
-      description: "Step-through visualizer highlighting which iteration is running and current variable values.",
+      description:
+        "Step-through visualizer highlighting which iteration is running and current variable values.",
     },
     quiz: [
-      { q: "Which statement exits a loop entirely?", choices: ["continue", "pass", "break", "return"], answer: 2 },
-      { q: "How many times does `for i in range(3)` iterate?", choices: ["2", "3", "4", "0"], answer: 1 },
-      { q: "`continue` inside a loop…", choices: ["Ends the loop", "Skips to next iteration", "Restarts the program", "Raises an error"], answer: 1 },
+      {
+        q: "Which statement exits a loop entirely?",
+        choices: ["continue", "pass", "break", "return"],
+        answer: 2,
+      },
+      {
+        q: "How many times does `for i in range(3)` iterate?",
+        choices: ["2", "3", "4", "0"],
+        answer: 1,
+      },
+      {
+        q: "`continue` inside a loop…",
+        choices: [
+          "Ends the loop",
+          "Skips to next iteration",
+          "Restarts the program",
+          "Raises an error",
+        ],
+        answer: 1,
+      },
     ],
     notes: "Module 3 notes — conditionals, loops, break/continue.",
   }),
@@ -298,11 +359,19 @@ print(math_stuff()) # 15
 # print(local_var)  # Error! local_var doesn't exist out here
 \`\`\`
 `,
-    commonMistake: "Forgetting to write the `return` keyword. If a function doesn't explicitly return a value, it silently returns a special object called `None`. If you see `None` showing up unexpectedly in your output, check your function's return statement!",
-    miniPrompt: "Change Example 2 to return the greeting string in entirely uppercase letters directly from within the function.",
+    commonMistake:
+      "Forgetting to write the `return` keyword. If a function doesn't explicitly return a value, it silently returns a special object called `None`. If you see `None` showing up unexpectedly in your output, check your function's return statement!",
+    miniPrompt:
+      "Change Example 2 to return the greeting string in entirely uppercase letters directly from within the function.",
     furtherReading: [
-      { title: "Python Tutorial: Defining Functions", url: "https://docs.python.org/3/tutorial/controlflow.html#defining-functions" },
-      { title: "Default Argument Values", url: "https://docs.python.org/3/tutorial/controlflow.html#default-argument-values" }
+      {
+        title: "Python Tutorial: Defining Functions",
+        url: "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+      },
+      {
+        title: "Default Argument Values",
+        url: "https://docs.python.org/3/tutorial/controlflow.html#default-argument-values",
+      },
     ],
     liveCoding: {
       title: "Refactor the guessing game into functions",
@@ -328,7 +397,8 @@ play_game(42, [10, 80, 42])`,
     },
     challenges: [
       {
-        prompt: "Tip calculator: define tip(amount, percent) that RETURNS the tip (does not print). Print tip(50, 20).",
+        prompt:
+          "Tip calculator: define tip(amount, percent) that RETURNS the tip (does not print). Print tip(50, 20).",
         starter: `def tip(amount, percent):
     # return the tip value
     return 0
@@ -338,9 +408,21 @@ print(tip(50, 20))`,
       },
     ],
     quiz: [
-      { q: "A function without an explicit return returns…", choices: ["0", "None", "empty string", "error"], answer: 1 },
-      { q: "Variables defined inside def are by default…", choices: ["Global", "Local", "Nonlocal", "Constants"], answer: 1 },
-      { q: "Best practice: business logic in a function should…", choices: ["print results", "return results", "write to a file", "raise errors always"], answer: 1 },
+      {
+        q: "A function without an explicit return returns…",
+        choices: ["0", "None", "empty string", "error"],
+        answer: 1,
+      },
+      {
+        q: "Variables defined inside def are by default…",
+        choices: ["Global", "Local", "Nonlocal", "Constants"],
+        answer: 1,
+      },
+      {
+        q: "Best practice: business logic in a function should…",
+        choices: ["print results", "return results", "write to a file", "raise errors always"],
+        answer: 1,
+      },
     ],
     notes: "Module 4 notes — def, parameters, return, scope.",
   }),
@@ -376,11 +458,19 @@ with open("log.txt", "r") as file_obj:
 # The file is already safely closed here
 \`\`\`
 `,
-    commonMistake: "Forgetting to close a file (or failing to use a `with` block). If you leave files open, your program can lock up system resources, cause memory leaks, or prevent other programs from reading the file.",
-    miniPrompt: "Change the tiny journal example below to use 'w' mode instead of 'a' mode and run it twice. Notice how it erases the previous entry?",
+    commonMistake:
+      "Forgetting to close a file (or failing to use a `with` block). If you leave files open, your program can lock up system resources, cause memory leaks, or prevent other programs from reading the file.",
+    miniPrompt:
+      "Change the tiny journal example below to use 'w' mode instead of 'a' mode and run it twice. Notice how it erases the previous entry?",
     furtherReading: [
-      { title: "Python Tutorial: Reading and Writing Files", url: "https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files" },
-      { title: "Built-in open() Function", url: "https://docs.python.org/3/library/functions.html#open" }
+      {
+        title: "Python Tutorial: Reading and Writing Files",
+        url: "https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files",
+      },
+      {
+        title: "Built-in open() Function",
+        url: "https://docs.python.org/3/library/functions.html#open",
+      },
     ],
     liveCoding: {
       title: "Tiny journal (in-memory sandbox file)",
@@ -397,7 +487,8 @@ with open(path, "r") as f:
     },
     challenges: [
       {
-        prompt: "Save a high score to 'score.txt' if it's better (lower attempts) than the existing value.",
+        prompt:
+          "Save a high score to 'score.txt' if it's better (lower attempts) than the existing value.",
         starter: `path = "score.txt"
 new_score = 3
 
@@ -417,9 +508,17 @@ else:
       },
     ],
     quiz: [
-      { q: "The `with` statement mainly ensures…", choices: ["Faster IO", "The file is closed automatically", "Encryption", "Async reads"], answer: 1 },
+      {
+        q: "The `with` statement mainly ensures…",
+        choices: ["Faster IO", "The file is closed automatically", "Encryption", "Async reads"],
+        answer: 1,
+      },
       { q: "Which mode APPENDS to a file?", choices: ["'r'", "'w'", "'a'", "'x'"], answer: 2 },
-      { q: "readlines() returns…", choices: ["one string", "a list of strings", "bytes", "an iterator only"], answer: 1 },
+      {
+        q: "readlines() returns…",
+        choices: ["one string", "a list of strings", "bytes", "an iterator only"],
+        answer: 1,
+      },
     ],
     notes: "Module 5 notes — open/close, with, modes, read variants.",
   }),
@@ -456,11 +555,19 @@ finally:
     print("Closing up.")
 \`\`\`
 `,
-    commonMistake: "Using a 'bare except' (just writing `except:` without specifying the error type like `ValueError`). This catches literally everything, including KeyboardInterrupts (when you try to quit the program) or typo-related SyntaxErrors, making it impossible to debug real issues.",
-    miniPrompt: "In the live coding block, try passing a string instead of a number to `safe_div` to see which exception block catches it.",
+    commonMistake:
+      "Using a 'bare except' (just writing `except:` without specifying the error type like `ValueError`). This catches literally everything, including KeyboardInterrupts (when you try to quit the program) or typo-related SyntaxErrors, making it impossible to debug real issues.",
+    miniPrompt:
+      "In the live coding block, try passing a string instead of a number to `safe_div` to see which exception block catches it.",
     furtherReading: [
-      { title: "Python Tutorial: Errors and Exceptions", url: "https://docs.python.org/3/tutorial/errors.html" },
-      { title: "Built-in Exceptions Hierarchy", url: "https://docs.python.org/3/library/exceptions.html" }
+      {
+        title: "Python Tutorial: Errors and Exceptions",
+        url: "https://docs.python.org/3/tutorial/errors.html",
+      },
+      {
+        title: "Built-in Exceptions Hierarchy",
+        url: "https://docs.python.org/3/library/exceptions.html",
+      },
     ],
     liveCoding: {
       title: "Harden the calculator",
@@ -482,7 +589,8 @@ print(safe_div(10, "x"))`,
     },
     challenges: [
       {
-        prompt: "Given a list of inputs, keep the first one that parses as an int in [1,10]. Print it.",
+        prompt:
+          "Given a list of inputs, keep the first one that parses as an int in [1,10]. Print it.",
         starter: `inputs = ["abc", "99", "3", "7"]
 
 def first_valid(vals, lo, hi):
@@ -500,9 +608,26 @@ print(first_valid(inputs, 1, 10))`,
       },
     ],
     quiz: [
-      { q: "`finally` runs…", choices: ["only on error", "only on success", "always", "never"], answer: 2 },
-      { q: "Best practice: catch…", choices: ["bare except", "specific exception type", "all exceptions and ignore", "SystemExit"], answer: 1 },
-      { q: "Which error for `int('abc')`?", choices: ["TypeError", "ValueError", "KeyError", "SyntaxError"], answer: 1 },
+      {
+        q: "`finally` runs…",
+        choices: ["only on error", "only on success", "always", "never"],
+        answer: 2,
+      },
+      {
+        q: "Best practice: catch…",
+        choices: [
+          "bare except",
+          "specific exception type",
+          "all exceptions and ignore",
+          "SystemExit",
+        ],
+        answer: 1,
+      },
+      {
+        q: "Which error for `int('abc')`?",
+        choices: ["TypeError", "ValueError", "KeyError", "SyntaxError"],
+        answer: 1,
+      },
     ],
     notes: "Module 6 notes — try/except/else/finally, error hierarchy.",
   }),
@@ -536,11 +661,19 @@ unique_ids = {1, 2, 2, 3, 3, 3}
 print(unique_ids) # Outputs: {1, 2, 3}
 \`\`\`
 `,
-    commonMistake: "Modifying a list while you are looping over it. If you remove an item from a list while `for` looping through it, everything shifts backwards, causing the loop to skip the next item entirely!",
-    miniPrompt: "In the contact book live code below, try adding a dictionary that includes an 'email' key in addition to 'name' and 'phone'.",
+    commonMistake:
+      "Modifying a list while you are looping over it. If you remove an item from a list while `for` looping through it, everything shifts backwards, causing the loop to skip the next item entirely!",
+    miniPrompt:
+      "In the contact book live code below, try adding a dictionary that includes an 'email' key in addition to 'name' and 'phone'.",
     furtherReading: [
-      { title: "Python Tutorial: Data Structures", url: "https://docs.python.org/3/tutorial/datastructures.html" },
-      { title: "Time Complexity of Python Data Structures", url: "https://wiki.python.org/moin/TimeComplexity" }
+      {
+        title: "Python Tutorial: Data Structures",
+        url: "https://docs.python.org/3/tutorial/datastructures.html",
+      },
+      {
+        title: "Time Complexity of Python Data Structures",
+        url: "https://wiki.python.org/moin/TimeComplexity",
+      },
     ],
     liveCoding: {
       title: "Contact book with a list of dicts",
@@ -573,7 +706,8 @@ print(counts.most_common(3))`,
         expectedOutputIncludes: ["python"],
       },
       {
-        prompt: "Merge two lists of names, and return a single, alphabetically sorted list with NO duplicates.",
+        prompt:
+          "Merge two lists of names, and return a single, alphabetically sorted list with NO duplicates.",
         starter: `list_a = ["Zack", "Alice", "Bob", "Alice"]
 list_b = ["Charlie", "Bob", "Eve"]
 
@@ -586,12 +720,17 @@ print(final_list)`,
     ],
     demo: {
       kind: "ds-visualizer",
-      description: "Interactive visualizer stepping through append, pop, insert, and dict key lookup.",
+      description:
+        "Interactive visualizer stepping through append, pop, insert, and dict key lookup.",
     },
     quiz: [
       { q: "Which is immutable?", choices: ["list", "tuple", "set", "dict"], answer: 1 },
       { q: "Which enforces uniqueness?", choices: ["list", "tuple", "set", "str"], answer: 2 },
-      { q: "Dict access by missing key raises…", choices: ["IndexError", "KeyError", "ValueError", "TypeError"], answer: 1 },
+      {
+        q: "Dict access by missing key raises…",
+        choices: ["IndexError", "KeyError", "ValueError", "TypeError"],
+        answer: 1,
+      },
     ],
     notes: "Module 7 notes — list, tuple, set, dict, when to use each.",
   }),
@@ -629,11 +768,19 @@ name_lengths = {name: len(name) for name in names}
 print(name_lengths) # {'Alice': 5, 'Bob': 3}
 \`\`\`
 `,
-    commonMistake: "Trying to cram too much logic into a single comprehension. If your comprehension wraps across three lines and has multiple `if/else` conditions, you've defeated the purpose. Fall back to a standard `for` loop for readability.",
-    miniPrompt: "Use a list comprehension to generate a list of the squares of the numbers 1 through 5.",
+    commonMistake:
+      "Trying to cram too much logic into a single comprehension. If your comprehension wraps across three lines and has multiple `if/else` conditions, you've defeated the purpose. Fall back to a standard `for` loop for readability.",
+    miniPrompt:
+      "Use a list comprehension to generate a list of the squares of the numbers 1 through 5.",
     furtherReading: [
-      { title: "Python Tutorial: List Comprehensions", url: "https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions" },
-      { title: "Functional Programming Modules", url: "https://docs.python.org/3/library/functional.html" }
+      {
+        title: "Python Tutorial: List Comprehensions",
+        url: "https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions",
+      },
+      {
+        title: "Functional Programming Modules",
+        url: "https://docs.python.org/3/library/functional.html",
+      },
     ],
     liveCoding: {
       title: "Word frequency, rewritten as a dict comprehension",
@@ -644,7 +791,8 @@ print(sorted(counts.items(), key=lambda kv: -kv[1])[:3])`,
     },
     challenges: [
       {
-        prompt: "Password strength: return True if len >= 8, has a digit, has an uppercase, has a symbol from !@#$.",
+        prompt:
+          "Password strength: return True if len >= 8, has a digit, has an uppercase, has a symbol from !@#$.",
         starter: `def strong(pw):
     return (
         len(pw) >= 8
@@ -658,9 +806,21 @@ print(strong("Abc12345!"))`,
       },
     ],
     quiz: [
-      { q: "Result of [x*x for x in range(3)]?", choices: ["[0,1,2]", "[0,1,4]", "[1,4,9]", "[]"], answer: 1 },
-      { q: "zip([1,2],[3,4]) yields…", choices: ["[1,2,3,4]", "[(1,3),(2,4)]", "[(1,2),(3,4)]", "error"], answer: 1 },
-      { q: "enumerate([\"a\",\"b\"]) first value?", choices: ["(0,'a')", "('a',0)", "'a'", "0"], answer: 0 },
+      {
+        q: "Result of [x*x for x in range(3)]?",
+        choices: ["[0,1,2]", "[0,1,4]", "[1,4,9]", "[]"],
+        answer: 1,
+      },
+      {
+        q: "zip([1,2],[3,4]) yields…",
+        choices: ["[1,2,3,4]", "[(1,3),(2,4)]", "[(1,2),(3,4)]", "error"],
+        answer: 1,
+      },
+      {
+        q: 'enumerate(["a","b"]) first value?',
+        choices: ["(0,'a')", "('a',0)", "'a'", "0"],
+        answer: 0,
+      },
     ],
     notes: "Module 8 notes — comprehensions and built-ins.",
   }),
@@ -712,11 +872,16 @@ p = Point(10, 20)
 print(p) # Point(10, 20) instead of <__main__.Point object at 0x...>
 \`\`\`
 `,
-    commonMistake: "Forgetting to include `self` as the first parameter when defining a method inside a class. Without it, you'll get a confusing `TypeError` saying the method takes 0 positional arguments but 1 was given.",
-    miniPrompt: "In Example 1, add a `have_birthday()` method that increases the dog's `self.age` by 1 and prints a happy birthday message.",
+    commonMistake:
+      "Forgetting to include `self` as the first parameter when defining a method inside a class. Without it, you'll get a confusing `TypeError` saying the method takes 0 positional arguments but 1 was given.",
+    miniPrompt:
+      "In Example 1, add a `have_birthday()` method that increases the dog's `self.age` by 1 and prints a happy birthday message.",
     furtherReading: [
       { title: "Python Tutorial: Classes", url: "https://docs.python.org/3/tutorial/classes.html" },
-      { title: "Real Python: OOP in Python 3", url: "https://realpython.com/python3-object-oriented-programming/" }
+      {
+        title: "Real Python: OOP in Python 3",
+        url: "https://realpython.com/python3-object-oriented-programming/",
+      },
     ],
     liveCoding: {
       title: "Contact + ContactBook classes",
@@ -743,7 +908,8 @@ for c in book.items:
     },
     challenges: [
       {
-        prompt: "Add update(name, new_phone) and delete(name) methods to ContactBook and demonstrate both.",
+        prompt:
+          "Add update(name, new_phone) and delete(name) methods to ContactBook and demonstrate both.",
         starter: `class Contact:
     def __init__(self, name, phone):
         self.name, self.phone = name, phone
@@ -770,7 +936,8 @@ print(len(b.items))`,
         expectedOutputIncludes: ["Ada <999>"],
       },
       {
-        prompt: "Create a BankAccount class with a deposit(amount) and withdraw(amount) method. Prevent overdrawing.",
+        prompt:
+          "Create a BankAccount class with a deposit(amount) and withdraw(amount) method. Prevent overdrawing.",
         starter: `class BankAccount:
     def __init__(self, initial_balance):
         self.balance = initial_balance
@@ -786,9 +953,21 @@ acct = BankAccount(100)
       },
     ],
     quiz: [
-      { q: "Constructor method name?", choices: ["__new__", "__init__", "__call__", "__start__"], answer: 1 },
-      { q: "`self` refers to…", choices: ["the class", "the module", "the current instance", "None"], answer: 2 },
-      { q: "Class attribute is…", choices: ["shared across instances", "per-instance", "always private", "never overridable"], answer: 0 },
+      {
+        q: "Constructor method name?",
+        choices: ["__new__", "__init__", "__call__", "__start__"],
+        answer: 1,
+      },
+      {
+        q: "`self` refers to…",
+        choices: ["the class", "the module", "the current instance", "None"],
+        answer: 2,
+      },
+      {
+        q: "Class attribute is…",
+        choices: ["shared across instances", "per-instance", "always private", "never overridable"],
+        answer: 0,
+      },
     ],
     notes: "Module 9 notes — classes, objects, methods, constructors.",
   }),
@@ -824,10 +1003,15 @@ app.increment()
 ### Avoiding Spagetti Code
 Keep your concerns separated. \`ContactBook\` should not be calling \`input()\`. It should receive data as arguments, and return data to the caller. The main CLI loop handles the \`input()\` and \`print()\` statements. This makes the \`ContactBook\` reusable in a GUI or web app later!
 `,
-    commonMistake: "Putting `input()` calls directly inside the `ContactBook` class methods. If you do this, your class is permanently tied to the terminal and cannot be reused in a web or desktop application.",
-    miniPrompt: "In the live code below, change the ContactBook constructor so it creates a file named `my_friends.json` instead of `contacts.json`.",
+    commonMistake:
+      "Putting `input()` calls directly inside the `ContactBook` class methods. If you do this, your class is permanently tied to the terminal and cannot be reused in a web or desktop application.",
+    miniPrompt:
+      "In the live code below, change the ContactBook constructor so it creates a file named `my_friends.json` instead of `contacts.json`.",
     furtherReading: [
-      { title: "Software Architecture: Separation of Concerns", url: "https://en.wikipedia.org/wiki/Separation_of_concerns" }
+      {
+        title: "Software Architecture: Separation of Concerns",
+        url: "https://en.wikipedia.org/wiki/Separation_of_concerns",
+      },
     ],
     liveCoding: {
       title: "Full Contact Book — add / list / search / save / load",
@@ -871,15 +1055,24 @@ print([c.name for c in b.search("a")])`,
 `,
       },
       {
-        prompt: "Add an export_csv(filename) method to ContactBook that writes all contacts to a CSV file manually.",
+        prompt:
+          "Add an export_csv(filename) method to ContactBook that writes all contacts to a CSV file manually.",
         starter: `# Hint: loop over self.items and write "name,phone\\n" for each
 # Call your method and read the file to verify
 `,
-      }
+      },
     ],
     quiz: [
-      { q: "Persistence in this project uses…", choices: ["a database", "a JSON file", "environment vars", "nothing"], answer: 1 },
-      { q: "Bad input is best handled via…", choices: ["ignoring it", "try/except", "print statements", "sys.exit"], answer: 1 },
+      {
+        q: "Persistence in this project uses…",
+        choices: ["a database", "a JSON file", "environment vars", "nothing"],
+        answer: 1,
+      },
+      {
+        q: "Bad input is best handled via…",
+        choices: ["ignoring it", "try/except", "print statements", "sys.exit"],
+        answer: 1,
+      },
     ],
     notes: "Module 10 notes — planning, implementation, testing.",
   }),
@@ -916,11 +1109,12 @@ data = response.json()
 print(f"People in space right now: {data['number']}")
 \`\`\`
 `,
-    commonMistake: "Naming your own file the same name as a library (e.g., naming your file `random.py`). When you type `import random` in your code, Python will import your file instead of the built-in library, causing chaotic errors.",
+    commonMistake:
+      "Naming your own file the same name as a library (e.g., naming your file `random.py`). When you type `import random` in your code, Python will import your file instead of the built-in library, causing chaotic errors.",
     miniPrompt: "Use the `math` module in the live code to print the square root of 225.",
     furtherReading: [
       { title: "The Python Standard Library", url: "https://docs.python.org/3/library/" },
-      { title: "PyPI - The Python Package Index", url: "https://pypi.org/" }
+      { title: "PyPI - The Python Package Index", url: "https://pypi.org/" },
     ],
     liveCoding: {
       title: "Dice roller and password generator",
@@ -939,7 +1133,8 @@ print("pw:", password(10))`,
     },
     challenges: [
       {
-        prompt: "Print a timestamp and a 3-second 'countdown' (print 3, 2, 1, go — no real sleep needed).",
+        prompt:
+          "Print a timestamp and a 3-second 'countdown' (print 3, 2, 1, go — no real sleep needed).",
         starter: `from datetime import datetime
 print("started at:", datetime(2026, 1, 1, 12, 0, 0).isoformat())
 for n in [3, 2, 1]:
@@ -949,9 +1144,21 @@ print("go")`,
       },
     ],
     quiz: [
-      { q: "Which module for random numbers?", choices: ["math", "random", "sys", "os"], answer: 1 },
-      { q: "Which for current date/time?", choices: ["clock", "datetime", "chrono", "timeit"], answer: 1 },
-      { q: "pip installs packages from…", choices: ["GitHub only", "PyPI", "the standard library", "your disk only"], answer: 1 },
+      {
+        q: "Which module for random numbers?",
+        choices: ["math", "random", "sys", "os"],
+        answer: 1,
+      },
+      {
+        q: "Which for current date/time?",
+        choices: ["clock", "datetime", "chrono", "timeit"],
+        answer: 1,
+      },
+      {
+        q: "pip installs packages from…",
+        choices: ["GitHub only", "PyPI", "the standard library", "your disk only"],
+        answer: 1,
+      },
     ],
     notes: "Module 11 notes — stdlib overview and pip basics.",
   }),
@@ -987,11 +1194,13 @@ parsed = json.loads(json_string)
 print(parsed["hobbies"][1]) # coding
 \`\`\`
 `,
-    commonMistake: "Forgetting to specify `encoding='utf-8'` when calling `open()` to read or write text files. Without it, Python uses your operating system's default encoding (often cp1252 on Windows), which will crash violently the second it encounters an emoji or a foreign character.",
-    miniPrompt: "In the live coding window, convert the `buf.getvalue()` CSV string directly into a JSON string using `json.dumps()`.",
+    commonMistake:
+      "Forgetting to specify `encoding='utf-8'` when calling `open()` to read or write text files. Without it, Python uses your operating system's default encoding (often cp1252 on Windows), which will crash violently the second it encounters an emoji or a foreign character.",
+    miniPrompt:
+      "In the live coding window, convert the `buf.getvalue()` CSV string directly into a JSON string using `json.dumps()`.",
     furtherReading: [
       { title: "Python docs: csv module", url: "https://docs.python.org/3/library/csv.html" },
-      { title: "Python docs: json module", url: "https://docs.python.org/3/library/json.html" }
+      { title: "Python docs: json module", url: "https://docs.python.org/3/library/json.html" },
     ],
     liveCoding: {
       title: "Export contacts to CSV and read them back",
@@ -1026,12 +1235,20 @@ print(back == data)`,
       },
     ],
     quiz: [
-      { q: "csv.DictReader gives you…", choices: ["lists", "dicts keyed by header", "tuples", "strings"], answer: 1 },
+      {
+        q: "csv.DictReader gives you…",
+        choices: ["lists", "dicts keyed by header", "tuples", "strings"],
+        answer: 1,
+      },
       { q: "json.dumps returns…", choices: ["dict", "bytes", "str", "None"], answer: 2 },
-      { q: "Best encoding for text files?", choices: ["ascii", "latin-1", "utf-8", "utf-16 always"], answer: 2 },
+      {
+        q: "Best encoding for text files?",
+        choices: ["ascii", "latin-1", "utf-8", "utf-16 always"],
+        answer: 2,
+      },
     ],
     notes: "Module 12 notes — CSV, JSON, capstone, certificate.",
   }),
 ];
 
-export const getModule = (slug: string) => modules.find(x => x.slug === slug);
+export const getModule = (slug: string) => modules.find((x) => x.slug === slug);

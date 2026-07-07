@@ -4,7 +4,12 @@ import { useProgress } from "@/hooks/useProgress";
 import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/progress")({
-  head: () => ({ meta: [{ title: "My Progress — pycourse" }, { name: "description", content: "Track your 12-module progress and quiz scores." }] }),
+  head: () => ({
+    meta: [
+      { title: "My Progress — pycourse" },
+      { name: "description", content: "Track your 12-module progress and quiz scores." },
+    ],
+  }),
   component: ProgressPage,
 });
 
@@ -37,8 +42,8 @@ function ProgressPage() {
   const p = useProgress();
   const pct = Math.round((p.completed.length / modules.length) * 100);
 
-  const done = modules.filter(m => p.completed.includes(m.slug));
-  const pending = modules.filter(m => !p.completed.includes(m.slug));
+  const done = modules.filter((m) => p.completed.includes(m.slug));
+  const pending = modules.filter((m) => !p.completed.includes(m.slug));
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
@@ -48,7 +53,9 @@ function ProgressPage() {
       <div className="mt-6 rounded-lg border border-border p-6 bg-secondary">
         <div className="flex items-baseline justify-between font-mono text-sm mb-3">
           <span>completed</span>
-          <span className="text-amber">{p.completed.length} / {modules.length}</span>
+          <span className="text-amber">
+            {p.completed.length} / {modules.length}
+          </span>
         </div>
         <AnimatedBar pct={pct} />
         <p className="mt-2 font-mono text-xs text-muted-foreground">{pct}% complete</p>
@@ -59,7 +66,7 @@ function ProgressPage() {
         <div className="mt-8">
           <p className="font-mono text-xs text-teal mb-3"># completed({done.length})</p>
           <div className="space-y-2">
-            {done.map(m => {
+            {done.map((m) => {
               const score = p.quizScores[m.slug];
               const challenges = p.challengesPassed[m.slug] ?? 0;
               return (
@@ -72,7 +79,9 @@ function ProgressPage() {
                   <span className="font-mono w-8 text-right tabular-nums text-teal shrink-0">
                     ✓ {m.id.toString().padStart(2, "0")}
                   </span>
-                  <span className="flex-1 truncate group-hover:text-teal transition-colors">{m.title}</span>
+                  <span className="flex-1 truncate group-hover:text-teal transition-colors">
+                    {m.title}
+                  </span>
                   <span className="font-mono text-xs text-muted-foreground shrink-0">
                     {score !== undefined ? `quiz ${score}%` : "quiz —"} · runs {challenges}
                   </span>
@@ -86,9 +95,11 @@ function ProgressPage() {
       {/* Pending modules */}
       {pending.length > 0 && (
         <div className="mt-6">
-          <p className="font-mono text-xs text-muted-foreground mb-3"># pending({pending.length})</p>
+          <p className="font-mono text-xs text-muted-foreground mb-3">
+            # pending({pending.length})
+          </p>
           <div className="space-y-2">
-            {pending.map(m => {
+            {pending.map((m) => {
               const score = p.quizScores[m.slug];
               const challenges = p.challengesPassed[m.slug] ?? 0;
               return (
@@ -101,7 +112,9 @@ function ProgressPage() {
                   <span className="font-mono w-8 text-right tabular-nums text-muted-foreground shrink-0">
                     ○ {m.id.toString().padStart(2, "0")}
                   </span>
-                  <span className="flex-1 truncate group-hover:text-amber transition-colors">{m.title}</span>
+                  <span className="flex-1 truncate group-hover:text-amber transition-colors">
+                    {m.title}
+                  </span>
                   <span className="font-mono text-xs text-muted-foreground shrink-0">
                     {score !== undefined ? `quiz ${score}%` : "quiz —"} · runs {challenges}
                   </span>
@@ -114,7 +127,10 @@ function ProgressPage() {
 
       {p.completed.length === 0 && (
         <p className="mt-8 font-mono text-sm text-muted-foreground">
-          {">>> "}no modules completed yet. <Link to="/modules" className="text-amber hover:underline">start_course()</Link>
+          {">>> "}no modules completed yet.{" "}
+          <Link to="/modules" className="text-amber hover:underline">
+            start_course()
+          </Link>
         </p>
       )}
     </div>
