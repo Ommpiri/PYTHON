@@ -38,6 +38,7 @@ const PreBlock = ({ children, ...rest }: any) => {
 
 export function Pydude() {
   const [expanded, setExpanded] = useState(false);
+  const [avatarRevealed, setAvatarRevealed] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -131,32 +132,52 @@ export function Pydude() {
     <>
       {/* Floating avatar button */}
       {!expanded && (
-        <div className="fixed bottom-6 right-6 z-50">
-          <button
-            onClick={() => setExpanded(true)}
-            className={`relative flex items-center justify-center hover:scale-110 transition-transform focus:outline-none ${
-              gesture === "hi"
-                ? "animate-hi"
-                : gesture === "welcome"
-                  ? "animate-welcome"
-                  : gesture === "bye"
-                    ? "animate-bye"
-                    : ""
-            }`}
-            title="Ask Pydude"
-          >
-            <div className="w-16 h-16 rounded-full overflow-hidden border-[3px] border-amber shadow-[0_8px_30px_rgb(0,0,0,0.4)] bg-white flex items-center justify-center relative">
-              <img
-                src="/pydude.png"
-                alt="Pydude AI"
-                className="w-full h-full object-cover scale-[1.2] translate-y-[5%]"
-              />
-              {/* Inner shadow to make the avatar pop */}
-              <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] pointer-events-none" />
+        <div className="fixed bottom-6 right-0 z-50 flex items-end gap-2 translate-x-2">
+          {!avatarRevealed ? (
+            <button
+              onClick={() => setAvatarRevealed(true)}
+              className="bg-warm-black border border-border text-white p-2 pr-4 rounded-l-lg shadow-lg hover:bg-amber hover:text-black transition-colors"
+              title="Show Pydude"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 pr-6">
+              <button
+                onClick={() => setAvatarRevealed(false)}
+                className="bg-warm-black border border-border text-white p-2 rounded-full shadow-lg hover:bg-amber hover:text-black transition-colors"
+                title="Hide Pydude"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+              
+              <button
+                onClick={() => setExpanded(true)}
+                className={`relative flex items-center justify-center hover:scale-110 transition-transform focus:outline-none ${
+                  gesture === "hi"
+                    ? "animate-hi"
+                    : gesture === "welcome"
+                      ? "animate-welcome"
+                      : gesture === "bye"
+                        ? "animate-bye"
+                        : ""
+                }`}
+                title="Ask Pydude"
+              >
+                <div className="w-16 h-16 rounded-full overflow-hidden border-[3px] border-amber shadow-[0_8px_30px_rgb(0,0,0,0.4)] bg-white flex items-center justify-center relative">
+                  <img
+                    src="/pydude.png"
+                    alt="Pydude AI"
+                    className="w-full h-full object-cover scale-[1.2] translate-y-[5%]"
+                  />
+                  {/* Inner shadow to make the avatar pop */}
+                  <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] pointer-events-none" />
+                </div>
+                {/* Pulse ring */}
+                <span className="absolute inset-0 rounded-full border-2 border-amber/50 animate-ping" />
+              </button>
             </div>
-            {/* Pulse ring */}
-            <span className="absolute inset-0 rounded-full border-2 border-amber/50 animate-ping" />
-          </button>
+          )}
         </div>
       )}
 
