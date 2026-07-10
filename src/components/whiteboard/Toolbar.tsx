@@ -181,7 +181,7 @@ export function Toolbar(props: ToolbarProps) {
           <label className="wb-subpanel-label">Thickness</label>
           <input
             type="range"
-            min={1}
+            min={3}
             max={20}
             value={props.penThickness}
             onChange={(e) => props.setPenThickness(Number(e.target.value))}

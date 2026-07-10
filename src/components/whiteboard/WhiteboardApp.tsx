@@ -55,7 +55,7 @@ export function WhiteboardApp() {
   /* ── Tool state ───────────────────────────────────── */
   const [tool, setTool] = useState<Tool>("pen");
   const [penColor, setPenColor] = useState("oklch(0.76 0.14 75)");
-  const [penThickness, setPenThickness] = useState(3);
+  const [penThickness, setPenThickness] = useState(6);
   const [shapeStrokeColor, setShapeStrokeColor] = useState("oklch(0.76 0.14 75)");
   const [shapeStrokeWidth, setShapeStrokeWidth] = useState(2);
   const [shapeFillColor, setShapeFillColor] = useState<string | null>(null);
@@ -70,6 +70,8 @@ export function WhiteboardApp() {
 
   /* ── UI state ─────────────────────────────────────── */
   const [presentMode, setPresentMode] = useState(false);
+  const [presentUIVisible, setPresentUIVisible] = useState(false);
+  const presentTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [showBoards, setShowBoards] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showSnippets, setShowSnippets] = useState(false);
@@ -117,15 +119,12 @@ export function WhiteboardApp() {
     setCanRedo(historyRef.current.canRedo);
   }, [elements]);
 
-  /* ── Autosave (every 3s) ──────────────────────────── */
+  /* ── Autosave ──────────────────────────── */
   useEffect(() => {
-    const interval = setInterval(() => {
-      const board = boards.find((b) => b.id === activeBoardId);
-      if (board) {
-        saveBoard({ ...board, elements, background });
-      }
-    }, 3000);
-    return () => clearInterval(interval);
+    const board = boards.find((b) => b.id === activeBoardId);
+    if (board) {
+      saveBoard({ ...board, elements, background });
+    }
   }, [elements, background, activeBoardId, boards]);
 
   /* ── Board switching ──────────────────────────────── */
@@ -219,7 +218,7 @@ export function WhiteboardApp() {
         x: textInput.x,
         y: textInput.y,
         width: 300,
-        fontSize: 16,
+        fontSize: 24,
         color: penColor,
         zIndex: elements.length,
       };
@@ -433,6 +432,25 @@ export function WhiteboardApp() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [undo, redo, deleteSelected, selectedIds, presentMode]);
 
+  /* ── Present Mode UI Fade ─────────────────────────── */
+  useEffect(() => {
+    if (!presentMode) return;
+    const onMouseMove = () => {
+      setPresentUIVisible(true);
+      if (presentTimerRef.current) clearTimeout(presentTimerRef.current);
+      presentTimerRef.current = setTimeout(() => {
+        setPresentUIVisible(false);
+      }, 2000);
+    };
+    window.addEventListener("mousemove", onMouseMove);
+    // trigger once on mount
+    onMouseMove();
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      if (presentTimerRef.current) clearTimeout(presentTimerRef.current);
+    };
+  }, [presentMode]);
+
   /* ── Context menu ─────────────────────────────────── */
   const onContextMenu = useCallback(
     (e: React.MouseEvent) => {
@@ -630,11 +648,14 @@ export function WhiteboardApp() {
         </div>
       )}
 
-      {/* Present mode exit hint */}
+      {/* Present mode exit button */}
       {presentMode && (
-        <div className="wb-present-hint">
-          Press <kbd>Esc</kbd> to exit present mode
-        </div>
+        <button
+          className={`wb-present-exit ${presentUIVisible ? "visible" : ""}`}
+          onClick={() => setPresentMode(false)}
+        >
+          Exit Present Mode (Esc)
+        </button>
       )}
     </div>
   );

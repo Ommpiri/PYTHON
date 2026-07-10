@@ -1,8 +1,7 @@
 /* ── Undo / Redo Manager ──────────────────────────────────────────── */
 
 import type { WbElement } from "./types";
-
-const MAX_HISTORY = 50;
+const MAX_HISTORY = 100;
 
 export class HistoryManager {
   private undoStack: WbElement[][] = [];

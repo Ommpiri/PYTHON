@@ -230,17 +230,19 @@ export function renderShape(
 export function renderText(
   ctx: CanvasRenderingContext2D,
   el: TextElement,
+  scale: number = 1,
 ): void {
   ctx.save();
-  ctx.font = `${el.fontSize}px ${FONT_MONO}`;
+  ctx.scale(1 / scale, 1 / scale);
+  ctx.font = `${el.fontSize * scale}px ${FONT_MONO}`;
   ctx.fillStyle = el.color;
   ctx.textBaseline = "top";
 
-  const lines = wrapText(ctx, el.text, el.width);
+  const lines = wrapText(ctx, el.text, el.width * scale);
   let yOff = 0;
   for (const line of lines) {
-    ctx.fillText(line, el.x, el.y + yOff);
-    yOff += el.fontSize * 1.4;
+    ctx.fillText(line, el.x * scale, (el.y + yOff) * scale);
+    yOff += el.fontSize;
   }
   ctx.restore();
 }
@@ -332,42 +334,41 @@ export function renderCodeSnippet(
   roundRect(ctx, el.x, el.y, el.width, 28, radius);
   ctx.fill();
   ctx.fillStyle = "oklch(0.5 0.02 240)";
-  ctx.font = `500 11px ${FONT_MONO}`;
-  ctx.textBaseline = "middle";
-  ctx.fillText("python", el.x + pad, el.y + 14);
+  // Mac-like window dots
+  ctx.fillStyle = "oklch(0.72 0.17 25)"; // red
+  ctx.beginPath();
+  ctx.arc(el.x + 16, el.y + 16, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "oklch(0.76 0.14 75)"; // yellow
+  ctx.beginPath();
+  ctx.arc(el.x + 30, el.y + 16, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "oklch(0.5 0.15 150)"; // green
+  ctx.beginPath();
+  ctx.arc(el.x + 44, el.y + 16, 4, 0, Math.PI * 2);
+  ctx.fill();
 
-  // Three window dots
-  const dotY = el.y + 14;
-  const dotStartX = el.x + el.width - pad - 30;
-  [
-    "oklch(0.72 0.17 25)",
-    "oklch(0.76 0.14 75)",
-    "oklch(0.66 0.08 175)",
-  ].forEach((c, i) => {
-    ctx.fillStyle = c;
-    ctx.beginPath();
-    ctx.arc(dotStartX + i * 14, dotY, 3.5, 0, Math.PI * 2);
-    ctx.fill();
-  });
-
-  // Code lines
+  // Draw text unscaled for crispness
+  ctx.scale(1 / scale, 1 / scale);
+  const fontSize = 14 * scale;
   ctx.font = `${fontSize}px ${FONT_MONO}`;
   ctx.textBaseline = "top";
+
   const lines = el.code.split("\n");
-  const maxLines = Math.floor((el.height - 36 - pad) / lineH);
+  const padX = 16 * scale;
+  const padY = 36 * scale;
+  let currentY = el.y * scale + padY;
 
-  for (let i = 0; i < Math.min(lines.length, maxLines); i++) {
-    const lineY = el.y + 36 + i * lineH;
-    const line = lines[i];
-
-    // Simple token-based coloring
+  for (const line of lines) {
     const tokens = tokenizePython(line);
-    let xOff = el.x + pad;
-    for (const token of tokens) {
-      ctx.fillStyle = token.color;
-      ctx.fillText(token.text, xOff, lineY);
-      xOff += ctx.measureText(token.text).width;
+    let currentX = el.x * scale + padX;
+
+    for (const t of tokens) {
+      ctx.fillStyle = t.color;
+      ctx.fillText(t.text, currentX, currentY);
+      currentX += ctx.measureText(t.text).width;
     }
+    currentY += fontSize * 1.5;
   }
 
   ctx.restore();
@@ -405,29 +406,42 @@ function tokenizePython(line: string): Token[] {
 export function renderStickyNote(
   ctx: CanvasRenderingContext2D,
   el: StickyNote,
+  scale: number = 1,
 ): void {
   ctx.save();
 
-  // Drop shadow
-  ctx.shadowColor = "rgba(0,0,0,0.15)";
-  ctx.shadowBlur = 8;
-  ctx.shadowOffsetX = 2;
-  ctx.shadowOffsetY = 3;
-
-  ctx.fillStyle = el.color || "oklch(0.94 0.03 85)";
-  roundRect(ctx, el.x, el.y, el.width, el.height, 4);
+  // Draw background shadow
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.beginPath();
+  ctx.roundRect(el.x + 4, el.y + 6, el.width, el.height, 2);
   ctx.fill();
 
-  // Reset shadow for text
-  ctx.shadowColor = "transparent";
+  // Draw box
+  ctx.fillStyle = el.color || "oklch(0.94 0.03 85)";
+  ctx.beginPath();
+  ctx.roundRect(el.x, el.y, el.width, el.height, 2);
+  ctx.fill();
 
-  // Text
-  ctx.font = `14px ${FONT_MONO}`;
-  ctx.fillStyle = "oklch(0.22 0.01 120)";
+  // Fold effect (top right)
+  ctx.fillStyle = "rgba(255,255,255,0.2)";
+  ctx.beginPath();
+  ctx.moveTo(el.x + el.width - 16, el.y);
+  ctx.lineTo(el.x + el.width, el.y);
+  ctx.lineTo(el.x + el.width, el.y + 16);
+  ctx.fill();
+
+  // Draw text unscaled
+  ctx.scale(1 / scale, 1 / scale);
+  const fontSize = 15 * scale;
+  ctx.font = `500 ${fontSize}px var(--font-sans)`;
+  ctx.fillStyle = "oklch(0.1 0.02 240)";
   ctx.textBaseline = "top";
-  const lines = wrapText(ctx, el.text, el.width - 20);
-  for (let i = 0; i < lines.length; i++) {
-    ctx.fillText(lines[i], el.x + 10, el.y + 10 + i * 20);
+
+  const lines = wrapText(ctx, el.text, (el.width - 24) * scale);
+  let yOff = 16 * scale;
+  for (const line of lines) {
+    ctx.fillText(line, (el.x + 12) * scale, el.y * scale + yOff);
+    yOff += fontSize * 1.3;
   }
 
   ctx.restore();
@@ -550,7 +564,14 @@ export function renderSnapGuides(
   ctx.lineWidth = 1;
   ctx.setLineDash([4, 3]);
 
+  const now = Date.now();
+
   for (const g of guides) {
+    const age = now - g.timestamp;
+    if (age > 150) continue; // max 150ms
+
+    ctx.globalAlpha = 1 - age / 150;
+
     ctx.beginPath();
     if (g.orientation === "vertical") {
       const sx = g.position * view.scale + view.offsetX;
@@ -580,6 +601,7 @@ export function renderScene(
   selectedIds: Set<string>,
   laserTrails: LaserTrail[],
   snapGuides: SnapGuide[],
+  eraserHoverId: string | null = null,
 ): void {
   // Clear
   ctx.clearRect(0, 0, canvasW, canvasH);
@@ -595,11 +617,21 @@ export function renderScene(
   ctx.scale(view.scale, view.scale);
 
   for (const el of sorted) {
-    renderElement(ctx, el);
+    renderElement(ctx, el, view.scale);
 
     if (selectedIds.has(el.id)) {
       const bounds = getBoundsForSelection(el);
       renderSelectionBox(ctx, bounds, view.scale);
+    }
+
+    if (el.id === eraserHoverId) {
+      ctx.save();
+      const b = getBoundsForSelection(el);
+      ctx.strokeStyle = "rgba(255, 50, 50, 0.8)";
+      ctx.lineWidth = 2 / view.scale;
+      ctx.setLineDash([4 / view.scale, 4 / view.scale]);
+      ctx.strokeRect(b.x, b.y, b.width, b.height);
+      ctx.restore();
     }
   }
 
@@ -615,6 +647,7 @@ export function renderScene(
 export function renderElement(
   ctx: CanvasRenderingContext2D,
   el: WbElement,
+  scale: number = 1,
 ): void {
   switch (el.type) {
     case "freehand":
@@ -624,13 +657,13 @@ export function renderElement(
       renderShape(ctx, el);
       break;
     case "text":
-      renderText(ctx, el);
+      renderText(ctx, el, scale);
       break;
     case "code":
-      renderCodeSnippet(ctx, el);
+      renderCodeSnippet(ctx, el, scale);
       break;
     case "sticky":
-      renderStickyNote(ctx, el);
+      renderStickyNote(ctx, el, scale);
       break;
   }
 }

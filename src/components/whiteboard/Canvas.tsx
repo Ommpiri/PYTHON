@@ -82,13 +82,15 @@ export function Canvas({
   const selectRectRef = useRef<{ x: number; y: number; width: number; height: number } | null>(null);
   const isPanningRef = useRef(false);
   const spaceDownRef = useRef(false);
+  const [eraserHoverId, setEraserHoverId] = useState<string | null>(null);
+  const activeLaserIdRef = useRef<string | null>(null);
 
   // Mark canvas dirty whenever state changes
   const markDirty = useCallback(() => {
     dirtyRef.current = true;
   }, []);
 
-  useEffect(markDirty, [elements, selectedIds, view, background, laserTrails, snapGuides, markDirty]);
+  useEffect(markDirty, [elements, selectedIds, view, background, laserTrails, snapGuides, eraserHoverId, markDirty]);
 
   // Convert screen coords to world coords
   const screenToWorld = useCallback(
@@ -121,12 +123,13 @@ export function Canvas({
           ctx,
           elements,
           view,
-          rect.width,
-          rect.height,
+          canvas.width,
+          canvas.height,
           background,
           selectedIds,
           laserTrails,
           snapGuides,
+          eraserHoverId,
         );
 
         // Draw in-progress shapes
@@ -211,6 +214,13 @@ export function Canvas({
           drawingRef.current = true;
           const pressure = e.pressure > 0 ? e.pressure : 0.5;
           currentStrokeRef.current = [{ ...world, pressure }];
+          break;
+        }
+        case "laser": {
+          drawingRef.current = true;
+          const pressure = e.pressure > 0 ? e.pressure : 0.5;
+          currentStrokeRef.current = [{ ...world, pressure }];
+          activeLaserIdRef.current = generateId();
           break;
         }
         case "line":
@@ -300,6 +310,12 @@ export function Canvas({
         if (tool === "select") {
           const hit = hitTest(world);
           canvas.style.cursor = hit ? "move" : "default";
+        } else if (tool === "eraser") {
+          const hit = hitTest(world);
+          setEraserHoverId(hit ? hit.id : null);
+          canvas.style.cursor = hit ? "crosshair" : "default";
+        } else {
+          setEraserHoverId(null);
         }
         return;
       }
@@ -403,14 +419,16 @@ export function Canvas({
         }
         case "laser": {
           currentStrokeRef.current.push({ ...world, pressure: 0.5 });
+          if (!activeLaserIdRef.current) break;
           setLaserTrails((prev) => {
-            const active = prev.filter((t) => t.points.length > 0);
+            const others = prev.filter((t) => t.id !== activeLaserIdRef.current);
             const current: LaserTrail = {
+              id: activeLaserIdRef.current!,
               type: "laser",
               points: [...currentStrokeRef.current],
               timestamp: Date.now(),
             };
-            return [...active.slice(-5), current];
+            return [...others, current];
           });
           break;
         }
@@ -543,14 +561,7 @@ export function Canvas({
           break;
         }
         case "laser": {
-          setLaserTrails((prev) => [
-            ...prev,
-            {
-              type: "laser",
-              points: [...currentStrokeRef.current],
-              timestamp: Date.now(),
-            },
-          ]);
+          activeLaserIdRef.current = null;
           break;
         }
       }

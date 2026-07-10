@@ -122,6 +122,7 @@ export interface StickyNote extends BaseElement {
 }
 
 export interface LaserTrail {
+  id: string;
   type: "laser";
   points: Point[];
   timestamp: number;
@@ -178,6 +179,7 @@ export interface HistoryEntry {
 export interface SnapGuide {
   orientation: "horizontal" | "vertical";
   position: number;
+  timestamp: number;
 }
 
 export interface SnapResult {

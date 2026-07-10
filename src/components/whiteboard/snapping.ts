@@ -4,7 +4,7 @@ import type { WbElement, SnapResult, SnapGuide, Point } from "./types";
 import { getElementBounds } from "./types";
 
 const GRID_SIZE = 20;
-const SNAP_THRESHOLD = 8; // pixels in screen space
+const SNAP_THRESHOLD = 10; // pixels in screen space
 
 /** Snap a point to the nearest grid intersection. */
 export function snapToGrid(p: Point, scale: number): Point {
@@ -61,7 +61,7 @@ export function snapToElements(
         bestDx = other - drag;
         snapX = dragBounds.x + bestDx;
         // Add a vertical guide at this x position
-        guides.push({ orientation: "vertical", position: other });
+        guides.push({ orientation: "vertical", position: other, timestamp: Date.now() });
       }
     }
 
@@ -79,7 +79,7 @@ export function snapToElements(
       if (dist < threshold && dist < Math.abs(bestDy)) {
         bestDy = other - drag;
         snapY = dragBounds.y + bestDy;
-        guides.push({ orientation: "horizontal", position: other });
+        guides.push({ orientation: "horizontal", position: other, timestamp: Date.now() });
       }
     }
   }
