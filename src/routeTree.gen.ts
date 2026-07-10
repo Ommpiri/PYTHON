@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhiteboardRouteImport } from './routes/whiteboard'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as CertificateRouteImport } from './routes/certificate'
@@ -18,6 +19,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ModulesIndexRouteImport } from './routes/modules.index'
 import { Route as ModulesSlugRouteImport } from './routes/modules.$slug'
 
+const WhiteboardRoute = WhiteboardRouteImport.update({
+  id: '/whiteboard',
+  path: '/whiteboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgressRoute = ProgressRouteImport.update({
   id: '/progress',
   path: '/progress',
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/certificate': typeof CertificateRoute
   '/playground': typeof PlaygroundRoute
   '/progress': typeof ProgressRoute
+  '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
   '/modules/': typeof ModulesIndexRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/certificate': typeof CertificateRoute
   '/playground': typeof PlaygroundRoute
   '/progress': typeof ProgressRoute
+  '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
   '/modules': typeof ModulesIndexRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/certificate': typeof CertificateRoute
   '/playground': typeof PlaygroundRoute
   '/progress': typeof ProgressRoute
+  '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
   '/modules/': typeof ModulesIndexRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/certificate'
     | '/playground'
     | '/progress'
+    | '/whiteboard'
     | '/modules/$slug'
     | '/modules/'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/certificate'
     | '/playground'
     | '/progress'
+    | '/whiteboard'
     | '/modules/$slug'
     | '/modules'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/certificate'
     | '/playground'
     | '/progress'
+    | '/whiteboard'
     | '/modules/$slug'
     | '/modules/'
   fileRoutesById: FileRoutesById
@@ -130,12 +142,20 @@ export interface RootRouteChildren {
   CertificateRoute: typeof CertificateRoute
   PlaygroundRoute: typeof PlaygroundRoute
   ProgressRoute: typeof ProgressRoute
+  WhiteboardRoute: typeof WhiteboardRoute
   ModulesSlugRoute: typeof ModulesSlugRoute
   ModulesIndexRoute: typeof ModulesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/whiteboard': {
+      id: '/whiteboard'
+      path: '/whiteboard'
+      fullPath: '/whiteboard'
+      preLoaderRoute: typeof WhiteboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/progress': {
       id: '/progress'
       path: '/progress'
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertificateRoute: CertificateRoute,
   PlaygroundRoute: PlaygroundRoute,
   ProgressRoute: ProgressRoute,
+  WhiteboardRoute: WhiteboardRoute,
   ModulesSlugRoute: ModulesSlugRoute,
   ModulesIndexRoute: ModulesIndexRoute,
 }

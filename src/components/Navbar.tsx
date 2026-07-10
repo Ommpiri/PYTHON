@@ -16,6 +16,7 @@ export function Navbar({
 
   const navLinks: { to: string; label: string }[] = [
     { to: "/playground", label: "playground" },
+    { to: "/whiteboard", label: "whiteboard" },
     { to: "/modules", label: "modules" },
     { to: "/progress", label: "my_progress" },
     { to: "/badges", label: "badges" },

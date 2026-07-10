@@ -166,6 +166,9 @@ function RootComponent() {
                 <a href="/assignments" className="hover:text-amber transition-colors">
                   assignments
                 </a>
+                <a href="/whiteboard" className="hover:text-amber transition-colors">
+                  whiteboard
+                </a>
                 <a href="/certificate" className="hover:text-amber transition-colors">
                   certificate
                 </a>
