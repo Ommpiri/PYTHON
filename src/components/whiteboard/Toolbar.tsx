@@ -25,6 +25,7 @@ interface ToolbarProps {
   onRedo: () => void;
   onExportPNG: (scale: 2 | 3, bg: "transparent" | "parchment") => void;
   onExportSVG: () => void;
+  onClearAll: () => void;
   onTogglePresent: () => void;
   onOpenTemplates: () => void;
   onOpenSnippets: () => void;
@@ -115,6 +116,15 @@ export function Toolbar(props: ToolbarProps) {
           title="Redo (Ctrl+Shift+Z)"
         >
           ↷
+        </button>
+
+        {/* Clear all */}
+        <button
+          className="wb-tool-btn wb-tool-clear"
+          onClick={props.onClearAll}
+          title="Clear all"
+        >
+          ⊘
         </button>
 
         <div className="wb-toolbar-divider" />

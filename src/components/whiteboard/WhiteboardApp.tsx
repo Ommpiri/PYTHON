@@ -355,6 +355,13 @@ export function WhiteboardApp() {
     setSelectedIds(new Set());
   }, [selectedIds, pushHistory, setElements]);
 
+  const clearAll = useCallback(() => {
+    if (elements.length === 0) return;
+    pushHistory();
+    setElements(() => []);
+    setSelectedIds(new Set());
+  }, [elements.length, pushHistory, setElements]);
+
   /* ── Template loading ─────────────────────────────── */
   const loadTemplate = useCallback(
     (templateElements: WbElement[]) => {
@@ -522,6 +529,7 @@ export function WhiteboardApp() {
         onRedo={redo}
         onExportPNG={(scale, bg) => exportPNG(elements, { scale, background: bg })}
         onExportSVG={() => exportSVG(elements)}
+        onClearAll={clearAll}
         onTogglePresent={() => setPresentMode((p) => !p)}
         onOpenTemplates={() => setShowTemplates(true)}
         onOpenSnippets={() => {

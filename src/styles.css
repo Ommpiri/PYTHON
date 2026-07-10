@@ -452,6 +452,10 @@
 .wb-tool-btn:disabled:hover {
   background: transparent;
 }
+.wb-tool-clear:hover {
+  color: oklch(0.72 0.17 25) !important;
+  background: oklch(0.72 0.17 25 / 0.12) !important;
+}
 .wb-tool-active {
   background: oklch(0.76 0.14 75 / 0.2) !important;
   color: oklch(0.76 0.14 75) !important;
