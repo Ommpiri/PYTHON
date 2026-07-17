@@ -1301,6 +1301,28 @@ class Point:
 p = Point(10, 20)
 print(p) # Point(10, 20) instead of <__main__.Point object at 0x...>
 \`\`\`
+
+### Real World: User Profile Model
+In most modern web applications, database records are represented as Objects. This keeps related logic (like formatting names or checking permissions) attached directly to the data.
+
+\`\`\`python
+# Example 3: User Model
+class User:
+    def __init__(self, username, is_admin=False):
+        self.username = username
+        self.is_admin = is_admin
+        
+    def get_display_name(self):
+        if self.is_admin:
+            return f"⭐ {self.username} (Admin)"
+        return self.username
+
+u1 = User("Alice")
+u2 = User("Bob", is_admin=True)
+
+print(u1.get_display_name()) # Alice
+print(u2.get_display_name()) # ⭐ Bob (Admin)
+\`\`\`
 `,
     commonMistake: [
       "Forgetting to include `self` as the first parameter when defining a method inside a class. Without it, you'll get a confusing `TypeError` saying the method takes 0 positional arguments but 1 was given.",
@@ -1400,6 +1422,21 @@ acct = BankAccount(100)
         q: "Class attribute is…",
         choices: ["shared across instances", "per-instance", "always private", "never overridable"],
         answer: 0,
+      },
+      {
+        q: "How do you define a method inside a class?",
+        choices: ["method f():", "def f():", "def f(self):", "function f(self):"],
+        answer: 2,
+      },
+      {
+        q: "What does the `__str__` method do?",
+        choices: ["Converts strings to ints", "Defines what prints when you `print(obj)`", "Calculates string length", "Deletes strings"],
+        answer: 1,
+      },
+      {
+        q: "If `class Car:` is a blueprint, what is `my_car = Car()`?",
+        choices: ["A module", "A function", "An instance", "A syntax error"],
+        answer: 2,
       },
     ],
     notes: "Module 9 notes — classes, objects, methods, constructors.",
