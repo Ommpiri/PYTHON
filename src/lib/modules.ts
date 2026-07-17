@@ -334,7 +334,32 @@ print("Liftoff!")
 \`\`\`
 
 Inside loops, you can use \`break\` to instantly shatter the loop and exit completely, or \`continue\` to abandon just the *current* iteration and jump immediately back to the top for the next one.
-`,
+
+### Real World: ATM PIN Retry Lock
+Real authentication systems limit retries to prevent brute-force attacks. A \`while\` loop with \`break\` is the exact right tool — you keep asking until the user gets it right or exhausts their attempts.
+
+\`\`\`python
+# Example 3: PIN retry with lockout
+correct_pin = "1234"
+max_tries = 3
+attempts = 0
+
+while attempts < max_tries:
+    pin = "9999" if attempts < 2 else "1234"  # simulate input
+    attempts += 1
+    if pin == correct_pin:
+        print(f"Access granted on attempt {attempts}")
+        break
+    remaining = max_tries - attempts
+    if remaining > 0:
+        print(f"Wrong PIN. {remaining} attempt(s) left.")
+else:
+    # The while/else block only runs if we exited WITHOUT break
+    print("Card locked. Too many failed attempts.")
+\`\`\`
+
+The \`while/else\` pattern is a clean Python idiom for "exhausted all tries without success" — no flag variable needed.
+`, 
     commonMistake: [
       "Forgetting to update the variable inside a `while` loop (like omitting `count -= 1` in Example 2). This creates an infinite loop that runs forever until the program crashes.",
       "Off-by-one errors in `range()`. `range(1, 10)` stops at 9, not 10. To include 10, write `range(1, 11)`. Read the stop argument as 'up to but not including'.",
@@ -398,6 +423,22 @@ print(f"{year} leap? {is_leap}")`,
 `,
         expectedOutputIncludes: ["PingPong", "Ping", "3"],
       },
+      {
+        prompt:
+          "Bonus: Collatz conjecture. Starting from n=27, keep applying: if n is even divide by 2, if odd multiply by 3 and add 1. Stop when n==1. Print the total number of steps taken.",
+        starter: `n = 27
+steps = 0
+
+while n != 1:
+    if n % 2 == 0:
+        n = n // 2
+    else:
+        n = n * 3 + 1
+    steps += 1
+
+print(f"steps: {steps}")`,
+        expectedOutputIncludes: ["steps: 111"],
+      },
     ],
     demo: {
       kind: "loop-visualizer",
@@ -423,6 +464,27 @@ print(f"{year} leap? {is_leap}")`,
           "Restarts the program",
           "Raises an error",
         ],
+        answer: 1,
+      },
+      {
+        q: "What does this print?\n\nfor i in range(2, 8, 3):\n    print(i)",
+        choices: ["2 5", "2 5 8", "2 3 4 5 6 7", "3 6"],
+        answer: 0,
+        explain: "`range(2, 8, 3)` produces 2, 5 — step of 3, stops before 8.",
+      },
+      {
+        q: "When does the `else` clause of a `while` loop run?",
+        choices: [
+          "Always, after the loop",
+          "Only if the loop body never ran",
+          "Only if the loop ended without hitting `break`",
+          "Only on error",
+        ],
+        answer: 2,
+      },
+      {
+        q: "`range(5)` produces…",
+        choices: ["1 2 3 4 5", "0 1 2 3 4", "0 1 2 3 4 5", "1 2 3 4"],
         answer: 1,
       },
     ],

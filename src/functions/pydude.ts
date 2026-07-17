@@ -26,9 +26,9 @@ function checkRateLimit(ip: string): boolean {
 }
 
 export const askPydude = createServerFn({ method: "POST" })
-  .validator((d: { message: string; moduleName: string; codeContext: string }) => d)
+  .validator((d: { message: string; moduleName: string; codeContext: string; isExplainError?: boolean }) => d)
   .handler(async ({ data }) => {
-    const { message, moduleName, codeContext } = data;
+    const { message, moduleName, codeContext, isExplainError } = data;
 
     // Retrieve client IP for basic rate limiting
     let clientIp = "127.0.0.1";
@@ -55,6 +55,10 @@ export const askPydude = createServerFn({ method: "POST" })
 Normally, I'd read your code for Module "${moduleName}" and help you out. Since I'm running offline, I recommend double-checking your syntax or looking at the Common Mistake section above!`;
     }
 
+    const systemPrompt = isExplainError
+      ? "You are a patient Python tutor. A beginner's code threw this error. In under 100 words: (1) name the error type in plain English, (2) point at the likely line/cause, (3) suggest a fix without just rewriting their whole solution. Don't be condescending."
+      : pydudeSystemPrompt;
+
     const prompt = `Module: ${moduleName}
 Current Code:
 \`\`\`python
@@ -66,7 +70,7 @@ ${message}`;
 
     const payload = {
       systemInstruction: {
-        parts: [{ text: pydudeSystemPrompt }],
+        parts: [{ text: systemPrompt }],
       },
       contents: [
         {

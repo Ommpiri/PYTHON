@@ -5,6 +5,8 @@ import { EditorView } from "@codemirror/view";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { runPython, preloadPyodide, usePyodideStatus } from "@/lib/pyodide-runner";
 import { recordChallenge } from "@/lib/progress";
+import { askPydude } from "@/functions/pydude";
+import { MarkdownBlock } from "@/components/MarkdownBlock";
 
 // ------------------------------------------------------------------
 // Custom pycourse editor theme (amber + teal + coral on dark ink bg)
@@ -162,6 +164,18 @@ export function CodeEditor({
 
   const cmRef = useRef<ReactCodeMirrorRef>(null);
 
+  const [explanation, setExplanation] = useState<string | null>(null);
+  const [explanationLoading, setExplanationLoading] = useState(false);
+  const [rateLimitTimer, setRateLimitTimer] = useState(0);
+
+  useEffect(() => {
+    if (rateLimitTimer <= 0) return;
+    const interval = setInterval(() => {
+      setRateLimitTimer((t) => t - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [rateLimitTimer]);
+
   // Preload Pyodide when the editor mounts so it's warm by the time they click Run
   useEffect(() => {
     preloadPyodide();
@@ -189,6 +203,7 @@ export function CodeEditor({
     setPass(null);
     setTimedOut(false);
     setStatus("idle");
+    setExplanation(null);
   }, [starter, slug, cellKey]);
 
   // Download current code
@@ -222,6 +237,7 @@ export function CodeEditor({
     setTypedLines([]);
     setPass(null);
     setTimedOut(false);
+    setExplanation(null);
 
     const res = await runPython(code, { trace });
     setStatus(res.ok ? "done" : "error");

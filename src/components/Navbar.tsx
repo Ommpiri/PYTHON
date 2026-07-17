@@ -1,5 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export function Navbar({
   theme,
@@ -10,6 +11,23 @@ export function Navbar({
 }) {
   const loc = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [csrfToken, setCsrfToken] = useState("");
+
+  const { data: session } = useQuery({
+    queryKey: ["session"],
+    queryFn: async () => {
+      const res = await fetch("/api/auth/session");
+      const data = await res.json();
+      return Object.keys(data).length > 0 ? data : null;
+    },
+  });
+
+  useEffect(() => {
+    fetch("/api/auth/csrf")
+      .then((res) => res.json())
+      .then((data) => setCsrfToken(data.csrfToken))
+      .catch(console.error);
+  }, []);
 
   const isActive = (path: string) =>
     loc.pathname === path || (path !== "/" && loc.pathname.startsWith(path));
@@ -53,6 +71,29 @@ export function Navbar({
           >
             {theme === "ink" ? "▊ ink" : "▊ paper"}
           </button>
+          
+          <div className="ml-4 pl-4 border-l border-border flex items-center gap-3 font-mono text-xs">
+            {session ? (
+              <>
+                {session.user?.image && (
+                  <img src={session.user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
+                )}
+                <span className="text-muted-foreground truncate max-w-[100px]">
+                  {session.user?.name || session.user?.email}
+                </span>
+                <form action="/api/auth/signout" method="POST">
+                  <input type="hidden" name="csrfToken" value={csrfToken} />
+                  <button type="submit" className="text-muted-foreground hover:text-amber transition-colors">
+                    [sign_out]
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link to="/login" className="text-muted-foreground hover:text-amber transition-colors">
+                [sign_in]
+              </Link>
+            )}
+          </div>
         </nav>
 
         {/* Mobile: theme toggle + hamburger */}
@@ -96,6 +137,28 @@ export function Navbar({
               {label}
             </Link>
           ))}
+          <div className="mt-2 pt-2 border-t border-border flex flex-col gap-2">
+            {session ? (
+              <>
+                <div className="flex items-center gap-2 px-2 py-1 font-mono text-sm text-muted-foreground">
+                  {session.user?.image && (
+                    <img src={session.user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
+                  )}
+                  <span>{session.user?.name || session.user?.email}</span>
+                </div>
+                <form action="/api/auth/signout" method="POST">
+                  <input type="hidden" name="csrfToken" value={csrfToken} />
+                  <button type="submit" className="w-full text-left px-2 py-2 rounded font-mono text-sm text-muted-foreground hover:text-foreground">
+                    [sign_out]
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link to="/login" className="px-2 py-2 rounded font-mono text-sm text-muted-foreground hover:text-foreground">
+                [sign_in]
+              </Link>
+            )}
+          </div>
         </nav>
       )}
     </header>
