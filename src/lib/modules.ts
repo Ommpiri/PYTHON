@@ -19,6 +19,7 @@ export type Module = {
   estMinutes: number;
   theory: string;
   commonMistake?: string[];
+  realWorldExample?: string;
   miniPrompt?: string;
   furtherReading?: { title: string; url: string }[];
   liveCoding: { title: string; starter: string; note?: string };
@@ -989,6 +990,22 @@ print(user["role"]) # Fast lookup by key
 unique_ids = {1, 2, 2, 3, 3, 3}
 print(unique_ids) # Outputs: {1, 2, 3}
 \`\`\`
+
+### Real World: API Data Processing
+In backend systems, you frequently receive lists of dictionaries representing rows from a database or JSON from an API. List comprehensions are heavily used to filter or transform this data efficiently.
+
+\`\`\`python
+# Example 3: Filtering a list of dicts
+users = [
+    {"name": "Alice", "active": True},
+    {"name": "Bob", "active": False},
+    {"name": "Charlie", "active": True}
+]
+
+# Get names of all active users in one line
+active_names = [u["name"] for u in users if u["active"]]
+print(active_names)  # ['Alice', 'Charlie']
+\`\`\`
 `,
     commonMistake: [
       "Modifying a list while you are looping over it. If you remove an item from a list while `for` looping through it, everything shifts backwards, causing the loop to skip the next item entirely!",
@@ -1049,6 +1066,21 @@ final_list = [] # TODO
 print(final_list)`,
         expectedOutputIncludes: ["Alice", "Bob", "Charlie", "Eve", "Zack"],
       },
+      {
+        prompt:
+          "Bonus: List comprehension. Given a list of users, extract a list of just their emails, but only for users whose 'role' is 'admin'.",
+        starter: `users = [
+    {"email": "ada@ok.py", "role": "admin"},
+    {"email": "bob@ok.py", "role": "user"},
+    {"email": "eve@ok.py", "role": "admin"}
+]
+
+# Use a list comprehension!
+admin_emails = [] # TODO
+
+print(admin_emails)`,
+        expectedOutputIncludes: ["['ada@ok.py', 'eve@ok.py']"],
+      },
     ],
     demo: {
       kind: "ds-visualizer",
@@ -1061,6 +1093,22 @@ print(final_list)`,
       {
         q: "Dict access by missing key raises…",
         choices: ["IndexError", "KeyError", "ValueError", "TypeError"],
+        answer: 1,
+      },
+      {
+        q: "What does this print?\n\nnums = [1, 2, 3]\nnums.append([4, 5])\nprint(len(nums))",
+        choices: ["5", "3", "4", "error"],
+        answer: 2,
+        explain: "append adds exactly ONE item to the end of the list. In this case, that item is another list. So the new list has 4 elements: 1, 2, 3, and [4, 5].",
+      },
+      {
+        q: "What is the syntax for a dictionary comprehension?",
+        choices: ["{x for x in data}", "{k: v for k,v in data}", "[k: v for data]", "(k: v for k in data)"],
+        answer: 1,
+      },
+      {
+        q: "What does `set([1, 1, 2])` return?",
+        choices: ["[1, 1, 2]", "{1, 2}", "(1, 1, 2)", "{1, 1, 2}"],
         answer: 1,
       },
     ],
