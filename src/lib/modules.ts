@@ -1585,6 +1585,24 @@ response = requests.get("http://api.open-notify.org/astros.json")
 data = response.json()
 print(f"People in space right now: {data['number']}")
 \`\`\`
+
+### Real World: Date Math
+Working with dates and times across timezones is notoriously difficult. The standard library's \`datetime\` module handles leap years, timezone offsets, and string parsing for you.
+
+\`\`\`python
+# Example 3: Parsing and formatting dates
+from datetime import datetime, timedelta
+
+# Parse a timestamp from an API
+api_timestamp = "2026-07-17 14:30:00"
+dt = datetime.strptime(api_timestamp, "%Y-%m-%d %H:%M:%S")
+
+# Add a week to it
+next_week = dt + timedelta(days=7)
+
+print(f"Original: {dt.strftime('%A, %b %d')}")
+print(f"Next Week: {next_week.strftime('%A, %b %d')}")
+\`\`\`
 `,
     commonMistake: [
       "Naming your own file the same name as a library (e.g., naming your file `random.py`). When you type `import random` in your code, Python will import your file instead of the built-in library, causing chaotic errors.",
@@ -1622,6 +1640,21 @@ for n in [3, 2, 1]:
 print("go")`,
         expectedOutputIncludes: ["go"],
       },
+      {
+        prompt:
+          "Bonus: Password Generator. Use the `string` and `random` modules to generate a random 8-character password consisting of letters and digits.",
+        starter: `import random
+import string
+
+# Hint: string.ascii_letters and string.digits give you the characters.
+# random.choices(population, k) returns a list of k random elements.
+
+length = 8
+# TODO: create the password and print it
+random.seed(42) # Keeps output consistent for the test
+print("".join(random.choices(string.ascii_letters + string.digits, k=length)))`,
+        expectedOutputIncludes: ["8F"],
+      },
     ],
     quiz: [
       {
@@ -1638,6 +1671,21 @@ print("go")`,
         q: "pip installs packages from…",
         choices: ["GitHub only", "PyPI", "the standard library", "your disk only"],
         answer: 1,
+      },
+      {
+        q: "Which import statement imports a specific function from a module?",
+        choices: ["import math", "include math.sqrt", "from math import sqrt", "require math.sqrt"],
+        answer: 2,
+      },
+      {
+        q: "If you want to use regular expressions in Python, which standard library module do you import?",
+        choices: ["regex", "re", "strings", "parse"],
+        answer: 1,
+      },
+      {
+        q: "What does `import random as rnd` do?",
+        choices: ["Creates a random number", "Throws a syntax error", "Imports the random module under the alias `rnd`", "Generates a random string"],
+        answer: 2,
       },
     ],
     notes: "Module 11 notes — stdlib overview and pip basics.",
