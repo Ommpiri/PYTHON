@@ -285,6 +285,7 @@ function ModulePage() {
               expectedIncludes={c.expectedOutputIncludes}
               slug={mod.slug}
               cellKey={`challenge_${i + 1}`}
+              hints={c.hints}
             />
           </Cell>
         ))}

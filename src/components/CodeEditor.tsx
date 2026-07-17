@@ -134,6 +134,7 @@ export function CodeEditor({
   onPass,
   trace,
   onTrace,
+  hints,
 }: {
   starter: string;
   expectedIncludes?: string[];
@@ -143,6 +144,7 @@ export function CodeEditor({
   onPass?: () => void;
   trace?: boolean;
   onTrace?: (lines: number[]) => void;
+  hints?: string[];
 }) {
   // Load saved code from localStorage (or fall back to starter)
   const initialCode = useMemo(
@@ -167,6 +169,7 @@ export function CodeEditor({
   const [explanation, setExplanation] = useState<string | null>(null);
   const [explanationLoading, setExplanationLoading] = useState(false);
   const [rateLimitTimer, setRateLimitTimer] = useState(0);
+  const [revealedHintsCount, setRevealedHintsCount] = useState(0);
 
   useEffect(() => {
     if (rateLimitTimer <= 0) return;
@@ -204,6 +207,7 @@ export function CodeEditor({
     setTimedOut(false);
     setStatus("idle");
     setExplanation(null);
+    setRevealedHintsCount(0);
   }, [starter, slug, cellKey]);
 
   // Download current code
@@ -479,6 +483,37 @@ export function CodeEditor({
               </div>
             )}
           </div>
+        </div>
+      )}
+      {hints && hints.length > 0 && (
+        <div className="px-4 py-3 border-t border-white/10 bg-[oklch(0.14_0.02_240)] font-mono text-xs">
+          <div className="flex items-center justify-between">
+            {revealedHintsCount < hints.length ? (
+              <button
+                type="button"
+                onClick={() => setRevealedHintsCount((c) => c + 1)}
+                className="text-amber hover:underline text-[11px] font-semibold cursor-pointer"
+              >
+                💡 Need a hint?
+              </button>
+            ) : (
+              <span className="text-muted-foreground text-[11px]">All hints revealed</span>
+            )}
+            {revealedHintsCount > 0 && (
+              <span className="text-muted-foreground text-[10px]">
+                hint {revealedHintsCount}/{hints.length} used
+              </span>
+            )}
+          </div>
+          {revealedHintsCount > 0 && (
+            <div className="mt-2.5 space-y-2 border-l border-amber/35 pl-3 text-warm-off/95">
+              {hints.slice(0, revealedHintsCount).map((hint, idx) => (
+                <div key={idx} className="leading-relaxed">
+                  <span className="text-amber font-semibold">Hint {idx + 1}:</span> {hint}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
