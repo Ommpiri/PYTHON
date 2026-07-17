@@ -834,6 +834,23 @@ else:
 finally:
     print("Closing up.")
 \`\`\`
+
+### Real World: Fallback Defaults
+When parsing data from external APIs, fields are sometimes missing or malformed. Using a \`try/except\` block is often much cleaner than writing complex nested \`if\` statements to validate every single piece of data.
+
+\`\`\`python
+# Example 3: Parsing messy JSON-like data
+user_data = {"name": "Alice", "age": "twenty"}
+
+try:
+    # Attempt to process assuming perfect data
+    age_next_year = int(user_data["age"]) + 1
+    print(f"{user_data['name']} will be {age_next_year}")
+except (KeyError, ValueError):
+    # Fallback if anything goes wrong
+    print("Error parsing user profile. Using default age.")
+    age_next_year = 0
+\`\`\`
 `,
     commonMistake: [
       "Using a 'bare except' (just writing `except:` without specifying the error type like `ValueError`). This catches literally everything, including KeyboardInterrupts (when you try to quit the program) or typo-related SyntaxErrors, making it impossible to debug real issues.",
@@ -889,6 +906,20 @@ def first_valid(vals, lo, hi):
 print(first_valid(inputs, 1, 10))`,
         expectedOutputIncludes: ["3"],
       },
+      {
+        prompt:
+          "Bonus: Safe JSON parser. Write a function `parse_json(text)` that attempts to import json and load the text. If it raises json.JSONDecodeError, return None.",
+        starter: `import json
+
+def parse_json(text):
+    # TODO: try to return json.loads(text)
+    # on json.JSONDecodeError, return None
+    pass
+
+print(parse_json('{"key": "value"}'))
+print(parse_json('not json!'))`,
+        expectedOutputIncludes: ["{'key': 'value'}", "None"],
+      },
     ],
     quiz: [
       {
@@ -909,6 +940,21 @@ print(first_valid(inputs, 1, 10))`,
       {
         q: "Which error for `int('abc')`?",
         choices: ["TypeError", "ValueError", "KeyError", "SyntaxError"],
+        answer: 1,
+      },
+      {
+        q: "When does the `else` block in a `try/except` run?",
+        choices: ["Always", "If an exception is raised", "If no exception is raised", "Only if finally is missing"],
+        answer: 2,
+      },
+      {
+        q: "Which error occurs when trying to access a missing key in a dictionary?",
+        choices: ["KeyError", "IndexError", "ValueError", "AttributeError"],
+        answer: 0,
+      },
+      {
+        q: "What does this print?\n\ntry:\n    x = 1/0\nexcept ValueError:\n    print('A')\nexcept ZeroDivisionError:\n    print('B')",
+        choices: ["A", "B", "AB", "error"],
         answer: 1,
       },
     ],
