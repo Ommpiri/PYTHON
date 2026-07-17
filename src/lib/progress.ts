@@ -120,6 +120,7 @@ async function updateDbProgress(updater: (p: Progress) => void) {
   
   updater(p);
   recomputeBadges(p);
+  recordActivity(p);
   
   try {
     await updateProgressFn(p);

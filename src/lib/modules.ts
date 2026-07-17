@@ -16,6 +16,7 @@ export type Module = {
   slug: string;
   title: string;
   tags: string[];
+  estMinutes: number;
   theory: string;
   commonMistake?: string[];
   miniPrompt?: string;
@@ -40,6 +41,7 @@ const m = (
 export const modules: Module[] = [
   m(1, "intro", "Introduction to Computers, Programming & Python Installation", {
     tags: ["Theory", "Live Coding", "Demo", "Challenge", "Quiz"],
+    estMinutes: 15,
     theory: `### How Computers Understand Code
 A program is simply a set of instructions that a computer runs. Your computer's processor (CPU) can only execute raw "machine code" (1s and 0s). Writing machine code by hand is incredibly tedious, which is why we use high-level programming languages like Python. 
 
@@ -179,6 +181,7 @@ print("Running on Python")`,
 
   m(2, "basics", "Python Basics", {
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
+    estMinutes: 20,
     theory: `### Variables and Dynamic Typing
 Variables are essentially sticky notes or labels that you attach to values so you can refer to them later. Unlike languages where you have to declare what *type* of data a variable holds (like C or Java), Python uses **dynamic typing**. This means the type belongs to the *value*, not the variable name itself. You can assign a number to a variable, and later assign a string to that exact same variable.
 
@@ -306,8 +309,9 @@ print(f"{miles:.2f} miles = {km:.2f} km")`,
   }),
 
   m(3, "control-flow", "Control Flow", {
-    tags: ["Theory", "Live Coding", "Demo", "Challenge", "Quiz"],
-    theory: `### Branching with if, elif, and else
+    tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
+    estMinutes: 25,
+    theory: `### Conditional Statements (if/elif/else), and else
 Programs need to make decisions. The \`if\` statement evaluates a boolean condition; if it is \`True\`, the indented block underneath runs. You can chain alternative conditions using \`elif\` (else-if), and provide a final catch-all fallback using \`else\`.
 
 ### Iteration: for vs while loops
@@ -493,7 +497,8 @@ print(f"steps: {steps}")`,
 
   m(4, "functions", "Functions", {
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
-    theory: `### What are Functions?
+    estMinutes: 25,
+    theory: `### Reusable Code Blockstions?
 A function is a reusable block of code that only runs when it is explicitly called. You define a function using the \`def\` keyword. You can pass data, known as **parameters**, into a function. A function can do some work and then **return** data back to the caller as a result.
 
 ### Returning vs Printing
@@ -527,6 +532,21 @@ def math_stuff():
 
 print(math_stuff()) # 15
 # print(local_var)  # Error! local_var doesn't exist out here
+\`\`\`
+
+### Real World: Data Formatting Helper
+In web development, you often fetch messy data from an API and need to clean it up before displaying it to the user. Functions are perfect for encapsulating this logic so you can reuse it anywhere.
+
+\`\`\`python
+# Example 4: Data cleaner
+def format_username(raw_name):
+    # Strip whitespace and convert to lowercase
+    clean = raw_name.strip().lower()
+    return f"@{clean}"
+
+users = ["  Alice  ", "BOB", "   charlie"]
+for u in users:
+    print(format_username(u))
 \`\`\`
 `,
     commonMistake: [
@@ -579,6 +599,18 @@ play_game(42, [10, 80, 42])`,
 print(tip(50, 20))`,
         expectedOutputIncludes: ["10"],
       },
+      {
+        prompt:
+          "Bonus: Palindrome checker. Define `is_palindrome(word)` that returns True if the word is the same forwards and backwards. Test it with 'racecar' and 'python'.",
+        starter: `def is_palindrome(word):
+    # return True if word == word reversed
+    # Hint: word[::-1] reverses a string
+    return False
+
+print(f"racecar: {is_palindrome('racecar')}")
+print(f"python: {is_palindrome('python')}")`,
+        expectedOutputIncludes: ["racecar: True", "python: False"],
+      },
     ],
     quiz: [
       {
@@ -596,13 +628,30 @@ print(tip(50, 20))`,
         choices: ["print results", "return results", "write to a file", "raise errors always"],
         answer: 1,
       },
+      {
+        q: "What does this print?\n\ndef f(x): return x * 2\nprint(f(f(3)))",
+        choices: ["6", "12", "9", "error"],
+        answer: 1,
+        explain: "`f(3)` returns 6. Then `f(6)` returns 12.",
+      },
+      {
+        q: "Which keyword defines a function?",
+        choices: ["function", "def", "func", "define"],
+        answer: 1,
+      },
+      {
+        q: "How do you provide a default value for a parameter?",
+        choices: ["def f(x=5):", "def f(x): 5", "def f(x == 5):", "def f(x) default 5:"],
+        answer: 0,
+      },
     ],
     notes: "Module 4 notes — def, parameters, return, scope.",
   }),
 
   m(5, "files", "File Handling", {
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
-    theory: `### Persistent Storage
+    estMinutes: 30,
+    theory: `### Reading and Writing Files
 So far, every time your program stops running, all its data vanishes. To save data permanently (like high scores, user preferences, or logs), you need to write it to a file. 
 
 ### Reading and Writing
@@ -701,7 +750,8 @@ else:
 
   m(6, "exceptions", "Exception Handling", {
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
-    theory: `### Defensive Programming
+    estMinutes: 30,
+    theory: `### Dealing with Errors Gracefullymming
 When writing code, things *will* go wrong. Users will type letters instead of numbers, network connections will drop, and files will go missing. If your program doesn't anticipate these errors, it will crash abruptly with a "Traceback".
 
 ### The try/except Block
@@ -812,9 +862,9 @@ print(first_valid(inputs, 1, 10))`,
   }),
 
   m(7, "data-structures", "Data Structures", {
-    tags: ["Theory", "Live Coding", "Demo", "Challenge", "Quiz"],
-    theory: `### Organizing Data
-As your programs grow, you'll need to store more than just single variables. Python provides several core "Data Structures" to organize collections of data efficiently. 
+    tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
+    estMinutes: 35,
+    theory: `### Lists, Tuples, Dictionaries & Setsyour programs grow, you'll need to store more than just single variables. Python provides several core "Data Structures" to organize collections of data efficiently. 
 
 ### Lists and Tuples (Sequences)
 A **list** is an ordered, mutable sequence of items. You can append, remove, or swap items inside a list. A **tuple** is almost exactly the same, but it is *immutable* — once created, it cannot be changed. Use lists for dynamic data, and tuples for fixed data that shouldn't accidentally be altered.
@@ -919,8 +969,8 @@ print(final_list)`,
 
   m(8, "comprehensions", "Advanced Data Handling", {
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
-    theory: `### Elegance and Speed
-Python is famous for being readable. One of its most powerful features for data transformation is the **Comprehension**. A comprehension allows you to build a brand new list, set, or dictionary from an existing iterable using a single, readable line of code.
+    estMinutes: 30,
+    theory: `### Lists, Dicts and Set Comprehensions famous for being readable. One of its most powerful features for data transformation is the **Comprehension**. A comprehension allows you to build a brand new list, set, or dictionary from an existing iterable using a single, readable line of code.
 
 ### List Comprehensions
 Instead of creating an empty list, looping over old data, checking a condition, and appending to the new list, you can compress all of that into one expression wrapped in square brackets.
@@ -1012,8 +1062,8 @@ print(strong("Abc12345!"))`,
 
   m(9, "oop", "Object-Oriented Programming", {
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
-    theory: `### What is OOP?
-Object-Oriented Programming (OOP) is a way of organizing code by grouping related data and the functions that operate on that data into a single unit called an **Object**. 
+    estMinutes: 40,
+    theory: `### Intro to Classes and Objects-Oriented Programming (OOP) is a way of organizing code by grouping related data and the functions that operate on that data into a single unit called an **Object**. 
 
 ### Classes and Instances
 A **Class** is the blueprint. An **Instance** (or Object) is the actual house built from that blueprint. You can build as many houses as you want from one blueprint, and each house can have different colored paint or furniture (instance data).
@@ -1162,7 +1212,8 @@ acct = BankAccount(100)
 
   m(10, "mini-project", "Mini Project — Contact Book App", {
     tags: ["Planning", "Implementation", "Testing"],
-    theory: `### Bringing it Together
+    estMinutes: 45,
+    theory: `### Consolidation: Building a Modular Projecther
 In this module, you'll combine everything you've learned to build a complete, functional app: Object-Oriented Programming (for the data model), File Handling (for persistent storage), and Exception Handling (to survive bad input).
 
 ### Architecture Planning
@@ -1270,7 +1321,8 @@ print([c.name for c in b.search("a")])`,
 
   m(11, "libraries", "Python Libraries", {
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
-    theory: `### Batteries Included
+    estMinutes: 35,
+    theory: `### Importing Code from Modules Included
 Python is famous for its "batteries included" philosophy. The **Standard Library** comes pre-installed with Python and contains hundreds of modules for doing everything from generating random numbers, to fetching web pages, to reading zip files.
 
 ### Imports
@@ -1359,7 +1411,8 @@ print("go")`,
 
   m(12, "data-formats", "Working with Data — CSV, JSON, Capstone", {
     tags: ["Theory", "Live Coding", "Challenge", "Quiz", "Certificate"],
-    theory: `### Data Serialization
+    estMinutes: 40,
+    theory: `### Formatting data: JSON & CSVerialization
 Software rarely works alone. To pass data between different programs (like a Python backend and a React frontend, or Excel to a database), you need universal data formats. The two undisputed kings are **CSV** and **JSON**.
 
 ### CSV (Comma Separated Values)

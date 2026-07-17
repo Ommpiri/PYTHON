@@ -48,16 +48,8 @@ CREATE TABLE IF NOT EXISTS progress (
   quiz_scores jsonb DEFAULT '{}',
   challenges_passed jsonb DEFAULT '{}',
   badges text[] DEFAULT '{}',
+  active_dates jsonb DEFAULT '[]',
   updated_at timestamp with time zone DEFAULT now(),
-  PRIMARY KEY (user_id),
-  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS streaks (
-  user_id uuid NOT NULL,
-  current_streak integer DEFAULT 0,
-  longest_streak integer DEFAULT 0,
-  last_active_date date,
   PRIMARY KEY (user_id),
   CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

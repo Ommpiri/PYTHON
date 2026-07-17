@@ -180,6 +180,9 @@ function ModulePage() {
           </p>
           <h1 className="mt-2 text-3xl sm:text-4xl font-display leading-tight">{mod.title}</h1>
           <div className="mt-3 flex flex-wrap gap-2">
+            <span className="font-mono text-[11px] px-2 py-1 rounded bg-secondary text-secondary-foreground font-semibold">
+              ⏳ ~{mod.estMinutes} min
+            </span>
             {mod.tags.map((t: string) => (
               <span
                 key={t}

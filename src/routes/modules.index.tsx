@@ -58,8 +58,8 @@ function ModulesIndex() {
                     </span>
                     <span className="ml-2">{m.title}</span>
                   </Link>
-                  <span className="text-xs text-muted-foreground hidden sm:block w-48 text-right group-hover:text-amber/70 transition-colors">
-                    {m.tags.slice(0, 3).join(" · ")}
+                  <span className="text-xs text-muted-foreground hidden sm:block w-56 text-right group-hover:text-amber/70 transition-colors">
+                    ~{m.estMinutes} min · {m.tags.slice(0, 3).join(" · ")}
                   </span>
                 </div>
               );

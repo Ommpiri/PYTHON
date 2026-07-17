@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar } from "@/components/Navbar";
 import { Pydude } from "@/components/Pydude";
+import { Toaster, toast } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -128,6 +129,20 @@ function RootComponent() {
     if (typeof localStorage !== "undefined") localStorage.setItem("pyc-theme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    const onRequiresAuth = () => {
+      toast("Please sign in to save your progress!", {
+        description: "Your work here won't be saved until you log in.",
+        action: {
+          label: "Sign In",
+          onClick: () => window.location.href = "/login"
+        }
+      });
+    };
+    window.addEventListener("pyc-requires-auth", onRequiresAuth);
+    return () => window.removeEventListener("pyc-requires-auth", onRequiresAuth);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen flex flex-col">
@@ -139,6 +154,7 @@ function RootComponent() {
           <Outlet />
         </main>
         <Pydude />
+        <Toaster theme={theme === "ink" ? "dark" : "light"} />
         <footer className="border-t border-border py-10 px-6 font-mono text-xs text-muted-foreground">
           <div className="max-w-6xl mx-auto grid sm:grid-cols-3 gap-8">
             {/* Brand */}
