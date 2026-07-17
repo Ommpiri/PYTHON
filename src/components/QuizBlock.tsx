@@ -2,7 +2,17 @@ import { useState } from "react";
 import type { QuizQuestion } from "@/lib/modules";
 import { recordQuiz } from "@/lib/progress";
 
-export function QuizBlock({ slug, questions }: { slug: string; questions: QuizQuestion[] }) {
+export function QuizBlock({
+  slug,
+  questions,
+  isFlashback = false,
+  onComplete,
+}: {
+  slug: string;
+  questions: QuizQuestion[];
+  isFlashback?: boolean;
+  onComplete?: () => void;
+}) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
 
@@ -13,7 +23,12 @@ export function QuizBlock({ slug, questions }: { slug: string; questions: QuizQu
 
   const submit = () => {
     setSubmitted(true);
-    recordQuiz(slug, percent);
+    if (!isFlashback) {
+      recordQuiz(slug, percent);
+    }
+    if (onComplete) {
+      onComplete();
+    }
   };
 
   return (

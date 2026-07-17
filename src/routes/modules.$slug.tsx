@@ -59,6 +59,63 @@ function ModulePage() {
   const p = useProgress();
   const done = p.completed.includes(mod.slug);
 
+  const [showFlashback, setShowFlashback] = useState(false);
+  const [flashbackQuestions, setFlashbackQuestions] = useState<any[]>([]);
+  const [flashbackModTitle, setFlashbackModTitle] = useState("");
+  const [flashbackModSlug, setFlashbackModSlug] = useState("");
+  const [flashbackSubmitted, setFlashbackSubmitted] = useState(false);
+  const [hasRolledFlashback, setHasRolledFlashback] = useState(false);
+
+  useEffect(() => {
+    setShowFlashback(false);
+    setFlashbackQuestions([]);
+    setFlashbackModTitle("");
+    setFlashbackModSlug("");
+    setFlashbackSubmitted(false);
+    setHasRolledFlashback(false);
+  }, [mod.slug]);
+
+  useEffect(() => {
+    if (done && mod.id >= 3 && !hasRolledFlashback && !flashbackSubmitted) {
+      setHasRolledFlashback(true);
+      const shouldShow = Math.random() < 0.5;
+      if (shouldShow) {
+        const eligible = modules.filter((m) => m.id <= mod.id - 2);
+        if (eligible.length >= 1) {
+          const totalPrior = modules.filter((m) => m.id < mod.id);
+          if (totalPrior.length >= 2) {
+            const weights = eligible.map((m) => {
+              const score = p.quizScores[m.slug];
+              return {
+                m,
+                weight: score !== undefined ? 105 - score : 50,
+              };
+            });
+            const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0);
+            let r = Math.random() * totalWeight;
+            let selected = eligible[0];
+            for (const w of weights) {
+              r -= w.weight;
+              if (r <= 0) {
+                selected = w.m;
+                break;
+              }
+            }
+
+            const qList = [...selected.quiz];
+            if (qList.length >= 2) {
+              const shuffled = qList.sort(() => 0.5 - Math.random());
+              setFlashbackQuestions(shuffled.slice(0, 2));
+              setFlashbackModTitle(selected.title);
+              setFlashbackModSlug(selected.slug);
+              setShowFlashback(true);
+            }
+          }
+        }
+      }
+    }
+  }, [done, mod.id, p.quizScores, hasRolledFlashback, flashbackSubmitted, mod.slug]);
+
   // Warm up Pyodide as soon as the module page mounts
   useEffect(() => {
     preloadPyodide();
@@ -281,6 +338,29 @@ function ModulePage() {
           </div>
         )}
 
+        {showFlashback && !flashbackSubmitted && flashbackQuestions.length > 0 && (
+          <div className="my-8 p-6 rounded-lg border border-amber/40 bg-amber/5 font-mono">
+            <h3 className="text-sm font-semibold text-amber mb-1 uppercase tracking-wider flex items-center gap-2">
+              ⚡ flashback review: {flashbackModTitle}
+            </h3>
+            <p className="text-xs text-warm-black/60 mb-4">
+              Before moving forward, let's complete a quick recall of a past concept.
+            </p>
+            <QuizBlock
+              slug={flashbackModSlug}
+              questions={flashbackQuestions}
+              isFlashback={true}
+              onComplete={() => setFlashbackSubmitted(true)}
+            />
+          </div>
+        )}
+
+        {showFlashback && flashbackSubmitted && (
+          <div className="my-8 p-4 rounded-lg border border-teal bg-teal/5 font-mono text-xs text-teal">
+            ✓ Flashback review completed. Next step unlocked!
+          </div>
+        )}
+
         <nav className="mt-10 pt-6 border-t border-border flex justify-between font-mono text-xs">
           {prev ? (
             <Link
@@ -294,17 +374,25 @@ function ModulePage() {
             <span />
           )}
           {next ? (
-            <Link
-              to="/modules/$slug"
-              params={{ slug: next.slug }}
-              className="text-muted-foreground hover:text-amber text-right"
-            >
-              {next.id.toString().padStart(2, "0")} · {next.title} →
-            </Link>
+            showFlashback && !flashbackSubmitted ? (
+              <span className="text-muted-foreground italic">(complete review to unlock next module)</span>
+            ) : (
+              <Link
+                to="/modules/$slug"
+                params={{ slug: next.slug }}
+                className="text-muted-foreground hover:text-amber text-right font-semibold"
+              >
+                {next.id.toString().padStart(2, "0")} · {next.title} →
+              </Link>
+            )
           ) : (
-            <Link to="/certificate" className="text-teal">
-              get certificate →
-            </Link>
+            showFlashback && !flashbackSubmitted ? (
+              <span className="text-muted-foreground italic">(complete review to unlock certificate)</span>
+            ) : (
+              <Link to="/certificate" className="text-teal font-semibold">
+                get certificate →
+              </Link>
+            )
           )}
         </nav>
       </article>

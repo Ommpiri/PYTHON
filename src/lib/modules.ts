@@ -205,7 +205,26 @@ total = apples * price
 # Inject variables straight into the text
 print(f"I bought {apples} apples for {total} dollars")
 \`\`\`
-`,
+
+### Real World: E-Commerce Price Display
+Online shops store prices as floats but display them with exactly two decimal places and a currency symbol. f-strings handle this with a format spec right inside the curly braces.
+
+\`\`\`python
+# Example 3: Formatted price display
+currency = "USD"
+item = "Wireless Keyboard"
+price = 49.9    # stored as a float
+discount = 0.15  # 15% off
+
+sale_price = price * (1 - discount)
+
+print(f"{item}")
+print(f"  Original : {currency} {price:.2f}")
+print(f"  Sale     : {currency} {sale_price:.2f}  (15% off)")
+\`\`\`
+
+The \`:.2f\` format spec inside the braces tells Python: format this float to exactly 2 decimal places. No external library needed.
+`, 
     commonMistake: [
       "Forgetting to put the `f` in front of the string when trying to use `{variables}`. If you omit it, Python will literally print out the text '{variables}' instead of the actual value.",
       "Integer division with `/` in Python 3 always returns a float — `6 / 2` gives `3.0`, not `3`. Use `//` if you need an integer result.",
@@ -246,6 +265,17 @@ birth_year = 0  # TODO
 print(f"{name} — born {birth_year}, lives in {city}")`,
         expectedOutputIncludes: ["1998"],
       },
+      {
+        prompt:
+          "Bonus: Unit converter. Given a distance in miles (26.2), compute kilometres (1 mile = 1.60934 km) and print both values formatted to 2 decimal places on one line.",
+        starter: `miles = 26.2
+km_per_mile = 1.60934
+
+# Compute and print: "26.20 miles = 42.16 km"
+km = 0.0  # TODO
+print(f"{miles:.2f} miles = {km:.2f} km")`,
+        expectedOutputIncludes: ["26.20", "42.16"],
+      },
     ],
     quiz: [
       { q: "Type of 3 / 2 in Python 3?", choices: ["int", "float", "str", "error"], answer: 1 },
@@ -254,6 +284,22 @@ print(f"{name} — born {birth_year}, lives in {city}")`,
         q: "Which is a valid f-string?",
         choices: ['f"hi {name}"', "f'hi $name'", '"hi {name}".f', "format(hi, name)"],
         answer: 0,
+      },
+      {
+        q: "What does this print?\n\nx = 7\nprint(x // 2, x % 2)",
+        choices: ["3 1", "3.5 0", "3 0", "4 1"],
+        answer: 0,
+        explain: "`7 // 2` is integer division = 3. `7 % 2` is the remainder = 1.",
+      },
+      {
+        q: "Which operator gives integer division?",
+        choices: ["/", "//", "%", "**"],
+        answer: 1,
+      },
+      {
+        q: "How do you format a float to 2 decimal places in an f-string?",
+        choices: ["{x.2f}", "{x:.2f}", "{x|2f}", "{round(x,2)}"],
+        answer: 1,
       },
     ],
     notes: "Module 2 notes — variables, types, operators, f-strings.",
