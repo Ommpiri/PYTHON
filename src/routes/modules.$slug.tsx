@@ -170,6 +170,30 @@ function ModulePage() {
     URL.revokeObjectURL(url);
   };
 
+  const downloadCheatSheet = () => {
+    const codeBlockRegex = /```(?:python|py|)?\n([\s\S]*?)\n```/g;
+    let match;
+    const codeBlocks: string[] = [];
+    while ((match = codeBlockRegex.exec(mod.theory)) !== null) {
+      codeBlocks.push(match[1]);
+    }
+    const cheatSheetContent = `# Module ${mod.id} Syntax Cheat Sheet — ${mod.title}
+
+${
+  codeBlocks.length > 0
+    ? codeBlocks.map((block) => `\`\`\`python\n${block}\n\`\`\``).join("\n\n")
+    : "No code blocks found in this module's theory."
+}
+`;
+    const blob = new Blob([cheatSheetContent], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `cheat-sheet-${mod.id.toString().padStart(2, "0")}-${mod.slug}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="flex">
       <Gutter activeId={mod.id} />
@@ -302,12 +326,20 @@ function ModulePage() {
         </Cell>
 
         <div className="my-8 flex flex-wrap gap-3 items-center justify-between">
-          <button
-            onClick={downloadNotes}
-            className="font-mono text-xs px-3 py-2 rounded border border-border hover:border-amber"
-          >
-            ⬇ download_notes.md
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={downloadNotes}
+              className="font-mono text-xs px-3 py-2 rounded border border-border hover:border-amber cursor-pointer"
+            >
+              ⬇ download_notes.md
+            </button>
+            <button
+              onClick={downloadCheatSheet}
+              className="font-mono text-xs px-3 py-2 rounded border border-border hover:border-amber cursor-pointer"
+            >
+              ⬇ download_cheat_sheet.md
+            </button>
+          </div>
           <button
             onClick={() => (done ? unmarkComplete(mod.slug) : markComplete(mod.slug))}
             className={`font-mono text-xs px-4 py-2 rounded font-semibold ${
