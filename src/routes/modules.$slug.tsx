@@ -236,6 +236,17 @@ ${
             </div>
           )}
 
+          {mod.realWorldExample && (
+            <div className="mt-6 mb-2 border-l-4 border-teal bg-teal/10 p-4 rounded-r-md">
+              <h4 className="font-display font-semibold text-teal text-sm uppercase tracking-wider mb-1">
+                Where This Shows Up in Real Code
+              </h4>
+              <div className="text-sm opacity-90 leading-relaxed text-warm-black prose prose-sm prose-invert max-w-none">
+                <MarkdownBlock>{mod.realWorldExample}</MarkdownBlock>
+              </div>
+            </div>
+          )}
+
           {mod.miniPrompt && (
             <div className="mt-4 p-4 rounded-md bg-warm-black/5 border border-black/5">
               <p className="text-sm italic opacity-90 text-warm-black">

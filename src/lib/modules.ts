@@ -41,6 +41,7 @@ const m = (
 
 export const modules: Module[] = [
   m(1, "intro", "Introduction to Computers, Programming & Python Installation", {
+    realWorldExample: `In production web applications, we use logs to track system health. A simple print statement in Python is the precursor to standard logging (\`import logging\`), which sends messages to files or cloud providers like Datadog or AWS CloudWatch.`,
     tags: ["Theory", "Live Coding", "Demo", "Challenge", "Quiz"],
     estMinutes: 15,
     theory: `### How Computers Understand Code
@@ -181,6 +182,7 @@ print("Running on Python")`,
   }),
 
   m(2, "basics", "Python Basics", {
+    realWorldExample: `Variables are used to manage environment configuration (like database URLs or API keys). For example, \`db_url = "postgresql://user:password@localhost:5432"\` is how a Python backend routes database connections.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 20,
     theory: `### Variables and Dynamic Typing
@@ -310,6 +312,7 @@ print(f"{miles:.2f} miles = {km:.2f} km")`,
   }),
 
   m(3, "control-flow", "Control Flow", {
+    realWorldExample: `Control flow dictates how web servers route requests. For instance, an API backend check: \`if not user.is_authenticated: return redirect_login()\` directs the browser based on condition checks.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 25,
     theory: `### Conditional Statements (if/elif/else), and else
@@ -497,6 +500,7 @@ print(f"steps: {steps}")`,
   }),
 
   m(4, "functions", "Functions", {
+    realWorldExample: `In web scraping or processing pipelines, clean helper functions structure code: \`def clean_data(raw): return raw.strip().lower()\`. This keeps business logic modular and testable.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 25,
     theory: `### Reusable Code Blockstions?
@@ -650,6 +654,7 @@ print(f"python: {is_palindrome('python')}")`,
   }),
 
   m(5, "files", "File Handling", {
+    realWorldExample: `Backend scripts constantly write logs or local state to files. For instance, saving application configurations or logs: \`with open("app.log", "a") as f: f.write("User logged in\n")\` keeps persistent records of events.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 30,
     theory: `### Reading and Writing Files
@@ -804,6 +809,7 @@ print(f"lines: {lines}, words: {words}")`,
   }),
 
   m(6, "exceptions", "Exception Handling", {
+    realWorldExample: `APIs should never crash with raw server errors. A try-except block is standard: \`try: response = request_api() except TimeoutError: return json_error("Service unavailable", 503)\` ensuring high availability.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 30,
     theory: `### Dealing with Errors Gracefullymming
@@ -963,6 +969,7 @@ print(parse_json('not json!'))`,
   }),
 
   m(7, "data-structures", "Data Structures", {
+    realWorldExample: `Data structures map database query results. In Django or FastAPI, table entries are represented as a list of dictionaries: \`users = [{"id": 1, "name": "Ada"}, {"id": 2, "name": "Linus"}]\`, allowing easy serialization to JSON.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 35,
     theory: `### Lists, Tuples, Dictionaries & Setsyour programs grow, you'll need to store more than just single variables. Python provides several core "Data Structures" to organize collections of data efficiently. 
@@ -1116,6 +1123,7 @@ print(admin_emails)`,
   }),
 
   m(8, "comprehensions", "Advanced Data Handling", {
+    realWorldExample: `List comprehensions are heavily used in data science (Pandas/NumPy) to filter and map data streams instantly: \`valid_emails = [email for email in email_list if "@" in email]\`, avoiding verbose, slow-running loops.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 30,
     theory: `### Lists, Dicts and Set Comprehensions famous for being readable. One of its most powerful features for data transformation is the **Comprehension**. A comprehension allows you to build a brand new list, set, or dictionary from an existing iterable using a single, readable line of code.
@@ -1247,6 +1255,7 @@ print(prices)`,
   }),
 
   m(9, "oop", "Object-Oriented Programming", {
+    realWorldExample: `In enterprise applications, ORMs (Object-Relational Mappers) like SQLAlchemy represent SQL tables as Python classes. Each row in a table is instantiated as a class object, grouping database fields and helper methods.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 40,
     theory: `### Intro to Classes and Objects-Oriented Programming (OOP) is a way of organizing code by grouping related data and the functions that operate on that data into a single unit called an **Object**. 
@@ -1397,6 +1406,7 @@ acct = BankAccount(100)
   }),
 
   m(10, "mini-project", "Mini Project — Contact Book App", {
+    realWorldExample: `Real command-line interfaces (CLIs) like git or kubectl use OOP models to manage commands and local state. Encapsulating configuration, options, and commands in classes keeps CLI code organized as scale increases.`,
     tags: ["Planning", "Implementation", "Testing"],
     estMinutes: 45,
     theory: `### Consolidation: Building a Modular Projecther
@@ -1506,6 +1516,7 @@ print([c.name for c in b.search("a")])`,
   }),
 
   m(11, "libraries", "Python Libraries", {
+    realWorldExample: `Production systems rely on standard libraries for security and data operations. For example, \`import hashlib\` handles secure password hashing, and \`import random\` generates unique session IDs.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz"],
     estMinutes: 35,
     theory: `### Importing Code from Modules Included
@@ -1596,6 +1607,7 @@ print("go")`,
   }),
 
   m(12, "data-formats", "Working with Data — CSV, JSON, Capstone", {
+    realWorldExample: `REST APIs communicate almost exclusively using JSON: \`requests.post(url, json={"status": "completed"})\`. In addition, CSV is the universal format for uploading mass data sheets to SQL tables.`,
     tags: ["Theory", "Live Coding", "Challenge", "Quiz", "Certificate"],
     estMinutes: 40,
     theory: `### Formatting data: JSON & CSVerialization
