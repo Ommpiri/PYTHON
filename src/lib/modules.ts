@@ -1147,6 +1147,18 @@ names = ["Alice", "Bob"]
 name_lengths = {name: len(name) for name in names}
 print(name_lengths) # {'Alice': 5, 'Bob': 3}
 \`\`\`
+
+### Real World: Data Sanitization
+When processing text files or user inputs, you often get lists with leading/trailing spaces and blank entries. A comprehension can strip whitespace and drop empty strings simultaneously.
+
+\`\`\`python
+# Example 3: Clean up messy inputs
+raw_data = ["  apple ", "", "banana\\n", "  ", "cherry"]
+
+# Strip each item, but only keep it if the result is not empty
+clean_data = [item.strip() for item in raw_data if item.strip()]
+print(clean_data) # ['apple', 'banana', 'cherry']
+\`\`\`
 `,
     commonMistake: [
       "Trying to cram too much logic into a single comprehension. If your comprehension wraps across three lines and has multiple `if/else` conditions, you've defeated the purpose. Fall back to a standard `for` loop for readability.",
@@ -1187,6 +1199,17 @@ print(sorted(counts.items(), key=lambda kv: -kv[1])[:3])`,
 print(strong("Abc12345!"))`,
         expectedOutputIncludes: ["True"],
       },
+      {
+        prompt:
+          "Bonus: Dict comprehension. Given a list of prices in cents `[199, 499, 999]`, create a dictionary mapping the original cents value to the dollars string (e.g. 199 -> '$1.99'). Print it.",
+        starter: `cents = [199, 499, 999]
+
+# Create mapping {199: '$1.99', ...} using a dict comprehension
+prices = {} # TODO
+
+print(prices)`,
+        expectedOutputIncludes: ["{199: '$1.99', 499: '$4.99', 999: '$9.99'}"],
+      },
     ],
     quiz: [
       {
@@ -1203,6 +1226,21 @@ print(strong("Abc12345!"))`,
         q: 'enumerate(["a","b"]) first value?',
         choices: ["(0,'a')", "('a',0)", "'a'", "0"],
         answer: 0,
+      },
+      {
+        q: "What does this comprehension do: `[x for x in nums if x > 0]`",
+        choices: ["Transforms items", "Filters items", "Sorts items", "Creates a dictionary"],
+        answer: 1,
+      },
+      {
+        q: "Which comprehension syntax produces a set?",
+        choices: ["[x for x in data]", "{x for x in data}", "(x for x in data)", "<x for x in data>"],
+        answer: 1,
+      },
+      {
+        q: "What does `any([False, False, True])` return?",
+        choices: ["False", "True", "None", "Error"],
+        answer: 1,
       },
     ],
     notes: "Module 8 notes — comprehensions and built-ins.",
