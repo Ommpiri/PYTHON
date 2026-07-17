@@ -416,17 +416,65 @@ export function CodeEditor({
                   {stderr}
                 </pre>
                 {!isRunning && (
-                  <button
-                    onClick={() => {
-                      const event = new CustomEvent("pydude-explain", {
-                        detail: { code, error: stderr, slug },
-                      });
-                      window.dispatchEvent(event);
-                    }}
-                    className="mt-1 font-mono text-[10px] uppercase tracking-wider px-2 py-1 bg-coral/10 text-coral border border-coral/30 rounded hover:bg-coral hover:text-white transition-colors"
-                  >
-                    💡 Explain this error
-                  </button>
+                  <div className="w-full">
+                    <button
+                      disabled={rateLimitTimer > 0 || explanationLoading}
+                      onClick={async () => {
+                        if (rateLimitTimer > 0 || explanationLoading) return;
+                        setExplanationLoading(true);
+                        setRateLimitTimer(5);
+                        setExplanation(null);
+                        try {
+                          const res = await askPydude({
+                            data: {
+                              message: `I got this error:\n${stderr}`,
+                              moduleName: slug ?? "unknown",
+                              codeContext: code,
+                              isExplainError: true,
+                            },
+                          });
+                          setExplanation(res);
+                        } catch (e: any) {
+                          setExplanation(`Error explaining error: ${e.message || e}`);
+                        } finally {
+                          setExplanationLoading(false);
+                        }
+                      }}
+                      className="mt-1 font-mono text-[10px] uppercase tracking-wider px-2 py-1 bg-coral/10 text-coral border border-coral/30 rounded hover:bg-coral hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {explanationLoading
+                        ? "Asking tutor..."
+                        : rateLimitTimer > 0
+                          ? `💡 Explain this error (${rateLimitTimer}s)`
+                          : "💡 Explain this error"}
+                    </button>
+
+                    {explanationLoading && (
+                      <div className="mt-3 p-3 rounded bg-secondary/40 border border-white/5 font-mono text-xs text-amber flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber animate-bounce" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber animate-bounce [animation-delay:0.2s]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber animate-bounce [animation-delay:0.4s]" />
+                        <span>Analyzing error...</span>
+                      </div>
+                    )}
+
+                    {explanation && (
+                      <div className="mt-3 p-4 rounded bg-secondary/60 border border-white/10 text-warm-off relative font-sans text-sm">
+                        <button
+                          onClick={() => setExplanation(null)}
+                          className="absolute top-2 right-2 font-mono text-[10px] text-muted-foreground hover:text-amber"
+                        >
+                          [dismiss]
+                        </button>
+                        <div className="font-mono font-semibold text-amber mb-2 text-xs uppercase tracking-wider">
+                          💡 Python Tutor:
+                        </div>
+                        <div className="prose prose-invert text-xs leading-relaxed max-w-none">
+                          <MarkdownBlock>{explanation}</MarkdownBlock>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             )}
