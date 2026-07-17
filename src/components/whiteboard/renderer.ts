@@ -311,11 +311,12 @@ const PY_KEYWORDS = new Set([
 export function renderCodeSnippet(
   ctx: CanvasRenderingContext2D,
   el: CodeSnippet,
+  scale: number = 1,
 ): void {
   const pad = 16;
   const radius = 8;
   const lineH = 18;
-  const fontSize = 13;
+  const baseFontSize = 13;
 
   // Dark background with rounded corners
   ctx.save();
