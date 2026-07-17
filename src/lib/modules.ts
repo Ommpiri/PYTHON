@@ -679,6 +679,28 @@ with open("log.txt", "r") as file_obj:
     print("File says:", content)
 # The file is already safely closed here
 \`\`\`
+
+### Real World: Config File Parser
+Server scripts often read configuration from a simple text file where each line is a key=value pair.
+
+\`\`\`python
+# Example 3: Parsing a basic config file
+# Pretend config.txt contains:
+# host=localhost
+# port=8080
+
+config = {}
+with open("config.txt", "r") as f:
+    for line in f:
+        # skip empty lines or comments
+        if not line.strip() or line.startswith("#"):
+            continue
+            
+        key, value = line.strip().split("=")
+        config[key] = value
+
+print(f"Connecting to {config['host']} on port {config['port']}")
+\`\`\`
 `,
     commonMistake: [
       "Forgetting to close a file (or failing to use a `with` block). If you leave files open, your program can lock up system resources, cause memory leaks, or prevent other programs from reading the file.",
@@ -731,6 +753,22 @@ else:
     print(f"kept old best: {best}")`,
         expectedOutputIncludes: ["new best: 3"],
       },
+      {
+        prompt:
+          "Bonus: File Analyzer. Read 'data.txt' containing multiple lines of text. Print the total number of lines, and the total number of words.",
+        starter: `# First, let's create the file to read
+with open("data.txt", "w") as f:
+    f.write("Hello world\\nThis is a test\\nPython is fun")
+
+# Now open it for reading, count lines and words, and print them
+lines = 0
+words = 0
+
+# TODO: read the file
+
+print(f"lines: {lines}, words: {words}")`,
+        expectedOutputIncludes: ["lines: 3, words: 9"],
+      },
     ],
     quiz: [
       {
@@ -742,6 +780,22 @@ else:
       {
         q: "readlines() returns…",
         choices: ["one string", "a list of strings", "bytes", "an iterator only"],
+        answer: 1,
+      },
+      {
+        q: "What does this print?\n\nwith open('x.txt', 'w') as f:\n    f.write('A')\nwith open('x.txt', 'w') as f:\n    f.write('B')\nwith open('x.txt', 'r') as f:\n    print(f.read())",
+        choices: ["A", "B", "AB", "error"],
+        answer: 1,
+        explain: "The second 'w' mode opens the file and instantly erases its contents before writing 'B'.",
+      },
+      {
+        q: "How do you read a file line by line efficiently without loading the whole thing into memory?",
+        choices: ["f.read().split('\\n')", "f.readlines()", "for line in f:", "f.read(1)"],
+        answer: 2,
+      },
+      {
+        q: "If you try to open a file for reading ('r') that doesn't exist, Python will:",
+        choices: ["Create an empty file", "Raise FileNotFoundError", "Return None", "Return an empty string"],
         answer: 1,
       },
     ],
