@@ -1,6 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useProgress } from "@/hooks/useProgress";
+import { calculateStreak } from "@/lib/progress";
 
 export function Navbar({
   theme,
@@ -12,6 +14,8 @@ export function Navbar({
   const loc = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
+  const p = useProgress();
+  const streak = calculateStreak(p.activeDates);
 
   const { data: session } = useQuery({
     queryKey: ["session"],
@@ -64,11 +68,17 @@ export function Navbar({
 
         {/* Desktop nav */}
         <nav className="hidden sm:flex items-center gap-1">
-          {navLinks.map(({ to, label }) => (
-            <Link key={to} to={to} className={linkCls(to)}>
-              {label}
-            </Link>
-          ))}
+          {navLinks.map(({ to, label }) => {
+            const isProgress = to === "/progress";
+            return (
+              <Link key={to} to={to} className={linkCls(to)}>
+                {label}
+                {isProgress && streak > 0 && (
+                  <span className="ml-1 text-amber font-semibold animate-pulse">🔥{streak}</span>
+                )}
+              </Link>
+            );
+          })}
           <button
             onClick={onToggleTheme}
             title="Toggle theme"
@@ -141,6 +151,9 @@ export function Navbar({
             >
               {isActive(to) ? "▸ " : "  "}
               {label}
+              {to === "/progress" && streak > 0 && (
+                <span className="ml-1 text-amber font-semibold">🔥{streak}</span>
+              )}
             </Link>
           ))}
           <div className="mt-2 pt-2 border-t border-border flex flex-col gap-2">

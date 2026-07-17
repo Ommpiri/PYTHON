@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { modules } from "@/lib/modules";
 import { useProgress } from "@/hooks/useProgress";
+import { calculateStreak } from "@/lib/progress";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
@@ -61,10 +62,16 @@ function ProgressPage() {
       <h1 className="mt-2 text-4xl font-display">My progress</h1>
 
       <div className="mt-6 rounded-lg border border-border p-6 bg-secondary">
-        <div className="flex items-baseline justify-between font-mono text-sm mb-4">
+        <div className="flex items-baseline justify-between font-mono text-sm mb-2 pb-2 border-b border-border/10">
           <span>completed</span>
-          <span className="text-amber">
+          <span className="text-amber font-semibold">
             {p.completed.length} / {modules.length}
+          </span>
+        </div>
+        <div className="flex items-baseline justify-between font-mono text-sm mb-4">
+          <span>streak</span>
+          <span className="text-amber font-semibold flex items-center gap-1">
+            🔥 {calculateStreak(p.activeDates)} days active
           </span>
         </div>
         <TerminalProgress completedSlugs={p.completed} />

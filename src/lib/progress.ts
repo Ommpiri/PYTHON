@@ -11,11 +11,68 @@ export type Progress = {
   quizScores: Record<string, number>; // slug -> percent 0..100
   challengesPassed: Record<string, number>; // slug -> count
   badges: string[]; // badge ids
+  activeDates?: string[]; // YYYY-MM-DD local dates active
 };
 
-const empty: Progress = { completed: [], quizScores: {}, challengesPassed: {}, badges: [] };
+const empty: Progress = { completed: [], quizScores: {}, challengesPassed: {}, badges: [], activeDates: [] };
 
 const isBrowser = () => typeof window !== "undefined";
+
+export function getLocalDateString(): string {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+export function recordActivity(p: Progress) {
+  if (!p.activeDates) {
+    p.activeDates = [];
+  }
+  const today = getLocalDateString();
+  if (!p.activeDates.includes(today)) {
+    p.activeDates.push(today);
+  }
+}
+
+export function calculateStreak(activeDates?: string[]): number {
+  if (!activeDates || activeDates.length === 0) return 0;
+  
+  const sorted = [...new Set(activeDates)].sort((a, b) => b.localeCompare(a));
+  const todayStr = getLocalDateString();
+  
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const getLocalStringForDate = (d: Date) => {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+  const yestStr = getLocalStringForDate(yesterday);
+  
+  if (sorted[0] !== todayStr && sorted[0] !== yestStr) {
+    return 0;
+  }
+  
+  let streak = 0;
+  let current = new Date(sorted[0] === todayStr ? today : yesterday);
+  
+  while (true) {
+    const checkStr = getLocalStringForDate(current);
+    if (sorted.includes(checkStr)) {
+      streak++;
+      current.setDate(current.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  
+  return streak;
+}
 
 export function readProgress(): Progress {
   if (!isBrowser()) return empty;
@@ -34,32 +91,66 @@ export function writeProgress(p: Progress) {
   window.dispatchEvent(new CustomEvent("pyc-progress"));
 }
 
-export function markComplete(slug: string) {
-  const p = readProgress();
-  if (!p.completed.includes(slug)) p.completed.push(slug);
-  recomputeBadges(p);
-  writeProgress(p);
+export function useProgressSnapshot() {
+  // read on demand; components call this via a small hook wrapper if they need reactivity.
+  // We no longer use this synchronous snapshot for rendering DB data directly.
+  return empty;
 }
 
-export function unmarkComplete(slug: string) {
-  const p = readProgress();
-  p.completed = p.completed.filter((s) => s !== slug);
-  recomputeBadges(p);
-  writeProgress(p);
+async function getSession() {
+  try {
+    const res = await fetch("/api/auth/session");
+    const session = await res.json();
+    return Object.keys(session).length > 0;
+  } catch {
+    return false;
+  }
 }
 
-export function recordQuiz(slug: string, percent: number) {
-  const p = readProgress();
-  p.quizScores[slug] = Math.max(p.quizScores[slug] ?? 0, percent);
+async function updateDbProgress(updater: (p: Progress) => void) {
+  const loggedIn = await getSession();
+  if (!loggedIn) {
+    window.dispatchEvent(new CustomEvent("pyc-requires-auth"));
+    return;
+  }
+  
+  const { getProgressFn, updateProgressFn } = await import("../functions/progress");
+  let p = await getProgressFn();
+  if (!p) p = { completed: [], quizScores: {}, challengesPassed: {}, badges: [] };
+  
+  updater(p);
   recomputeBadges(p);
-  writeProgress(p);
+  
+  try {
+    await updateProgressFn(p);
+    window.dispatchEvent(new CustomEvent("pyc-progress"));
+  } catch (err) {
+    console.error("Failed to update progress", err);
+  }
 }
 
-export function recordChallenge(slug: string) {
-  const p = readProgress();
-  p.challengesPassed[slug] = (p.challengesPassed[slug] ?? 0) + 1;
-  recomputeBadges(p);
-  writeProgress(p);
+export async function markComplete(slug: string) {
+  await updateDbProgress((p) => {
+    if (!p.completed.includes(slug)) p.completed.push(slug);
+  });
+}
+
+export async function unmarkComplete(slug: string) {
+  await updateDbProgress((p) => {
+    p.completed = p.completed.filter((s) => s !== slug);
+  });
+}
+
+export async function recordQuiz(slug: string, percent: number) {
+  await updateDbProgress((p) => {
+    p.quizScores[slug] = Math.max(p.quizScores[slug] ?? 0, percent);
+  });
+}
+
+export async function recordChallenge(slug: string) {
+  await updateDbProgress((p) => {
+    p.challengesPassed[slug] = (p.challengesPassed[slug] ?? 0) + 1;
+  });
 }
 
 export const badgeDefs = [
@@ -82,26 +173,26 @@ export function recomputeBadges(p: Progress) {
   p.badges = [...b];
 }
 
-export function useProgressSnapshot() {
-  // read on demand; components call this via a small hook wrapper if they need reactivity.
-  return readProgress();
-}
-
 export async function checkAndMigrateProgress() {
   if (!isBrowser()) return;
   if (localStorage.getItem(MIGRATED_KEY)) return;
-  const p = readProgress();
-  // Only migrate if there is actual progress
-  if (p.completed.length > 0 || p.badges.length > 0 || Object.keys(p.quizScores).length > 0 || Object.keys(p.challengesPassed).length > 0) {
-    try {
+  
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) {
+      localStorage.setItem(MIGRATED_KEY, "true");
+      return;
+    }
+    
+    const p = { ...empty, ...JSON.parse(raw) };
+    if (p.completed.length > 0 || p.badges.length > 0 || Object.keys(p.quizScores).length > 0 || Object.keys(p.challengesPassed).length > 0) {
       await migrateProgressFn(p);
       localStorage.setItem(MIGRATED_KEY, "true");
-      // Optional: clear old progress so it doesn't get used if they log out, or keep it. Prompt said: "clear or mark it as migrated"
       localStorage.removeItem(KEY);
-    } catch (err) {
-      console.error("Migration failed", err);
+    } else {
+      localStorage.setItem(MIGRATED_KEY, "true");
     }
-  } else {
-    localStorage.setItem(MIGRATED_KEY, "true");
+  } catch (err) {
+    console.error("Migration failed", err);
   }
 }
