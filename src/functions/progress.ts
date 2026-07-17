@@ -9,8 +9,8 @@ export const migrateProgressFn = createServerFn({ method: "POST" })
     activeDates?: string[];
   }) => payload)
   .handler(async ({ data }) => {
-    const { getWebRequest } = await import("@tanstack/react-start/server");
-    const req = getWebRequest();
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const req = getRequest();
     if (!req) throw new Error("Unauthorized");
     
     const cookieHeader = req.headers.get("cookie") || "";
@@ -44,8 +44,8 @@ export const migrateProgressFn = createServerFn({ method: "POST" })
 
 export const getProgressFn = createServerFn({ method: "GET" })
   .handler(async () => {
-    const { getWebRequest } = await import("@tanstack/react-start/server");
-    const req = getWebRequest();
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const req = getRequest();
     if (!req) return null;
     
     const cookieHeader = req.headers.get("cookie") || "";
@@ -81,8 +81,8 @@ export const updateProgressFn = createServerFn({ method: "POST" })
     activeDates?: string[];
   }) => payload)
   .handler(async ({ data }) => {
-    const { getWebRequest } = await import("@tanstack/react-start/server");
-    const req = getWebRequest();
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const req = getRequest();
     if (!req) throw new Error("Unauthorized");
     
     const cookieHeader = req.headers.get("cookie") || "";

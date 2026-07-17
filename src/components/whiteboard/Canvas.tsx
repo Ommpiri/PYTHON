@@ -1,7 +1,7 @@
 /* ── Whiteboard Canvas ────────────────────────────────────────────── */
 /* Dual-layer canvas with pointer events, pan/zoom, and rAF loop.    */
 
-import { useRef, useEffect, useCallback, type RefObject } from "react";
+import { useRef, useEffect, useCallback, useState, type RefObject } from "react";
 import type {
   WbElement,
   ViewTransform,

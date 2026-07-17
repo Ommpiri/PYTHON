@@ -2,6 +2,7 @@ export type Challenge = {
   prompt: string;
   starter: string;
   expectedOutputIncludes?: string[];
+  hints?: string[];
 };
 
 export type QuizQuestion = {

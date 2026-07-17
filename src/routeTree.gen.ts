@@ -19,6 +19,7 @@ import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ModulesIndexRouteImport } from './routes/modules.index'
 import { Route as ModulesSlugRouteImport } from './routes/modules.$slug'
+import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 
 const WhiteboardRoute = WhiteboardRouteImport.update({
   id: '/whiteboard',
@@ -70,6 +71,11 @@ const ModulesSlugRoute = ModulesSlugRouteImport.update({
   path: '/modules/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
   '/modules/': typeof ModulesIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
   '/modules': typeof ModulesIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
   '/modules/': typeof ModulesIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/whiteboard'
     | '/modules/$slug'
     | '/modules/'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/whiteboard'
     | '/modules/$slug'
     | '/modules'
+    | '/api/auth/$'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/whiteboard'
     | '/modules/$slug'
     | '/modules/'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   WhiteboardRoute: typeof WhiteboardRoute
   ModulesSlugRoute: typeof ModulesSlugRoute
   ModulesIndexRoute: typeof ModulesIndexRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModulesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   WhiteboardRoute: WhiteboardRoute,
   ModulesSlugRoute: ModulesSlugRoute,
   ModulesIndexRoute: ModulesIndexRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

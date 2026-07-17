@@ -116,14 +116,14 @@ async function updateDbProgress(updater: (p: Progress) => void) {
   
   const { getProgressFn, updateProgressFn } = await import("../functions/progress");
   let p = await getProgressFn();
-  if (!p) p = { completed: [], quizScores: {}, challengesPassed: {}, badges: [] };
+  if (!p) p = { completed: [], quizScores: {}, challengesPassed: {}, badges: [], activeDates: [] };
   
   updater(p);
   recomputeBadges(p);
   recordActivity(p);
   
   try {
-    await updateProgressFn(p);
+    await updateProgressFn({ data: p });
     window.dispatchEvent(new CustomEvent("pyc-progress"));
   } catch (err) {
     console.error("Failed to update progress", err);

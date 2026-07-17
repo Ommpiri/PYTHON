@@ -1,3 +1,4 @@
+import React from "react";
 // Custom SVG icons for the 12 module cards on the landing page.
 // Line-art style, 28×28 rendered from a 24×24 viewBox.
 // Accepts `hovering` to trigger topic-specific CSS animations.
@@ -306,7 +307,7 @@ function Icon12({ hovering }: IconProps) {
 
 // ── Public export ────────────────────────────────────────────────────────────
 
-const iconMap: Record<number, (props: IconProps) => JSX.Element> = {
+const iconMap: Record<number, (props: IconProps) => React.ReactNode> = {
   1: Icon01,
   2: Icon02,
   3: Icon03,

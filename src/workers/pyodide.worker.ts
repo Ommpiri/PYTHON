@@ -1,6 +1,7 @@
 // Pyodide Web Worker — runs Python in a separate thread so the UI never freezes.
 // Loaded once per session; Pyodide is cached inside the worker.
 
+declare function importScripts(...urls: string[]): void;
 declare const loadPyodide: (opts: { indexURL: string }) => Promise<PyodideHandle>;
 
 interface PyodideHandle {
