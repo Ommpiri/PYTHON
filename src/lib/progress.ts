@@ -1,8 +1,10 @@
 // localStorage-backed progress + quiz scores + badges. No backend.
 
 import { modules } from "./modules";
+import { migrateProgressFn } from "../functions/progress";
 
 const KEY = "pycourse-progress-v1";
+const MIGRATED_KEY = "pycourse-progress-migrated";
 
 export type Progress = {
   completed: string[]; // module slugs
@@ -83,4 +85,23 @@ export function recomputeBadges(p: Progress) {
 export function useProgressSnapshot() {
   // read on demand; components call this via a small hook wrapper if they need reactivity.
   return readProgress();
+}
+
+export async function checkAndMigrateProgress() {
+  if (!isBrowser()) return;
+  if (localStorage.getItem(MIGRATED_KEY)) return;
+  const p = readProgress();
+  // Only migrate if there is actual progress
+  if (p.completed.length > 0 || p.badges.length > 0 || Object.keys(p.quizScores).length > 0 || Object.keys(p.challengesPassed).length > 0) {
+    try {
+      await migrateProgressFn(p);
+      localStorage.setItem(MIGRATED_KEY, "true");
+      // Optional: clear old progress so it doesn't get used if they log out, or keep it. Prompt said: "clear or mark it as migrated"
+      localStorage.removeItem(KEY);
+    } catch (err) {
+      console.error("Migration failed", err);
+    }
+  } else {
+    localStorage.setItem(MIGRATED_KEY, "true");
+  }
 }

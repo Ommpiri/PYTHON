@@ -29,6 +29,12 @@ export function Navbar({
       .catch(console.error);
   }, []);
 
+  useEffect(() => {
+    if (session) {
+      import("../lib/progress").then(m => m.checkAndMigrateProgress());
+    }
+  }, [session]);
+
   const isActive = (path: string) =>
     loc.pathname === path || (path !== "/" && loc.pathname.startsWith(path));
 
