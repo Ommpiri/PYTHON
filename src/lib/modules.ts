@@ -1723,6 +1723,22 @@ json_string = '{"user": "Alice", "hobbies": ["reading", "coding"]}'
 parsed = json.loads(json_string)
 print(parsed["hobbies"][1]) # coding
 \`\`\`
+
+### Real World: Fetching Web APIs
+Most web APIs return JSON data. Using Python's built-in \`urllib\` module (or a 3rd-party module like \`requests\`), we can easily download and parse it.
+
+\`\`\`python
+# Example 3: Downloading and Parsing JSON
+import urllib.request
+import json
+
+url = "https://api.github.com/repos/python/cpython"
+# Using a context manager ensures the connection is closed
+with urllib.request.urlopen(url) as response:
+    raw_bytes = response.read()
+    data = json.loads(raw_bytes.decode('utf-8'))
+    print(f"CPython has {data['stargazers_count']} stars!")
+\`\`\`
 `,
     commonMistake: [
       "Forgetting to specify `encoding='utf-8'` when calling `open()` to read or write text files. Without it, Python uses your operating system's default encoding (often cp1252 on Windows), which will crash violently the second it encounters an emoji or a foreign character.",
@@ -1766,6 +1782,17 @@ back = json.loads(s)
 print(back == data)`,
         expectedOutputIncludes: ["True"],
       },
+      {
+        prompt:
+          "Bonus: Export to CSV. Given a list of dictionaries `[{'fruit': 'apple', 'qty': 4}, ...]`, use `csv.DictWriter` with `io.StringIO()` to generate and print a CSV string.",
+        starter: `import csv, io
+inventory = [{"fruit": "apple", "qty": 4}, {"fruit": "banana", "qty": 10}]
+
+buf = io.StringIO()
+# TODO: create DictWriter, write header, write rows, and print buf.getvalue()
+`,
+        expectedOutputIncludes: ["fruit,qty", "apple,4", "banana,10"],
+      },
     ],
     quiz: [
       {
@@ -1778,6 +1805,21 @@ print(back == data)`,
         q: "Best encoding for text files?",
         choices: ["ascii", "latin-1", "utf-8", "utf-16 always"],
         answer: 2,
+      },
+      {
+        q: "What does `json.loads()` do?",
+        choices: ["Loads a module", "Converts a JSON string into a Python object", "Converts a Python object into a JSON string", "Downloads a file"],
+        answer: 1,
+      },
+      {
+        q: "If a CSV value contains a comma, how does the csv module typically handle it?",
+        choices: ["It deletes the comma", "It splits it into multiple columns", "It wraps the value in quotes", "It throws an error"],
+        answer: 2,
+      },
+      {
+        q: "Which object writes dictionary rows to a CSV file?",
+        choices: ["csv.DictWriter", "csv.Dictionary", "csv.ObjectWriter", "csv.JSONWriter"],
+        answer: 0,
       },
     ],
     notes: "Module 12 notes — CSV, JSON, capstone, certificate.",
