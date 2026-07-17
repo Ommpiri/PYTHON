@@ -17,7 +17,7 @@ export type Module = {
   title: string;
   tags: string[];
   theory: string;
-  commonMistake?: string;
+  commonMistake?: string[];
   miniPrompt?: string;
   furtherReading?: { title: string; url: string }[];
   liveCoding: { title: string; starter: string; note?: string };
@@ -60,9 +60,31 @@ When you "install Python," you are actually installing the Python Interpreter (s
 # The interpreter calculates the result and outputs it
 print(10 + 5)
 \`\`\`
+
+### Real World: Automating a Deployment Check
+In production, teams often write small Python scripts that a CI/CD pipeline runs on every push. The interpreter is invoked directly on the file — the output becomes the pipeline log. Here is what that entry-point script might look like:
+
+\`\`\`python
+# Example 3: Deployment health-check script
+import sys
+
+app_name = "payments-service"
+version = "2.4.1"
+env = "production"
+
+print(f"Deploying {app_name} v{version} to {env}")
+print(f"Python interpreter: {sys.version.split()[0]}")
+print("Pre-flight checks passed. Starting deployment...")
+\`\`\`
+
+The pipeline calls this as \`python deploy_check.py\` and reads stdout to decide whether to continue. No human sits there typing — it's just the interpreter, a file, and a pipe.
 `,
-    commonMistake:
+
+    commonMistake: [
       "Confusing the text editor (where you type code) with the terminal/interpreter (where the code is executed). You must run the interpreter and point it at your file (e.g., `python my_script.py`) to actually see results.",
+      "Running `python` with no arguments drops you into the interactive REPL — that is not the same as running your script. `>>> ` means Python is waiting for you to type expressions, not reading your file.",
+      "On Windows, the command might be `py` instead of `python`, depending on how the installer configured your PATH. If `python --version` returns 'not found', try `py --version` before panicking.",
+    ],
     miniPrompt:
       "Change the math in Example 2 to multiply two numbers using the `*` symbol instead of `+`.",
     furtherReading: [
@@ -94,6 +116,19 @@ print(name)
 print(language)
 print(reason)`,
       },
+      {
+        prompt:
+          "Bonus: Write a deployment banner. Print the app name, version, and a line that includes the word 'Python'. (Simulates what a CI script would log at startup.)",
+        starter: `app_name = "inventory-service"
+version = "1.0.0"
+
+# Print a 3-line deployment banner.
+# The third line must mention Python.
+print(app_name)
+print(version)
+print("Running on Python")`,
+        expectedOutputIncludes: ["inventory-service", "1.0.0", "Python"],
+      },
     ],
     demo: {
       kind: "install-check",
@@ -114,6 +149,27 @@ print(reason)`,
       {
         q: "After installing Python, which command usually prints the version?",
         choices: ["python --version", "python show", "get python", "install python"],
+        answer: 0,
+      },
+      {
+        q: "What does this print?\n\nprint(3 * 'ab')",
+        choices: ["3ab", "ababab", "ab3", "Error"],
+        answer: 1,
+        explain: "The `*` operator repeats a string. `'ab' * 3` gives `'ababab'`.",
+      },
+      {
+        q: "CPython is…",
+        choices: [
+          "A compiled Python variant",
+          "The standard reference interpreter written in C",
+          "A Python IDE",
+          "A package manager",
+        ],
+        answer: 1,
+      },
+      {
+        q: "Which file extension is used for Python source files?",
+        choices: [".py", ".pt", ".pyx", ".python"],
         answer: 0,
       },
     ],
@@ -150,8 +206,11 @@ total = apples * price
 print(f"I bought {apples} apples for {total} dollars")
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Forgetting to put the `f` in front of the string when trying to use `{variables}`. If you omit it, Python will literally print out the text '{variables}' instead of the actual value.",
+      "Integer division with `/` in Python 3 always returns a float — `6 / 2` gives `3.0`, not `3`. Use `//` if you need an integer result.",
+      "String and number concatenation with `+` raises a TypeError. `'Score: ' + 10` crashes. Use an f-string or `str(10)` to convert first.",
+    ],
     miniPrompt:
       "Try changing the `price` variable in Example 2 to 2.50 and watch how the f-string updates the total.",
     furtherReading: [
@@ -230,8 +289,11 @@ print("Liftoff!")
 
 Inside loops, you can use \`break\` to instantly shatter the loop and exit completely, or \`continue\` to abandon just the *current* iteration and jump immediately back to the top for the next one.
 `,
-    commonMistake:
+    commonMistake: [
       "Forgetting to update the variable inside a `while` loop (like omitting `count -= 1` in Example 2). This creates an infinite loop that runs forever until the program crashes.",
+      "Off-by-one errors in `range()`. `range(1, 10)` stops at 9, not 10. To include 10, write `range(1, 11)`. Read the stop argument as 'up to but not including'.",
+      "Using `=` instead of `==` inside an `if` condition. `if x = 5:` is a SyntaxError in Python — assignment and equality are separate operators.",
+    ],
     miniPrompt:
       "Add a new `elif` condition to the FizzBuzz live coding block below to print 'Seven' when the number is divisible by 7.",
     furtherReading: [
@@ -359,8 +421,11 @@ print(math_stuff()) # 15
 # print(local_var)  # Error! local_var doesn't exist out here
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Forgetting to write the `return` keyword. If a function doesn't explicitly return a value, it silently returns a special object called `None`. If you see `None` showing up unexpectedly in your output, check your function's return statement!",
+      "Calling a function that returns a value, but not capturing it. `result = tip(50, 20)` stores the answer. `tip(50, 20)` alone discards it silently.",
+      "Mutating a mutable default argument. `def add(item, lst=[]):` shares the same list across all calls. Use `lst=None` and create a fresh list inside the function body.",
+    ],
     miniPrompt:
       "Change Example 2 to return the greeting string in entirely uppercase letters directly from within the function.",
     furtherReading: [
@@ -458,8 +523,11 @@ with open("log.txt", "r") as file_obj:
 # The file is already safely closed here
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Forgetting to close a file (or failing to use a `with` block). If you leave files open, your program can lock up system resources, cause memory leaks, or prevent other programs from reading the file.",
+      "Opening in `'w'` mode when you meant `'a'`. The moment `open('log.txt', 'w')` runs, the file is silently wiped — even before you write a single byte.",
+      "Calling `f.read()` twice and expecting data the second time. The file cursor stays at the end after the first read. Call `f.seek(0)` to rewind, or just use a `with` block and re-open.",
+    ],
     miniPrompt:
       "Change the tiny journal example below to use 'w' mode instead of 'a' mode and run it twice. Notice how it erases the previous entry?",
     furtherReading: [
@@ -555,8 +623,11 @@ finally:
     print("Closing up.")
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Using a 'bare except' (just writing `except:` without specifying the error type like `ValueError`). This catches literally everything, including KeyboardInterrupts (when you try to quit the program) or typo-related SyntaxErrors, making it impossible to debug real issues.",
+      "Swallowing exceptions with an empty `except` block: `except ValueError: pass`. The error vanishes silently and leaves your program in a broken state with no indication of what went wrong.",
+      "Raising a new exception inside an `except` block without `raise ... from err` loses the original traceback. Use `raise NewError(...) from err` to keep the chain intact.",
+    ],
     miniPrompt:
       "In the live coding block, try passing a string instead of a number to `safe_div` to see which exception block catches it.",
     furtherReading: [
@@ -661,8 +732,11 @@ unique_ids = {1, 2, 2, 3, 3, 3}
 print(unique_ids) # Outputs: {1, 2, 3}
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Modifying a list while you are looping over it. If you remove an item from a list while `for` looping through it, everything shifts backwards, causing the loop to skip the next item entirely!",
+      "Accessing a dict key that doesn't exist raises a `KeyError`. Use `dict.get(key, default)` when the key might be absent, or check with `key in dict` first.",
+      "Assuming sets preserve insertion order. They don't. If you need both uniqueness and order, use `dict.fromkeys(items)` — dicts preserve insertion order since Python 3.7.",
+    ],
     miniPrompt:
       "In the contact book live code below, try adding a dictionary that includes an 'email' key in addition to 'name' and 'phone'.",
     furtherReading: [
@@ -768,8 +842,11 @@ name_lengths = {name: len(name) for name in names}
 print(name_lengths) # {'Alice': 5, 'Bob': 3}
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Trying to cram too much logic into a single comprehension. If your comprehension wraps across three lines and has multiple `if/else` conditions, you've defeated the purpose. Fall back to a standard `for` loop for readability.",
+      "Confusing filter `if` with inline `if/else`. `[x for x in lst if x > 0]` filters. `[x if x > 0 else 0 for x in lst]` transforms. The position of `if` is not interchangeable.",
+      "Generator expressions look like list comprehensions but use parentheses and produce values lazily. Passing one to `len()` raises a TypeError — generators have no length until consumed.",
+    ],
     miniPrompt:
       "Use a list comprehension to generate a list of the squares of the numbers 1 through 5.",
     furtherReading: [
@@ -872,8 +949,11 @@ p = Point(10, 20)
 print(p) # Point(10, 20) instead of <__main__.Point object at 0x...>
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Forgetting to include `self` as the first parameter when defining a method inside a class. Without it, you'll get a confusing `TypeError` saying the method takes 0 positional arguments but 1 was given.",
+      "Assigning to a class attribute instead of an instance attribute inside `__init__`. `Dog.name = name` sets it on the class itself (shared by all dogs). `self.name = name` sets it per-instance.",
+      "Calling `super().__init__()` is optional in a direct subclass of `object`, but skipping it in any other inheritance chain can leave the parent's `__init__` completely unexecuted.",
+    ],
     miniPrompt:
       "In Example 1, add a `have_birthday()` method that increases the dog's `self.age` by 1 and prints a happy birthday message.",
     furtherReading: [
@@ -1003,8 +1083,11 @@ app.increment()
 ### Avoiding Spagetti Code
 Keep your concerns separated. \`ContactBook\` should not be calling \`input()\`. It should receive data as arguments, and return data to the caller. The main CLI loop handles the \`input()\` and \`print()\` statements. This makes the \`ContactBook\` reusable in a GUI or web app later!
 `,
-    commonMistake:
+    commonMistake: [
       "Putting `input()` calls directly inside the `ContactBook` class methods. If you do this, your class is permanently tied to the terminal and cannot be reused in a web or desktop application.",
+      "Calling `json.load()` on an empty file raises a `JSONDecodeError`. Always guard the load with a try/except or check that the file has content before parsing.",
+      "Assuming `os.path.exists()` means the file is readable. It might exist but be locked, corrupt, or have zero bytes. The try/except around the load is your real safety net.",
+    ],
     miniPrompt:
       "In the live code below, change the ContactBook constructor so it creates a file named `my_friends.json` instead of `contacts.json`.",
     furtherReading: [
@@ -1109,8 +1192,11 @@ data = response.json()
 print(f"People in space right now: {data['number']}")
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Naming your own file the same name as a library (e.g., naming your file `random.py`). When you type `import random` in your code, Python will import your file instead of the built-in library, causing chaotic errors.",
+      "`from module import *` pulls every name from that module into your namespace. It makes it impossible to tell where any given name came from and frequently causes silent collisions.",
+      "Forgetting that `import` runs the module's top-level code on the first import. If that module has a slow network call or heavy computation at the top level, every file that imports it pays that cost.",
+    ],
     miniPrompt: "Use the `math` module in the live code to print the square root of 225.",
     furtherReading: [
       { title: "The Python Standard Library", url: "https://docs.python.org/3/library/" },
@@ -1194,8 +1280,11 @@ parsed = json.loads(json_string)
 print(parsed["hobbies"][1]) # coding
 \`\`\`
 `,
-    commonMistake:
+    commonMistake: [
       "Forgetting to specify `encoding='utf-8'` when calling `open()` to read or write text files. Without it, Python uses your operating system's default encoding (often cp1252 on Windows), which will crash violently the second it encounters an emoji or a foreign character.",
+      "`json.dumps()` produces a string, not bytes. If you're writing JSON to a binary-mode file (`'wb'`), you'll get a TypeError. Open in text mode (`'w'`) or call `.encode('utf-8')` explicitly.",
+      "CSV fields that contain commas must be quoted. If you write your own CSV with string concatenation instead of using the `csv` module, any value with a comma inside it will corrupt every column after it.",
+    ],
     miniPrompt:
       "In the live coding window, convert the `buf.getvalue()` CSV string directly into a JSON string using `json.dumps()`.",
     furtherReading: [

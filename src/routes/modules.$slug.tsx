@@ -137,14 +137,18 @@ function ModulePage() {
         <Cell kind="in" label="theory.md" collapsible icon={<IconBook />}>
           <MarkdownBlock>{mod.theory}</MarkdownBlock>
 
-          {mod.commonMistake && (
-            <div className="mt-6 mb-2 border-l-4 border-coral bg-coral/10 p-4 rounded-r-md">
-              <h4 className="font-display font-semibold text-coral text-sm uppercase tracking-wider mb-1">
-                Common Mistake
-              </h4>
-              <p className="text-sm opacity-90 leading-relaxed text-warm-black">
-                {mod.commonMistake}
-              </p>
+          {mod.commonMistake && mod.commonMistake.length > 0 && (
+            <div className="mt-6 mb-2 flex flex-col gap-3">
+              {mod.commonMistake.map((gotcha: string, gi: number) => (
+                <div key={gi} className="border-l-4 border-coral bg-coral/10 p-4 rounded-r-md">
+                  <h4 className="font-display font-semibold text-coral text-sm uppercase tracking-wider mb-1">
+                    {mod.commonMistake!.length === 1 ? "Common Mistake" : `Gotcha ${gi + 1}`}
+                  </h4>
+                  <p className="text-sm opacity-90 leading-relaxed text-warm-black">
+                    {gotcha}
+                  </p>
+                </div>
+              ))}
             </div>
           )}
 
