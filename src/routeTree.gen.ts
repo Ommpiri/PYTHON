@@ -18,6 +18,8 @@ import { Route as BadgesRouteImport } from './routes/badges'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ModulesIndexRouteImport } from './routes/modules.index'
+import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as ProfileEditRouteImport } from './routes/profile.edit'
 import { Route as ModulesSlugRouteImport } from './routes/modules.$slug'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 
@@ -66,6 +68,16 @@ const ModulesIndexRoute = ModulesIndexRouteImport.update({
   path: '/modules/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UUsernameRoute = UUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileEditRoute = ProfileEditRouteImport.update({
+  id: '/profile/edit',
+  path: '/profile/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModulesSlugRoute = ModulesSlugRouteImport.update({
   id: '/modules/$slug',
   path: '/modules/$slug',
@@ -87,6 +99,8 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ProgressRoute
   '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/u/$username': typeof UUsernameRoute
   '/modules/': typeof ModulesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -100,6 +114,8 @@ export interface FileRoutesByTo {
   '/progress': typeof ProgressRoute
   '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/u/$username': typeof UUsernameRoute
   '/modules': typeof ModulesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -114,6 +130,8 @@ export interface FileRoutesById {
   '/progress': typeof ProgressRoute
   '/whiteboard': typeof WhiteboardRoute
   '/modules/$slug': typeof ModulesSlugRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/u/$username': typeof UUsernameRoute
   '/modules/': typeof ModulesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -129,6 +147,8 @@ export interface FileRouteTypes {
     | '/progress'
     | '/whiteboard'
     | '/modules/$slug'
+    | '/profile/edit'
+    | '/u/$username'
     | '/modules/'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +162,8 @@ export interface FileRouteTypes {
     | '/progress'
     | '/whiteboard'
     | '/modules/$slug'
+    | '/profile/edit'
+    | '/u/$username'
     | '/modules'
     | '/api/auth/$'
   id:
@@ -155,6 +177,8 @@ export interface FileRouteTypes {
     | '/progress'
     | '/whiteboard'
     | '/modules/$slug'
+    | '/profile/edit'
+    | '/u/$username'
     | '/modules/'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
@@ -169,6 +193,8 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   WhiteboardRoute: typeof WhiteboardRoute
   ModulesSlugRoute: typeof ModulesSlugRoute
+  ProfileEditRoute: typeof ProfileEditRoute
+  UUsernameRoute: typeof UUsernameRoute
   ModulesIndexRoute: typeof ModulesIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -238,6 +264,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModulesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/u/$username': {
+      id: '/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof UUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/edit': {
+      id: '/profile/edit'
+      path: '/profile/edit'
+      fullPath: '/profile/edit'
+      preLoaderRoute: typeof ProfileEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modules/$slug': {
       id: '/modules/$slug'
       path: '/modules/$slug'
@@ -265,6 +305,8 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   WhiteboardRoute: WhiteboardRoute,
   ModulesSlugRoute: ModulesSlugRoute,
+  ProfileEditRoute: ProfileEditRoute,
+  UUsernameRoute: UUsernameRoute,
   ModulesIndexRoute: ModulesIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

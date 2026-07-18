@@ -3,6 +3,13 @@ import { useState, useEffect } from "react";
 import { useProgress } from "@/hooks/useProgress";
 import { useSession } from "@/hooks/useSession";
 import { calculateStreak } from "@/lib/progress";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Navbar({
   theme,
@@ -84,28 +91,45 @@ export function Navbar({
           
           <div className="ml-4 pl-4 border-l border-border flex items-center gap-3 font-mono text-xs">
             {session ? (
-              <>
-                {session.user?.image && (
-                  <img src={session.user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
-                )}
-                <span className="text-muted-foreground truncate max-w-[100px]">
-                  {session.user?.name || session.user?.email}
-                </span>
-                <button
-                  onClick={async () => {
-                    await fetch("/api/auth/signout", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                      body: new URLSearchParams({ csrfToken }),
-                    });
-                    window.dispatchEvent(new CustomEvent("pyc-session-change"));
-                    window.location.href = "/";
-                  }}
-                  className="text-muted-foreground hover:text-amber transition-colors font-mono text-xs"
-                >
-                  [sign_out]
-                </button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 outline-none hover:opacity-80 transition-opacity">
+                  {session.user?.image && (
+                    <img src={session.user.image} alt="Avatar" className="w-6 h-6 rounded-full object-cover" />
+                  )}
+                  <span className="text-muted-foreground truncate max-w-[100px] text-xs">
+                    {session.user?.username ? `@${session.user.username}` : session.user?.name || session.user?.email}
+                  </span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 font-mono text-xs">
+                  {session.user?.username && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/u/$username" params={{ username: session.user.username }} className="cursor-pointer">
+                        View Profile
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile/edit" className="cursor-pointer">
+                      Edit Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer text-coral focus:text-coral focus:bg-coral/10"
+                    onSelect={async () => {
+                      await fetch("/api/auth/signout", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: new URLSearchParams({ csrfToken }),
+                      });
+                      window.dispatchEvent(new CustomEvent("pyc-session-change"));
+                      window.location.href = "/";
+                    }}
+                  >
+                    [sign_out]
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Link to="/login" className="text-muted-foreground hover:text-amber transition-colors">
                 [sign_in]

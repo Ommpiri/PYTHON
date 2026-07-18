@@ -5,6 +5,14 @@ CREATE TABLE IF NOT EXISTS users (
   email text,
   "emailVerified" timestamp with time zone,
   image text,
+  username text UNIQUE,
+  bio text,
+  avatar_url text,
+  avatar_source text DEFAULT 'oauth',
+  github_username text,
+  twitter_username text,
+  linkedin_url text,
+  website_url text,
   PRIMARY KEY (id)
 );
 
