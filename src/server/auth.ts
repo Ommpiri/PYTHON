@@ -25,8 +25,7 @@ export const authConfig = {
   secret: process.env.AUTH_SECRET || "default_secret_for_development",
   trustHost: true,
   basePath: "/api/auth",
-  // Tell Auth.js the canonical URL so callbacks work correctly on Vercel
-  ...(process.env.AUTH_URL ? { baseUrl: process.env.AUTH_URL } : {}),
+  // trustHost: true allows Vercel's proxy headers. AUTH_URL env var is read automatically.
   session: {
     strategy: "database" as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
