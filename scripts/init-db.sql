@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
   twitter_username text,
   linkedin_url text,
   website_url text,
-  onboarding_completed boolean DEFAULT FALSE,
+  has_completed_onboarding boolean DEFAULT FALSE,
   PRIMARY KEY (id)
 );
 

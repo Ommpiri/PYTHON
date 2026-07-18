@@ -151,7 +151,7 @@ function RootComponent() {
   }, []);
 
   useEffect(() => {
-    if (status === "authenticated" && user && user.onboarding_completed === false) {
+    if (status === "authenticated" && user && user.has_completed_onboarding === false) {
       if (pathname !== "/profile/edit" && !pathname.startsWith("/api/auth")) {
         navigate({ to: "/profile/edit", replace: true });
         toast.info("Welcome! Please complete your profile first.");

@@ -300,7 +300,7 @@ function ProfileEditPage() {
         </section>
 
         <div className="flex justify-end gap-3 pt-4">
-          {profile.onboarding_completed && (
+          {profile.has_completed_onboarding && (
             <button 
               type="button" 
               onClick={() => navigate({ to: "/u/$username", params: { username: profile.username || "" } })}

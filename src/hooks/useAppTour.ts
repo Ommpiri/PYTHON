@@ -11,7 +11,7 @@ export function useAppTour(enabled = true) {
     if (status === "loading") return; // wait for auth state
 
     // If they need to onboard, the root router will redirect them. Don't show tour yet.
-    if (status === "authenticated" && user && user.onboarding_completed === false) {
+    if (status === "authenticated" && user && user.has_completed_onboarding === false) {
       return;
     }
 
@@ -102,5 +102,5 @@ export function useAppTour(enabled = true) {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [enabled, status, user?.onboarding_completed]);
+  }, [enabled, status, user?.has_completed_onboarding]);
 }
