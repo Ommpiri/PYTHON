@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PRESET_AVATARS } from "./PresetAvatars";
 
-export type AvatarSource = "oauth" | "github" | "preset";
+export type AvatarSource = "oauth" | "github" | "preset" | "upload";
 
 export interface AvatarPickerProps {
   initialSource: AvatarSource;
@@ -34,6 +34,8 @@ export function AvatarPicker({
       newUrl = `https://github.com/${githubUsername}.png`;
     } else if (newSource === "preset") {
       newUrl = url.startsWith("preset:") ? url : "preset:terminal";
+    } else if (newSource === "upload") {
+      newUrl = (url.startsWith("data:") || url.startsWith("blob:")) ? url : "";
     }
 
     setUrl(newUrl);
@@ -75,10 +77,11 @@ export function AvatarPicker({
 
       <div className="flex-1 w-full min-w-0">
         <Tabs value={source} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="grid grid-cols-3 w-full max-w-sm mb-4">
+          <TabsList className="grid grid-cols-4 w-full max-w-md mb-4">
             <TabsTrigger value="oauth" disabled={!oauthUrl} className="font-mono text-xs">OAuth</TabsTrigger>
             <TabsTrigger value="github" disabled={!githubUsername} className="font-mono text-xs">GitHub</TabsTrigger>
             <TabsTrigger value="preset" className="font-mono text-xs">Preset</TabsTrigger>
+            <TabsTrigger value="upload" className="font-mono text-xs">Upload</TabsTrigger>
           </TabsList>
 
           <TabsContent value="oauth" className="space-y-2">
@@ -112,6 +115,54 @@ export function AvatarPicker({
                 );
               })}
             </div>
+          </TabsContent>
+
+          <TabsContent value="upload" className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Upload a custom image from your device or camera.
+            </p>
+            <label className="block w-full cursor-pointer text-center font-mono text-xs p-4 border border-dashed border-border rounded-lg hover:border-amber hover:text-amber transition-colors">
+              <span>Choose Image / Take Photo</span>
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  const reader = new FileReader();
+                  reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                      const canvas = document.createElement("canvas");
+                      const MAX_SIZE = 256;
+                      let width = img.width;
+                      let height = img.height;
+                      
+                      // Crop to square for best avatar appearance
+                      const minDim = Math.min(width, height);
+                      const sx = (width - minDim) / 2;
+                      const sy = (height - minDim) / 2;
+                      
+                      canvas.width = MAX_SIZE;
+                      canvas.height = MAX_SIZE;
+                      
+                      const ctx = canvas.getContext("2d");
+                      ctx?.drawImage(img, sx, sy, minDim, minDim, 0, 0, MAX_SIZE, MAX_SIZE);
+                      
+                      // Convert to base64 JPEG
+                      const base64Url = canvas.toDataURL("image/jpeg", 0.85);
+                      
+                      setUrl(base64Url);
+                      onChange("upload", base64Url);
+                    };
+                    img.src = event.target?.result as string;
+                  };
+                  reader.readAsDataURL(file);
+                }}
+              />
+            </label>
           </TabsContent>
         </Tabs>
       </div>

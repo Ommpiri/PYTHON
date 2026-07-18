@@ -5,7 +5,7 @@ const profileSchema = z.object({
   username: z.string().regex(/^[a-z0-9_-]{3,20}$/, "Username must be 3-20 characters (a-z, 0-9, _, -)"),
   bio: z.string().max(160, "Bio max 160 characters").optional(),
   avatar_url: z.string().optional(),
-  avatar_source: z.enum(["oauth", "github", "preset"]).default("oauth"),
+  avatar_source: z.enum(["oauth", "github", "preset", "upload"]).default("oauth"),
   github_username: z.string().optional().nullable(),
   twitter_username: z.string().optional().nullable(),
   linkedin_url: z.string().url("Must be a valid URL").optional().nullable().or(z.literal("")),
