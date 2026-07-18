@@ -192,7 +192,7 @@ function ProfileEditPage() {
       <div className="space-y-8">
         {/* Avatar Section */}
         <section className="bg-card border border-border rounded-lg p-6">
-          <h2 className="font-mono text-sm text-amber mb-4"># avatar_config</h2>
+          <h2 className="font-mono text-sm text-amber-dark mb-4"># avatar_config</h2>
           <AvatarPicker 
             initialSource={(profile.avatar_source as AvatarSource) || "oauth"}
             initialUrl={profile.avatar_url}
@@ -203,7 +203,7 @@ function ProfileEditPage() {
         </section>
 
         <section className="bg-card border border-border rounded-lg p-6 space-y-6">
-          <h2 className="font-mono text-sm text-teal"># identity</h2>
+          <h2 className="font-mono text-sm text-teal-dark"># identity</h2>
           
           <div className="space-y-2">
             <label className="font-mono text-xs text-muted-foreground block">username</label>
@@ -220,13 +220,13 @@ function ProfileEditPage() {
                 {usernameStatus === "taken" && <span className="text-coral">✗ taken</span>}
               </div>
             </div>
-            {errors.username && <p className="font-mono text-xs text-coral">{errors.username}</p>}
+            {errors.username && <p className="font-mono text-xs text-coral-dark">{errors.username}</p>}
           </div>
 
           <div className="space-y-2">
             <div className="flex justify-between">
               <label className="font-mono text-xs text-muted-foreground block">bio</label>
-              <span className={`font-mono text-xs ${form.bio.length > 160 ? "text-coral" : "text-muted-foreground"}`}>
+              <span className={`font-mono text-xs ${form.bio.length > 160 ? "text-coral-dark" : "text-muted-foreground"}`}>
                 {form.bio.length}/160
               </span>
             </div>
@@ -238,12 +238,12 @@ function ProfileEditPage() {
               className="w-full font-sans text-sm bg-background border border-border rounded px-3 py-2 outline-none focus:border-amber resize-none"
               placeholder="Tell other students about yourself..."
             />
-            {errors.bio && <p className="font-mono text-xs text-coral">{errors.bio}</p>}
+            {errors.bio && <p className="font-mono text-xs text-coral-dark">{errors.bio}</p>}
           </div>
         </section>
 
         <section className="bg-card border border-border rounded-lg p-6 space-y-4">
-          <h2 className="font-mono text-sm text-teal"># socials (optional)</h2>
+          <h2 className="font-mono text-sm text-teal-dark"># socials (optional)</h2>
           
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -275,7 +275,7 @@ function ProfileEditPage() {
                 placeholder="https://linkedin.com/in/..."
                 className={`w-full font-sans text-sm bg-background border rounded px-3 py-2 outline-none focus:border-amber ${errors.linkedin_url ? "border-coral" : "border-border"}`}
               />
-              {errors.linkedin_url && <p className="font-mono text-xs text-coral">{errors.linkedin_url}</p>}
+              {errors.linkedin_url && <p className="font-mono text-xs text-coral-dark">{errors.linkedin_url}</p>}
             </div>
 
             <div className="space-y-2">
@@ -287,12 +287,12 @@ function ProfileEditPage() {
                 placeholder="https://..."
                 className={`w-full font-sans text-sm bg-background border rounded px-3 py-2 outline-none focus:border-amber ${errors.website_url ? "border-coral" : "border-border"}`}
               />
-              {errors.website_url && <p className="font-mono text-xs text-coral">{errors.website_url}</p>}
+              {errors.website_url && <p className="font-mono text-xs text-coral-dark">{errors.website_url}</p>}
             </div>
           </div>
 
           {githubWarning && (
-            <div className="mt-4 p-3 bg-coral/10 border border-coral/30 rounded flex gap-2 items-start text-coral">
+            <div className="mt-4 p-3 bg-coral/10 border border-coral/30 rounded flex gap-2 items-start text-coral-dark">
               <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
               <p className="text-sm font-sans">{githubWarning}</p>
             </div>

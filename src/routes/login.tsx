@@ -21,12 +21,12 @@ function LoginRoute() {
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md border border-border bg-card p-6 shadow-xl rounded-md font-mono">
         <div className="flex items-center gap-2 border-b border-border pb-4 mb-6">
-          <Terminal className="h-5 w-5 text-amber" />
+          <Terminal className="h-5 w-5 text-amber-dark" />
           <span className="font-semibold text-foreground">auth_system</span>
         </div>
 
         <p className="text-sm text-muted-foreground mb-6">
-          <span className="text-amber">{">>> "}</span>
+          <span className="text-amber-dark">{">>> "}</span>
           Please authenticate to persist your progress and claim your certificate.
         </p>
 

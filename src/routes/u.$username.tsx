@@ -67,7 +67,7 @@ function PublicProfilePage() {
             <h1 className="text-2xl font-bold font-sans text-foreground">
               {user.name || user.username}
             </h1>
-            <p className="font-mono text-amber mb-4">@{user.username}</p>
+            <p className="font-mono text-amber-dark mb-4">@{user.username}</p>
             
             {user.bio && (
               <p className="text-sm text-foreground/80 font-sans mb-6 text-left w-full">
@@ -120,15 +120,15 @@ function PublicProfilePage() {
             <h2 className="font-mono text-sm text-teal mb-4"># progress_stats</h2>
             <div className="grid grid-cols-3 gap-4">
               <div className="bg-card border border-border rounded-lg p-5 flex flex-col justify-center items-center">
-                <span className="text-3xl font-display font-bold text-amber">{progress.completedCount}</span>
+                <span className="text-3xl font-display font-bold text-amber-dark">{progress.completedCount}</span>
                 <span className="font-mono text-xs text-muted-foreground mt-1">/ {modules.length} Modules</span>
               </div>
               <div className="bg-card border border-border rounded-lg p-5 flex flex-col justify-center items-center">
-                <span className="text-3xl font-display font-bold text-amber">{streak}</span>
+                <span className="text-3xl font-display font-bold text-amber-dark">{streak}</span>
                 <span className="font-mono text-xs text-muted-foreground mt-1">Day Streak 🔥</span>
               </div>
               <div className="bg-card border border-border rounded-lg p-5 flex flex-col justify-center items-center">
-                <span className="text-3xl font-display font-bold text-teal">{progress.challengesCount}</span>
+                <span className="text-3xl font-display font-bold text-teal-dark">{progress.challengesCount}</span>
                 <span className="font-mono text-xs text-muted-foreground mt-1">Challenges</span>
               </div>
             </div>
