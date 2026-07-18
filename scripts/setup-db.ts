@@ -77,7 +77,15 @@ async function run() {
         name           TEXT,
         email          TEXT UNIQUE,
         "emailVerified" TIMESTAMPTZ,
-        image          TEXT
+        image          TEXT,
+        username       TEXT UNIQUE,
+        bio            TEXT,
+        avatar_url     TEXT,
+        avatar_source  TEXT DEFAULT 'oauth',
+        github_username TEXT,
+        twitter_username TEXT,
+        linkedin_url   TEXT,
+        website_url    TEXT
       );
     `);
 
