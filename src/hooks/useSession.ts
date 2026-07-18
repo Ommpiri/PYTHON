@@ -6,6 +6,7 @@ export type SessionUser = {
   email?: string | null;
   image?: string | null;
   username?: string | null;
+  onboarding_completed?: boolean;
 };
 
 export type SessionStatus = "loading" | "authenticated" | "unauthenticated";

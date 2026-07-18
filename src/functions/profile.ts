@@ -36,7 +36,7 @@ export const getProfileFn = createServerFn({ method: "GET" })
     
     const { pool } = await import("../server/db");
     const res = await pool.query(
-      "SELECT id, name, email, image, username, bio, avatar_url, avatar_source, github_username, twitter_username, linkedin_url, website_url FROM users WHERE id = $1",
+      "SELECT id, name, email, image, username, bio, avatar_url, avatar_source, github_username, twitter_username, linkedin_url, website_url, onboarding_completed FROM users WHERE id = $1",
       [userId]
     );
     
@@ -66,7 +66,8 @@ export const updateProfileFn = createServerFn({ method: "POST" })
         github_username = $5, 
         twitter_username = $6, 
         linkedin_url = $7, 
-        website_url = $8
+        website_url = $8,
+        onboarding_completed = true
        WHERE id = $9`,
       [
         data.username,

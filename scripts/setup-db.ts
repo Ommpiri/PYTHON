@@ -85,7 +85,8 @@ async function run() {
         github_username TEXT,
         twitter_username TEXT,
         linkedin_url   TEXT,
-        website_url    TEXT
+        website_url    TEXT,
+        onboarding_completed BOOLEAN DEFAULT FALSE
       );
     `);
 

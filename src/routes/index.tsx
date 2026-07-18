@@ -3,6 +3,7 @@ import { useState } from "react";
 import { TerminalHero } from "@/components/TerminalHero";
 import { modules } from "@/lib/modules";
 import { ModuleIcon } from "@/components/ModuleIcon";
+import { useAppTour } from "@/hooks/useAppTour";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -10,10 +11,15 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  
+  // Trigger the walkthrough tour if they haven't seen it
+  useAppTour();
 
   return (
     <>
-      <TerminalHero />
+      <div id="tour-terminal">
+        <TerminalHero />
+      </div>
 
       <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16 border-t border-border">
         <p className="font-mono text-xs text-amber mb-4"># why_this_course</p>
@@ -34,7 +40,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-14">
+      <section id="tour-certificate" className="max-w-5xl mx-auto px-4 sm:px-6 py-14">
         <p className="font-mono text-xs text-amber mb-4"># certificate.py</p>
         <h2 className="text-3xl sm:text-4xl font-display mb-8">
           Finish the twelve. Print the certificate.
@@ -65,7 +71,7 @@ function Index() {
 
       <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
         <p className="font-mono text-xs text-amber mb-4"># all_modules</p>
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div id="tour-modules" className="grid sm:grid-cols-2 gap-3">
           {modules.map((m) => (
             <Link
               key={m.id}

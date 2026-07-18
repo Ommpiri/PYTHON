@@ -3,7 +3,8 @@ import {
   Outlet,
   Link,
   createRootRouteWithContext,
-  useRouter,
+  useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -14,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar } from "@/components/Navbar";
 import { Pydude } from "@/components/Pydude";
 import { Toaster, toast } from "sonner";
+import { useSession } from "@/hooks/useSession";
 
 function NotFoundComponent() {
   return (
@@ -119,6 +121,11 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const [theme, setTheme] = useState<"ink" | "parchment">("ink");
+  
+  const { user, status } = useSession();
+  const navigate = useNavigate();
+  const routerState = useRouterState();
+  const pathname = routerState.location.pathname;
   useEffect(() => {
     const saved = (typeof localStorage !== "undefined" && localStorage.getItem("pyc-theme")) as
       "ink" | "parchment" | null;
@@ -142,6 +149,15 @@ function RootComponent() {
     window.addEventListener("pyc-requires-auth", onRequiresAuth);
     return () => window.removeEventListener("pyc-requires-auth", onRequiresAuth);
   }, []);
+
+  useEffect(() => {
+    if (status === "authenticated" && user && user.onboarding_completed === false) {
+      if (pathname !== "/profile/edit" && !pathname.startsWith("/api/auth")) {
+        navigate({ to: "/profile/edit", replace: true });
+        toast.info("Welcome! Please complete your profile first.");
+      }
+    }
+  }, [status, user, pathname, navigate]);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -300,13 +300,15 @@ function ProfileEditPage() {
         </section>
 
         <div className="flex justify-end gap-3 pt-4">
-          <button 
-            type="button" 
-            onClick={() => navigate({ to: "/u/$username", params: { username: profile.username || "" } })}
-            className="px-4 py-2 font-mono text-sm rounded border border-border hover:bg-secondary transition-colors"
-          >
-            Cancel
-          </button>
+          {profile.onboarding_completed && (
+            <button 
+              type="button" 
+              onClick={() => navigate({ to: "/u/$username", params: { username: profile.username || "" } })}
+              className="px-4 py-2 font-mono text-sm rounded border border-border hover:bg-secondary transition-colors"
+            >
+              Cancel
+            </button>
+          )}
           <button 
             type="button"
             disabled={updateMutation.isPending || usernameStatus === "taken" || usernameStatus === "loading"}

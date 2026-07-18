@@ -1082,3 +1082,72 @@
   color: oklch(0.9 0.015 85);
 }
 
+/* ── Driver.js Custom Styling ────────────────────────────────────────── */
+.driver-popover.pyc-driver-popover {
+  background: var(--ink);
+  border: 1px solid var(--amber);
+  color: var(--warm-off);
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+
+.driver-popover.pyc-driver-popover .driver-popover-title {
+  font-family: var(--font-mono);
+  color: var(--amber);
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.driver-popover.pyc-driver-popover .driver-popover-description {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.driver-popover.pyc-driver-popover .driver-popover-footer {
+  margin-top: 16px;
+}
+
+.driver-popover.pyc-driver-popover button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--warm-off);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 6px 12px;
+  text-shadow: none;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.driver-popover.pyc-driver-popover button:hover {
+  background: var(--secondary);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.driver-popover.pyc-driver-popover .driver-popover-next-btn {
+  background: var(--amber);
+  color: var(--ink);
+  border-color: var(--amber);
+  font-weight: bold;
+}
+
+.driver-popover.pyc-driver-popover .driver-popover-next-btn:hover {
+  background: oklch(0.76 0.14 75 / 0.85);
+  color: var(--ink);
+}
+
+.driver-popover.pyc-driver-popover .driver-popover-progress-text {
+  font-family: var(--font-mono);
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.driver-popover.pyc-driver-popover .driver-popover-arrow {
+  border-color: var(--amber);
+}

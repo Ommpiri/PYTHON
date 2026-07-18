@@ -36,9 +36,10 @@ export const authConfig = {
       if (session.user && user?.id) {
         session.user.id = user.id;
         try {
-          const res = await pool.query('SELECT username FROM users WHERE id = $1', [user.id]);
+          const res = await pool.query('SELECT username, onboarding_completed FROM users WHERE id = $1', [user.id]);
           if (res.rows[0]) {
             session.user.username = res.rows[0].username;
+            session.user.onboarding_completed = res.rows[0].onboarding_completed;
           }
         } catch (e) {
           console.error("Failed to fetch username for session", e);
