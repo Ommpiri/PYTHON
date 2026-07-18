@@ -11,13 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function Navbar({
-  theme,
-  onToggleTheme,
-}: {
-  theme: "ink" | "parchment";
-  onToggleTheme: () => void;
-}) {
+export function Navbar() {
   const loc = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
@@ -80,14 +74,6 @@ export function Navbar({
               </Link>
             );
           })}
-          <button
-            onClick={onToggleTheme}
-            title="Toggle theme"
-            className="ml-2 font-mono text-xs px-2 py-1 border border-border rounded hover:text-amber transition-colors"
-            aria-label="Toggle color theme"
-          >
-            {theme === "ink" ? "▊ ink" : "▊ paper"}
-          </button>
           
           <div className="ml-4 pl-4 border-l border-border flex items-center gap-3 font-mono text-xs">
             {session ? (
@@ -139,16 +125,8 @@ export function Navbar({
           </div>
         </nav>
 
-        {/* Mobile: theme toggle + hamburger */}
+        {/* Mobile: hamburger */}
         <div className="flex sm:hidden items-center gap-2">
-          <button
-            onClick={onToggleTheme}
-            title="Toggle theme"
-            className="font-mono text-xs px-2 py-1 border border-border rounded hover:text-amber transition-colors"
-            aria-label="Toggle color theme"
-          >
-            {theme === "ink" ? "▊" : "◻"}
-          </button>
           <button
             onClick={() => setMobileOpen((o) => !o)}
             aria-label="Open navigation menu"

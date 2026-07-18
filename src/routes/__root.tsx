@@ -121,21 +121,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const [theme, setTheme] = useState<"ink" | "parchment">("ink");
-  
   const { user, status } = useSession();
   const navigate = useNavigate();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
-  useEffect(() => {
-    const saved = (typeof localStorage !== "undefined" && localStorage.getItem("pyc-theme")) as
-      "ink" | "parchment" | null;
-    if (saved) setTheme(saved);
-  }, []);
-  useEffect(() => {
-    document.documentElement.classList.toggle("theme-parchment", theme === "parchment");
-    if (typeof localStorage !== "undefined") localStorage.setItem("pyc-theme", theme);
-  }, [theme]);
 
   useEffect(() => {
     const onRequiresAuth = () => {
@@ -165,15 +154,12 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen flex flex-col">
-        <Navbar
-          theme={theme}
-          onToggleTheme={() => setTheme((t) => (t === "ink" ? "parchment" : "ink"))}
-        />
+        <Navbar />
         <main className="flex-1">
           <Outlet />
         </main>
         <Pydude />
-        <Toaster theme={theme === "ink" ? "dark" : "light"} />
+        <Toaster theme="dark" />
         <footer className="border-t border-border py-10 px-6 font-mono text-xs text-muted-foreground">
           <div className="max-w-6xl mx-auto grid sm:grid-cols-3 gap-8">
             {/* Brand */}
