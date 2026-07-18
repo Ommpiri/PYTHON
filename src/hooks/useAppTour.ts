@@ -1,10 +1,19 @@
 import { useEffect } from "react";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import { useSession } from "@/hooks/useSession";
 
 export function useAppTour(enabled = true) {
+  const { user, status } = useSession();
+
   useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
+    if (status === "loading") return; // wait for auth state
+
+    // If they need to onboard, the root router will redirect them. Don't show tour yet.
+    if (status === "authenticated" && user && user.onboarding_completed === false) {
+      return;
+    }
 
     const tourCompleted = localStorage.getItem("pyc-tour-completed");
     if (tourCompleted) return;
@@ -66,5 +75,5 @@ export function useAppTour(enabled = true) {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [enabled]);
+  }, [enabled, status, user?.onboarding_completed]);
 }
