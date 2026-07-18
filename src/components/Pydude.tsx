@@ -132,7 +132,7 @@ export function Pydude() {
     <>
       {/* Floating avatar button */}
       {!expanded && (
-        <div className="fixed bottom-6 right-0 z-50 flex items-end gap-2 translate-x-2">
+        <div id="tour-pydude" className="fixed bottom-6 right-0 z-50 flex items-end gap-2 translate-x-2">
           {!avatarRevealed ? (
             <button
               onClick={() => setAvatarRevealed(true)}

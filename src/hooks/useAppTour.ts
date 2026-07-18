@@ -63,6 +63,33 @@ export function useAppTour(enabled = true) {
             align: "center",
           },
         },
+        {
+          element: "#tour-nav-playground",
+          popover: {
+            title: "The Playground",
+            description: "A free-form Python environment to experiment with code outside of the structured modules.",
+            side: "bottom",
+            align: "start",
+          },
+        },
+        {
+          element: "#tour-nav-whiteboard",
+          popover: {
+            title: "Whiteboard",
+            description: "An infinite canvas to sketch out your ideas, system designs, or flowcharts.",
+            side: "bottom",
+            align: "start",
+          },
+        },
+        {
+          element: "#tour-pydude",
+          popover: {
+            title: "Meet Pydude",
+            description: "This is your AI assistant! Pydude is always here to explain code, fix errors, or answer any Python questions you have.",
+            side: "top",
+            align: "end",
+          },
+        },
       ],
       onDestroyed: () => {
         localStorage.setItem("pyc-tour-completed", "true");

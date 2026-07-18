@@ -72,7 +72,7 @@ export function Navbar({
           {navLinks.map(({ to, label }) => {
             const isProgress = to === "/progress";
             return (
-              <Link key={to} to={to} className={linkCls(to)}>
+              <Link key={to} to={to} id={`tour-nav-${label}`} className={linkCls(to)}>
                 {label}
                 {isProgress && streak > 0 && (
                   <span className="ml-1 text-amber font-semibold animate-pulse">🔥{streak}</span>
