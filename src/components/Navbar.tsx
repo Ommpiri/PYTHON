@@ -1,7 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useProgress } from "@/hooks/useProgress";
+import { useSession } from "@/hooks/useSession";
 import { calculateStreak } from "@/lib/progress";
 
 export function Navbar({
@@ -17,14 +17,8 @@ export function Navbar({
   const p = useProgress();
   const streak = calculateStreak(p.activeDates);
 
-  const { data: session } = useQuery({
-    queryKey: ["session"],
-    queryFn: async () => {
-      const res = await fetch("/api/auth/session");
-      const data = await res.json();
-      return Object.keys(data).length > 0 ? data : null;
-    },
-  });
+  const { user: sessionUser, status: sessionStatus } = useSession();
+  const session = sessionStatus === "authenticated" ? { user: sessionUser } : null;
 
   useEffect(() => {
     fetch("/api/auth/csrf")
@@ -97,12 +91,20 @@ export function Navbar({
                 <span className="text-muted-foreground truncate max-w-[100px]">
                   {session.user?.name || session.user?.email}
                 </span>
-                <form action="/api/auth/signout" method="POST">
-                  <input type="hidden" name="csrfToken" value={csrfToken} />
-                  <button type="submit" className="text-muted-foreground hover:text-amber transition-colors">
-                    [sign_out]
-                  </button>
-                </form>
+                <button
+                  onClick={async () => {
+                    await fetch("/api/auth/signout", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                      body: new URLSearchParams({ csrfToken }),
+                    });
+                    window.dispatchEvent(new CustomEvent("pyc-session-change"));
+                    window.location.href = "/";
+                  }}
+                  className="text-muted-foreground hover:text-amber transition-colors font-mono text-xs"
+                >
+                  [sign_out]
+                </button>
               </>
             ) : (
               <Link to="/login" className="text-muted-foreground hover:text-amber transition-colors">
@@ -165,12 +167,20 @@ export function Navbar({
                   )}
                   <span>{session.user?.name || session.user?.email}</span>
                 </div>
-                <form action="/api/auth/signout" method="POST">
-                  <input type="hidden" name="csrfToken" value={csrfToken} />
-                  <button type="submit" className="w-full text-left px-2 py-2 rounded font-mono text-sm text-muted-foreground hover:text-foreground">
-                    [sign_out]
-                  </button>
-                </form>
+                <button
+                  onClick={async () => {
+                    await fetch("/api/auth/signout", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                      body: new URLSearchParams({ csrfToken }),
+                    });
+                    window.dispatchEvent(new CustomEvent("pyc-session-change"));
+                    window.location.href = "/";
+                  }}
+                  className="w-full text-left px-2 py-2 rounded font-mono text-sm text-muted-foreground hover:text-foreground"
+                >
+                  [sign_out]
+                </button>
               </>
             ) : (
               <Link to="/login" className="px-2 py-2 rounded font-mono text-sm text-muted-foreground hover:text-foreground">
