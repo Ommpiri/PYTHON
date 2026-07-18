@@ -66,6 +66,47 @@ export const updateProfileFn = createServerFn({ method: "POST" })
         github_username = $5, 
         twitter_username = $6, 
         linkedin_url = $7, 
+        website_url = $8
+       WHERE id = $9`,
+      [
+        data.username,
+        data.bio || "",
+        data.avatar_url || "",
+        data.avatar_source,
+        data.github_username || null,
+        data.twitter_username || null,
+        data.linkedin_url || null,
+        data.website_url || null,
+        userId
+      ]
+    );
+    
+    return { success: true };
+  });
+
+export const completeOnboardingFn = createServerFn({ method: "POST" })
+  .validator(profileSchema)
+  .handler(async ({ data }) => {
+    const userId = await getUserIdFromCookie();
+    if (!userId) throw new Error("Unauthorized");
+    
+    const { pool } = await import("../server/db");
+    
+    // Check username uniqueness
+    const check = await pool.query("SELECT id FROM users WHERE username = $1 AND id != $2", [data.username, userId]);
+    if (check.rows.length > 0) {
+      throw new Error("Username already taken");
+    }
+
+    await pool.query(
+      `UPDATE users SET 
+        username = $1, 
+        bio = $2, 
+        avatar_url = $3, 
+        avatar_source = $4, 
+        github_username = $5, 
+        twitter_username = $6, 
+        linkedin_url = $7, 
         website_url = $8,
         has_completed_onboarding = true
        WHERE id = $9`,

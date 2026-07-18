@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhiteboardRouteImport } from './routes/whiteboard'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as PlaygroundRouteImport } from './routes/playground'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CertificateRouteImport } from './routes/certificate'
 import { Route as BadgesRouteImport } from './routes/badges'
@@ -36,6 +37,11 @@ const ProgressRoute = ProgressRouteImport.update({
 const PlaygroundRoute = PlaygroundRouteImport.update({
   id: '/playground',
   path: '/playground',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/badges': typeof BadgesRoute
   '/certificate': typeof CertificateRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/playground': typeof PlaygroundRoute
   '/progress': typeof ProgressRoute
   '/whiteboard': typeof WhiteboardRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/badges': typeof BadgesRoute
   '/certificate': typeof CertificateRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/playground': typeof PlaygroundRoute
   '/progress': typeof ProgressRoute
   '/whiteboard': typeof WhiteboardRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/badges': typeof BadgesRoute
   '/certificate': typeof CertificateRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/playground': typeof PlaygroundRoute
   '/progress': typeof ProgressRoute
   '/whiteboard': typeof WhiteboardRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/badges'
     | '/certificate'
     | '/login'
+    | '/onboarding'
     | '/playground'
     | '/progress'
     | '/whiteboard'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/badges'
     | '/certificate'
     | '/login'
+    | '/onboarding'
     | '/playground'
     | '/progress'
     | '/whiteboard'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/badges'
     | '/certificate'
     | '/login'
+    | '/onboarding'
     | '/playground'
     | '/progress'
     | '/whiteboard'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   BadgesRoute: typeof BadgesRoute
   CertificateRoute: typeof CertificateRoute
   LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
   PlaygroundRoute: typeof PlaygroundRoute
   ProgressRoute: typeof ProgressRoute
   WhiteboardRoute: typeof WhiteboardRoute
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/playground'
       fullPath: '/playground'
       preLoaderRoute: typeof PlaygroundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   BadgesRoute: BadgesRoute,
   CertificateRoute: CertificateRoute,
   LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
   PlaygroundRoute: PlaygroundRoute,
   ProgressRoute: ProgressRoute,
   WhiteboardRoute: WhiteboardRoute,

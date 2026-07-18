@@ -117,6 +117,7 @@ export function Navbar({
                   <DropdownMenuItem
                     className="cursor-pointer text-coral focus:text-coral focus:bg-coral/10"
                     onSelect={async () => {
+                      sessionStorage.removeItem("onboarding_checked");
                       await fetch("/api/auth/signout", {
                         method: "POST",
                         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -193,6 +194,7 @@ export function Navbar({
                 </div>
                 <button
                   onClick={async () => {
+                    sessionStorage.removeItem("onboarding_checked");
                     await fetch("/api/auth/signout", {
                       method: "POST",
                       headers: { "Content-Type": "application/x-www-form-urlencoded" },
