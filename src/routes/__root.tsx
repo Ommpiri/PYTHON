@@ -152,9 +152,11 @@ function RootComponent() {
 
   useEffect(() => {
     if (status === "authenticated" && user && user.has_completed_onboarding === false) {
-      if (pathname !== "/profile/edit" && !pathname.startsWith("/api/auth")) {
-        navigate({ to: "/profile/edit", replace: true });
-        toast.info("Welcome! Please complete your profile first.");
+      if (!sessionStorage.getItem("onboarding_checked")) {
+        sessionStorage.setItem("onboarding_checked", "true");
+        if (pathname !== "/onboarding" && !pathname.startsWith("/api/auth")) {
+          navigate({ to: "/onboarding", replace: true });
+        }
       }
     }
   }, [status, user, pathname, navigate]);
